@@ -27,6 +27,7 @@ Premendo sul bottone di menù in alto a destra è possibile aggiungere la cazone
 Premendo su **Preferite** è possibile visualizzare l'elenco delle canzoni preferite dell'utenete. Il funzionamento è identico a canzoniere.
 
 **Statistiche**
+
 Premendo su **statistiche** in futuro sarà possibile vedere le canzoni più cercate quelle più amate, e un pò di statisiche sulla app.
 
 
