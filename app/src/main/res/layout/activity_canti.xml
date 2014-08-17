@@ -1,0 +1,60 @@
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="10dp">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/songbook"
+        android:id="@+id/songbook"
+        android:drawableLeft="@drawable/book64"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="5"
+        android:layout_margin="5dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="20dp"
+        android:singleLine="false"
+        android:background="@xml/menu_button_theme"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/favouriteMenu"
+        android:id="@+id/favourite"
+        android:drawableLeft="@drawable/star64"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="5"
+        android:layout_margin="5dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="20dp"
+        android:background="@xml/menu_button_theme"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/statistics"
+        android:id="@+id/stats"
+        android:drawableLeft="@drawable/stats64"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="5"
+        android:layout_margin="5dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="20dp"
+        android:background="@xml/menu_button_theme"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/addSong"
+        android:id="@+id/add"
+        android:drawableLeft="@drawable/add64"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="5"
+        android:layout_margin="5dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="20dp"
+        android:background="@xml/menu_button_theme"/>
+</LinearLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CantiScout</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_song_list">Elenco Canzoni</string>
+    <string name="title_activity_canti">CantiScout</string>
+    <string name="title_activity_testo">Canzone</string>
+    <string name="action_search">Cerca</string>
+    <string name="search_hint">Cerca</string>
+    <string name="favourite">Agg. ai Preferiti</string>
+    <string name="unfavourite">Rem. dai Preferiti</string>
+    <string name="songbook">Canzoniere</string>
+    <string name="favouriteMenu">Preferite</string>
+    <string name="statistics">Statistiche</string>
+    <string name="addSong">Agg. Canzone</string>
+    <string name="downloadSuccess">Download Riuscito</string>
+    <string name="databaseUpdated">Database Updated</string>
+    <string name="databaseNotUpdated">Database Already up to date</string>
+</resources>
