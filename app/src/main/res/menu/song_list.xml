@@ -2,10 +2,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="danielebaschieri.eu.cantiscout.SongList" >
+
     <item android:id="@+id/action_search"
         android:title="@string/action_search"
         android:icon="@drawable/ic_action_search3"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView" />
+
+    <item android:id="@+id/LC"
+        android:title="@string/LC" />
+    <item android:id="@+id/EG"
+        android:title="@string/EG" />
+    <item android:id="@+id/RS"
+        android:title="@string/RS" />
+    <item android:id="@+id/messa"
+        android:title="@string/messa" />
+
+
 
 </menu>

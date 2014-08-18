@@ -18,4 +18,8 @@
     <string name="downloadSuccess">Download Riuscito</string>
     <string name="databaseUpdated">Database Updated</string>
     <string name="databaseNotUpdated">Database Already up to date</string>
+    <string name="LC">L/C</string>
+    <string name="EG">E/G</string>
+    <string name="RS">R/S</string>
+    <string name="messa">Messa</string>
 </resources>

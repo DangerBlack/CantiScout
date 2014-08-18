@@ -175,7 +175,6 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
         getMenuInflater().inflate(R.menu.song_list, menu);
 
         configureSearchMenu(menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -200,6 +199,23 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
         /*if (id == R.id.action_settings) {
             return true;
         }*/
+
+        switch (item.getItemId()) {
+            case R.id.LC:
+                doMySearch("lupetti");
+                break;
+            case R.id.EG:
+                doMySearch("reparto");
+                break;
+            case R.id.RS:
+                doMySearch("lupetti");
+                break;
+            case R.id.messa:
+                doMySearch("messa");
+                break;
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
