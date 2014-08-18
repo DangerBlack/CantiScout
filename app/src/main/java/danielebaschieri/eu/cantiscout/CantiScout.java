@@ -89,8 +89,10 @@ public class CantiScout extends ActionBarActivity {
                 note.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));
                 //note.setTextSize(15);
                 //note.setTextIsSelectable(true);
-                if(body.get(i).isRit())
+                if(body.get(i).isRit()) {
                     note.setTextColor(Color.BLUE);
+                    note.setTypeface(Typeface.MONOSPACE,Typeface.BOLD);
+                }
                 note.setTypeface(Typeface.MONOSPACE);
                 //note.setTypeface(null, Typeface.ITALIC);
                 ((LinearLayout) linearLayout).addView(note);
@@ -102,8 +104,10 @@ public class CantiScout extends ActionBarActivity {
             lyrics.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));
             //lyrics.setTextSize(15);
             //lyrics.setTextIsSelectable(true);
-            if(body.get(i).isRit())
+            if(body.get(i).isRit()) {
                 lyrics.setTextColor(Color.BLUE);
+                lyrics.setTypeface(Typeface.MONOSPACE,Typeface.BOLD);
+            }
             lyrics.setTypeface(Typeface.MONOSPACE);
             ((LinearLayout) linearLayout).addView(lyrics);
         }

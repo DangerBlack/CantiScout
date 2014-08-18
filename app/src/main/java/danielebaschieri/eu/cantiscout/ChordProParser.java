@@ -41,7 +41,7 @@ public class ChordProParser {
     }
 
     private boolean parseComment(boolean rif, String n) {
-        String token=n.substring(1,n.length()-1);
+        String token=n.substring(n.indexOf("{")+1,n.lastIndexOf("}"));
         if(token.equals("soc")||token.equals("start_of_chorus")){
             rif=true;
         }
@@ -61,6 +61,10 @@ public class ChordProParser {
             }
             if(token.equals("author")||token.equals("a")){
                 out.setAuthor(corpus);
+            }
+            if(token.equals("comment")||token.equals("c")){
+                //out.setAuthor(corpus);
+                corpus="("+corpus+")";
             }
             out.addNoteLyrics(new NoteLyrics("",corpus,rif));
         }
