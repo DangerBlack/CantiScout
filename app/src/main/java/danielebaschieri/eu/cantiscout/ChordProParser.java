@@ -11,7 +11,9 @@ import java.util.Vector;
  */
 public class ChordProParser {
 
-    String chordregex="\\[([^\\]]*)\\]";
+    final private String chordregex="\\[([^\\]]*)\\]";
+    final private String sharpregex="#.*";
+    final private String commentregex=".*\\{.*\\}.*";
     Song out=new Song("Lullaby");
     public ChordProParser(String song){
 
@@ -22,12 +24,12 @@ public class ChordProParser {
 
             String n=s.nextLine();
             Log.println(Log.DEBUG, "ChordPro-p", n);
-            if(n.matches("#.*")){
+            if(n.matches(sharpregex)){
                 //Ignoro i commenti del codice
                 Log.println(Log.DEBUG, "ChordPro", "#"+n);
             }
             else
-            if(n.matches(".*\\{.*\\}.*")){
+            if(n.matches(commentregex)){
                 //Gestisco i commenti di tipo title, author, cori e commenti generici
                 rif = parseComment(rif, n);
             }
@@ -57,7 +59,7 @@ public class ChordProParser {
             corpus+=token.split(":")[part.length-1];
             token=token.split(":")[0];
             if(token.equals("title")||token.equals("t")){
-                out.setTitle(corpus);
+                out.setTitle(capitalize(corpus));
             }
             if(token.equals("author")||token.equals("a")){
                 out.setAuthor(corpus);
@@ -92,7 +94,10 @@ public class ChordProParser {
         Log.println(Log.DEBUG, "ChordPro", "Aggiungo una linea di Commento "+n);
         return rif;
     }
-
+    public static String capitalize(String s) {
+        if (s.length() == 0) return s;
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+    }
     private boolean parseNoteAndLyrics(boolean rif, String n, boolean singleRif) {
         String note = "";
         String lyric = "";

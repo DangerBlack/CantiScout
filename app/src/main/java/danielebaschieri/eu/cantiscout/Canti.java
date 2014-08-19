@@ -64,6 +64,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         add.setOnClickListener(this);
     }
 
+
     private void saveDateOfSync() {
         SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -158,7 +159,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
                       String elenco=jObj.getString("songlist");
                       Log.println(Log.DEBUG,"Canti",elenco);
                       JSONArray jArr = new JSONArray(elenco);
-                      QueryManager.dropAllSong(getApplicationContext());
+                      //QueryManager.dropAllSong(getApplicationContext());
                       for (int i = 0; i < jArr.length(); i++) {
                           JSONObject obj = jArr.getJSONObject(i);
                           QueryManager.insertSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"),obj.getString("time"));
@@ -167,7 +168,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
 
                       elenco=jObj.getString("taglist");
                       jArr = new JSONArray(elenco);
-                      QueryManager.dropAllTag(getApplicationContext());
+                      //QueryManager.dropAllTag(getApplicationContext());
                       for (int i = 0; i < jArr.length(); i++) {
                           JSONObject obj = jArr.getJSONObject(i);
                           QueryManager.insertTag(getApplicationContext(), obj.getInt("id"), obj.getInt("id_song"), obj.getString("tag"));
