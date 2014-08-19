@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ public class CantiScout extends ActionBarActivity {
     private final static String MY_PREFERENCES = "CantiScout";
     private final static String ID_SONG_KEY= "id_song";
     final public static String URL_PATH_SONG="http://www.512b.it/cantiscout/php/song.php";
+    final public static String URL_PATH_REPORT="http://www.512b.it/cantiscout/report.php";
     int id_song=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,6 +224,11 @@ public class CantiScout extends ActionBarActivity {
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
             break;
+
+            case R.id.report:
+                Intent browserIntentStats = new Intent(Intent.ACTION_VIEW, Uri.parse(URL_PATH_REPORT+"?id="+id_song));
+                startActivity(browserIntentStats);
+                break;
 
         }
 
