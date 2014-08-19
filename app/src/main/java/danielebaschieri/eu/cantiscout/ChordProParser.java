@@ -86,6 +86,7 @@ public class ChordProParser {
             Log.println(Log.DEBUG,"ChordPro","Ho trovato una linea strana2 "+n);
             n=n.substring(0,n.length()-5);
             Log.println(Log.DEBUG, "ChordPro", "Epurata divene " + n);
+            rif=true;
             singleRif=true;
             go=true;
         }

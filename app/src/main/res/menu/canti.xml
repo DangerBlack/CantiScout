@@ -2,4 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="danielebaschieri.eu.cantiscout.Canti" >
+
+    <item android:id="@+id/sync"
+        android:title="@string/sync" />
+
 </menu>

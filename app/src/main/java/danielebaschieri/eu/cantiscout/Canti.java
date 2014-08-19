@@ -82,7 +82,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.canti, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -91,9 +91,13 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
+        switch (item.getItemId()) {
+            case R.id.sync:
+                DownloadDBTask ddbt = new DownloadDBTask();
+                ddbt.execute(new String[]{});
+                break;
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -142,9 +146,14 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
-              Toast.makeText(getApplicationContext(), getString(R.string.downloadSuccess), Toast.LENGTH_SHORT).show();
+              if(result!=null)
+                Toast.makeText(getApplicationContext(), getString(R.string.downloadSuccess), Toast.LENGTH_SHORT).show();
+              else {
+                  Toast.makeText(getApplicationContext(), getString(R.string.downloadInsucces), Toast.LENGTH_SHORT).show();
+                  return;
+              }
               Log.println(Log.DEBUG, "Canti", "Download2 " + result);
-              if(result.indexOf("204")!=0) {
+              if((result!=null)&&(result.indexOf("204")!=0)) {
                   try {
                       /*int max = QueryManager.getMaxId(getApplicationContext());
 
@@ -176,7 +185,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
                       }
 
 
-                      Toast.makeText(getApplicationContext(), getString(R.string.databaseUpdated), Toast.LENGTH_SHORT).show();
+                      Toast.makeText(getApplicationContext(), getString(R.string.databaseUpdated), Toast.LENGTH_LONG).show();
                       saveDateOfSync();
                   } catch (JSONException e) {
                       e.printStackTrace();

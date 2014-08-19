@@ -2,6 +2,7 @@ package danielebaschieri.eu.cantiscout;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -25,6 +26,7 @@ public class CantiScout extends ActionBarActivity {
 
     private final static String MY_PREFERENCES = "CantiScout";
     private final static String ID_SONG_KEY= "id_song";
+    final public static String URL_PATH_SONG="http://www.512b.it/cantiscout/php/song.php";
     int id_song=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,17 @@ public class CantiScout extends ActionBarActivity {
         } else {
             //id= (int) savedInstanceState.getSerializable("SONG_SELECTED_ID");
             id_song=loadIdSong();
+        }
+
+        Intent intent = getIntent();
+        String link = intent.getDataString();
+        Log.println(Log.DEBUG,"CantiScout","HO BECCATO IL LINK "+link);
+        if(link!=null){
+            try {
+                id_song = Integer.parseInt(link.split("\\?id=")[1]);
+            }catch(Exception e){
+                id_song=1;
+            }
         }
 
         saveIdSong();
@@ -188,6 +201,19 @@ public class CantiScout extends ActionBarActivity {
 
             return super.onOptionsItemSelected(item);
         }
+
+        switch(id){
+            case R.id.share:
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, URL_PATH_SONG + "?id=" + id_song);
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            break;
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

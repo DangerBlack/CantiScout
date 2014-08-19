@@ -18,11 +18,13 @@ public class QueryManager {
         DataBaseManager dbManager=new DataBaseManager(context);
         SQLiteDatabase db = dbManager.getWritableDatabase();
         db.delete("list","'a'='a'",null);
+        db.close();
     }
     public static void dropAllTag(Context context){
         DataBaseManager dbManager=new DataBaseManager(context);
         SQLiteDatabase db = dbManager.getWritableDatabase();
         db.delete("tag","'a'='a'",null);
+        db.close();
     }
     public static void insertSong(Context context,int id,String title,String author,String body,String time)throws SQLException {
         DataBaseManager dbManager=new DataBaseManager(context);
@@ -34,6 +36,7 @@ public class QueryManager {
         contentValues.put("body",body);
         contentValues.put("time",time);
         db.insert("list",null,contentValues);
+        db.close();
     }
 
     public static void insertFav(Context context,int id_song)throws SQLException {
@@ -43,6 +46,7 @@ public class QueryManager {
         contentValues.put("id_song",id_song);
         db.insert("favourite",null,contentValues);
         Log.println(Log.DEBUG,"QueryManager","Aggiunta canzone "+id_song);
+        db.close();
     }
 
     public static void insertTag(Context context,int id,int id_song,String tag)throws SQLException {
@@ -53,12 +57,14 @@ public class QueryManager {
         contentValues.put("id_song",id_song);
         contentValues.put("tag",tag);
         db.insert("tag",null,contentValues);
+        db.close();
     }
     public static void removeFav(Context context,int id_song){
         DataBaseManager dbManager=new DataBaseManager(context);
         SQLiteDatabase db = dbManager.getWritableDatabase();
         long row=db.delete("favourite","id_song='"+id_song+"'",null);
         Log.println(Log.DEBUG,"QueryManager","Rimossa canzone "+id_song+" cancellate "+row);
+        db.close();
     }
     public static Vector<Couple> findListOfTitle(Context context){
         DataBaseManager dbManager=new DataBaseManager(context);
@@ -71,6 +77,7 @@ public class QueryManager {
                 list.add(new Couple(getId(c),getTitle(c)));
             } while(c.moveToNext());
         }
+        db.close();
         return list;
     }
 
@@ -85,6 +92,7 @@ public class QueryManager {
                 list.add(new Couple(getId(c),getTitle(c)));
             } while(c.moveToNext());
         }
+        db.close();
         return list;
     }
     public static Vector<Couple> findListOfTitle(Context context,String filter){
@@ -98,6 +106,7 @@ public class QueryManager {
                 list.add(new Couple(getId(c),getTitle(c)));
             } while(c.moveToNext());
         }
+        db.close();
         return list;
     }
     public static Vector<Couple> findListOfTitleFav(Context context){
@@ -111,6 +120,7 @@ public class QueryManager {
                 list.add(new Couple(getId(c),getTitle(c)));
             } while(c.moveToNext());
         }
+        db.close();
         return list;
     }
     public static Song findSong(Context context,int id){
@@ -119,8 +129,10 @@ public class QueryManager {
         final String sql = "SELECT title,author,body FROM list WHERE _id='"+id+"'";
         Cursor c = db.rawQuery(sql, null);
         if(c.moveToFirst()){
+               db.close();
                return new Song(getTitle(c),getAuthor(c),getBody(c));
         }
+        db.close();
         return null;
     }
 
@@ -130,8 +142,10 @@ public class QueryManager {
         final String sql = "SELECT MAX(time) AS max FROM list";
         Cursor c = db.rawQuery(sql, null);
         if(c.moveToFirst()){
+            db.close();
             return getMax(c);
         }
+        db.close();
         return "";
     }
 
@@ -142,8 +156,10 @@ public class QueryManager {
         Cursor c = db.rawQuery(sql, null);
         Log.println(Log.DEBUG,"QueryManager","Il cursore conta "+c.getCount());
         if(c.getCount()>0){
+            db.close();
             return true;
         }
+        db.close();
         return false;
     }
     private static String getColumnValue(Cursor cur, String ColumnName) {
