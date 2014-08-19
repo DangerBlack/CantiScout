@@ -93,33 +93,42 @@ public class CantiScout extends ActionBarActivity {
 
         //Toast.makeText(getApplicationContext(), "Funge:"+id_song, Toast.LENGTH_SHORT).show();
         Song s=QueryManager.findSong(getApplicationContext(),id_song);
-        Vector<NoteLyrics> body=s.getNoteLyrics();
-        for(int i=0;i<body.size();i++){
-            if(!body.get(i).getNote().equals("")) {
+        if(s!=null) {
+            generateLayoutLyrics((LinearLayout) linearLayout, s);
+        }
+        else{
+            Toast.makeText(getApplicationContext(),getString(R.string.song404),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void generateLayoutLyrics(LinearLayout linearLayout, Song s) {
+        Vector<NoteLyrics> body = s.getNoteLyrics();
+        for (int i = 0; i < body.size(); i++) {
+            if (!body.get(i).getNote().equals("")) {
                 TextView note = new TextView(this);
                 note.setText(body.get(i).getNote());
                 note.setId(i);
                 note.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));
                 //note.setTextSize(15);
                 //note.setTextIsSelectable(true);
-                if(body.get(i).isRit()) {
+                if (body.get(i).isRit()) {
                     note.setTextColor(Color.BLUE);
-                    note.setTypeface(Typeface.MONOSPACE,Typeface.BOLD);
+                    note.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
                 }
                 note.setTypeface(Typeface.MONOSPACE);
                 //note.setTypeface(null, Typeface.ITALIC);
                 ((LinearLayout) linearLayout).addView(note);
             }
 
-            TextView lyrics=new TextView(this);
+            TextView lyrics = new TextView(this);
             lyrics.setText(body.get(i).getLyric());
-            lyrics.setId(100+i);
+            lyrics.setId(100 + i);
             lyrics.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));
             //lyrics.setTextSize(15);
             //lyrics.setTextIsSelectable(true);
-            if(body.get(i).isRit()) {
+            if (body.get(i).isRit()) {
                 lyrics.setTextColor(Color.BLUE);
-                lyrics.setTypeface(Typeface.MONOSPACE,Typeface.BOLD);
+                lyrics.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
             }
             lyrics.setTypeface(Typeface.MONOSPACE);
             ((LinearLayout) linearLayout).addView(lyrics);
@@ -145,18 +154,20 @@ public class CantiScout extends ActionBarActivity {
         id_song=loadIdSong();
         Log.println(Log.DEBUG,"CantiScout","Ho caricato dalla memoria la canzone "+id_song);
         Song s=QueryManager.findSong(getApplicationContext(),id_song);
-        Vector<NoteLyrics> body=s.getNoteLyrics();
-        for(int i=0;i<body.size();i++){
-            if(!body.get(i).getNote().equals("")) {
-                TextView note=(TextView)findViewById(i);
-                if(body.get(i).isRit())
-                    note.setTextColor(Color.BLUE);
-                note.setTypeface(Typeface.MONOSPACE);
-            }
-            TextView lyrics=(TextView)findViewById(100+i);
-            if(body.get(i).isRit())
-                lyrics.setTextColor(Color.BLUE);
+        if(s!=null) {
+            Vector<NoteLyrics> body = s.getNoteLyrics();
+            for (int i = 0; i < body.size(); i++) {
+                if (!body.get(i).getNote().equals("")) {
+                    TextView note = (TextView) findViewById(i);
+                    if (body.get(i).isRit())
+                        note.setTextColor(Color.BLUE);
+                    note.setTypeface(Typeface.MONOSPACE);
+                }
+                TextView lyrics = (TextView) findViewById(100 + i);
+                if (body.get(i).isRit())
+                    lyrics.setTextColor(Color.BLUE);
 
+            }
         }
     }
 

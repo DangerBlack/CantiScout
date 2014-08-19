@@ -24,4 +24,5 @@
     <string name="RS">R/S</string>
     <string name="messa">Messa</string>
     <string name="sync">Forza Sincronia</string>
+    <string name="song404">404 Impossibile trovare la canzone richiesta</string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -128,7 +129,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
     }
 
 
-    private class DownloadDBTask extends AsyncTask<String, Void, String> {
+    private class DownloadDBTask extends AsyncTask<String, Void, String> implements Runnable{
         private String URL_PATH="http://www.512b.it/cantiscout/php/";
         ProgressBar prb;
         TextView error;
@@ -154,47 +155,51 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
               }
               Log.println(Log.DEBUG, "Canti", "Download2 " + result);
               if((result!=null)&&(result.indexOf("204")!=0)) {
-                  try {
-                      /*int max = QueryManager.getMaxId(getApplicationContext());
+                  Thread t=new Thread(this);
+                  fresult=result;
+                  t.start();
 
-                      boolean go = false;
-                      for (int i = 0; i < jArr.length(); i++) {
-                          JSONObject obj = jArr.getJSONObject(i);
-                          if (obj.getInt("id") > max)
-                              go = true;
+                  /*runOnUiThread(new Runnable() {
+                      @Override
+                      public void run() {
+
                       }
-                      if (go) {*/
-                      JSONObject jObj = new JSONObject(result);
-                      String elenco=jObj.getString("songlist");
-                      Log.println(Log.DEBUG,"Canti",elenco);
-                      JSONArray jArr = new JSONArray(elenco);
-                      //QueryManager.dropAllSong(getApplicationContext());
-                      for (int i = 0; i < jArr.length(); i++) {
-                          JSONObject obj = jArr.getJSONObject(i);
-                          QueryManager.insertSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"),obj.getString("time"));
-                          Log.println(Log.DEBUG, "Canti", "insert: " + obj.getString("title"));
-                      }
-
-                      elenco=jObj.getString("taglist");
-                      jArr = new JSONArray(elenco);
-                      //QueryManager.dropAllTag(getApplicationContext());
-                      for (int i = 0; i < jArr.length(); i++) {
-                          JSONObject obj = jArr.getJSONObject(i);
-                          QueryManager.insertTag(getApplicationContext(), obj.getInt("id"), obj.getInt("id_song"), obj.getString("tag"));
-                          //Log.println(Log.DEBUG, "Canti", "insert: " + obj.getString("title"));
-                      }
-
-
-                      Toast.makeText(getApplicationContext(), getString(R.string.databaseUpdated), Toast.LENGTH_LONG).show();
-                      saveDateOfSync();
-                  } catch (JSONException e) {
-                      e.printStackTrace();
-                  }
+                  });*/
               } else {
                   Toast.makeText(getApplicationContext(), getString(R.string.databaseNotUpdated), Toast.LENGTH_SHORT).show();
               }
 
 
+        }
+
+        private void insertDataOnDB(String result) {
+            try {
+                JSONObject jObj = new JSONObject(result);
+                String elenco=jObj.getString("songlist");
+                Log.println(Log.DEBUG, "Canti", elenco);
+                JSONArray jArr = new JSONArray(elenco);
+                //QueryManager.dropAllSong(getApplicationContext());
+                for (int i = 0; i < jArr.length(); i++) {
+                    JSONObject obj = jArr.getJSONObject(i);
+                    QueryManager.insertSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
+                    Log.println(Log.DEBUG, "Canti", "insert: " + obj.getString("title"));
+                }
+
+                elenco=jObj.getString("taglist");
+                jArr = new JSONArray(elenco);
+                //QueryManager.dropAllTag(getApplicationContext());
+                for (int i = 0; i < jArr.length(); i++) {
+                    JSONObject obj = jArr.getJSONObject(i);
+                    QueryManager.insertTag(getApplicationContext(), obj.getInt("id"), obj.getInt("id_song"), obj.getString("tag"));
+                    //Log.println(Log.DEBUG, "Canti", "insert: " + obj.getString("title"));
+                }
+
+
+                Toast.makeText(getApplicationContext(), getString(R.string.databaseUpdated), Toast.LENGTH_LONG).show();
+                saveDateOfSync();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -220,6 +225,14 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
 
             }
             return res;
+        }
+
+        public String fresult;
+        @Override
+        public void run() {
+            Looper.prepare();
+            insertDataOnDB(fresult);
+            Looper.loop();
         }
     }
 }
