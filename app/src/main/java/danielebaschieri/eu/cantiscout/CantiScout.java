@@ -12,11 +12,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ZoomControls;
+import android.view.View.OnClickListener;
 
 import org.w3c.dom.Text;
 
@@ -29,7 +33,10 @@ public class CantiScout extends ActionBarActivity {
     private final static String ID_SONG_KEY= "id_song";
     final public static String URL_PATH_SONG="http://www.512b.it/cantiscout/php/song.php";
     final public static String URL_PATH_REPORT="http://www.512b.it/cantiscout/report.php";
+    final public static float max_text_scale=50;
+    final public static float min_text_scale=2;
     int id_song=1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,9 +108,32 @@ public class CantiScout extends ActionBarActivity {
         else{
             Toast.makeText(getApplicationContext(),getString(R.string.song404),Toast.LENGTH_LONG).show();
         }
+
+        ZoomControls zoom= (ZoomControls) findViewById(R.id.zoomControls);
+        zoom.setOnZoomInClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textScale+=2;
+                if(textScale>max_text_scale)
+                        textScale=max_text_scale;
+                scaleTextSize(textScale);
+            }
+        });
+        zoom.setOnZoomOutClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textScale-=2;
+                if(textScale<min_text_scale)
+                    textScale=min_text_scale;
+                scaleTextSize(textScale);
+            }
+        });
+
     }
 
     private void generateLayoutLyrics(LinearLayout linearLayout, Song s) {
+
+        setTitle(s.getTitle());
         Vector<NoteLyrics> body = s.getNoteLyrics();
         for (int i = 0; i < body.size(); i++) {
             if (!body.get(i).getNote().equals("")) {
@@ -118,6 +148,7 @@ public class CantiScout extends ActionBarActivity {
                     note.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
                 }
                 note.setTypeface(Typeface.MONOSPACE);
+                note.setMaxLines(1);
                 //note.setTypeface(null, Typeface.ITALIC);
                 ((LinearLayout) linearLayout).addView(note);
             }
@@ -133,6 +164,7 @@ public class CantiScout extends ActionBarActivity {
                 lyrics.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
             }
             lyrics.setTypeface(Typeface.MONOSPACE);
+            lyrics.setMaxLines(1);
             ((LinearLayout) linearLayout).addView(lyrics);
         }
     }
@@ -161,18 +193,39 @@ public class CantiScout extends ActionBarActivity {
             for (int i = 0; i < body.size(); i++) {
                 if (!body.get(i).getNote().equals("")) {
                     TextView note = (TextView) findViewById(i);
-                    if (body.get(i).isRit())
+                    if (body.get(i).isRit()){
                         note.setTextColor(Color.BLUE);
+                        note.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+                    }
                     note.setTypeface(Typeface.MONOSPACE);
                 }
                 TextView lyrics = (TextView) findViewById(100 + i);
-                if (body.get(i).isRit())
+                if (body.get(i).isRit()){
                     lyrics.setTextColor(Color.BLUE);
+                    lyrics.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+                }
 
             }
         }
     }
+    private void scaleTextSize(float size){
+        id_song=loadIdSong();
+        Log.println(Log.DEBUG,"CantiScout","Ho caricato dalla memoria la canzone "+id_song);
+        Song s=QueryManager.findSong(getApplicationContext(),id_song);
+        if(s!=null) {
+            Vector<NoteLyrics> body = s.getNoteLyrics();
+            for (int i = 0; i < body.size(); i++) {
+                if (!body.get(i).getNote().equals("")) {
+                    TextView note = (TextView) findViewById(i);
+                    note.setTextSize(size);
+                }
+                TextView lyrics = (TextView) findViewById(100 + i);
+                lyrics.setTextSize(size);
+            }
+        }
+    }
 
+    public float textScale=12;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

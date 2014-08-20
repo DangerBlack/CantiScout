@@ -50,6 +50,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         Long data=g.getTimeInMillis();
 
         if((lastSync==1)||(data-lastSync>interval)) {
+            Log.println(Log.DEBUG,"Canti",data+"-"+lastSync+">"+interval);
             DownloadDBTask ddbt = new DownloadDBTask();
             ddbt.execute(new String[]{});
         }
@@ -158,14 +159,8 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
                   Thread t=new Thread(this);
                   fresult=result;
                   t.start();
-
-                  /*runOnUiThread(new Runnable() {
-                      @Override
-                      public void run() {
-
-                      }
-                  });*/
               } else {
+                  saveDateOfSync();
                   Toast.makeText(getApplicationContext(), getString(R.string.databaseNotUpdated), Toast.LENGTH_SHORT).show();
               }
 

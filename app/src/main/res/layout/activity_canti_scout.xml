@@ -13,10 +13,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/canzone"
-            android:padding="5dp">
+            android:padding="5dp" >
 
         </LinearLayout>
     </ScrollView>
+
+    <ZoomControls
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/zoomControls"
+        android:layout_gravity="right|bottom" />
 
 
 </FrameLayout>
