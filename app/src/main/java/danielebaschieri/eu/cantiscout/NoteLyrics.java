@@ -1,5 +1,7 @@
 package danielebaschieri.eu.cantiscout;
 
+import android.provider.ContactsContract;
+
 /**
  * Created by Danger on 15/08/2014.
  */
@@ -35,5 +37,13 @@ public class NoteLyrics{
 
     public void setRit(boolean rit) {
         this.rit = rit;
+    }
+
+    public void sumNoteLyrics(NoteLyrics nl){
+        if(nl!=null) {
+            this.note += nl.getNote();
+            this.lyric += nl.getLyric();
+            this.rit = rit|nl.isRit();
+        }
     }
 }

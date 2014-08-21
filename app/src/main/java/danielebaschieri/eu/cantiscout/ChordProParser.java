@@ -24,25 +24,59 @@ public class ChordProParser {
 
             String n=s.nextLine();
             Log.println(Log.DEBUG, "ChordPro-p", n);
-            if(n.matches(sharpregex)){
-                //Ignoro i commenti del codice
-                Log.println(Log.DEBUG, "ChordPro", "#"+n);
+            NoteLyrics nl=L(n);
+            if(nl.getNote().matches(" *"))
+                nl.setNote("");
+            if((nl!=null)&&(nl.getLyric()!=""))
+                out.addNoteLyrics(nl);
+            if(n.equals("")){
+                out.addNoteLyrics(new NoteLyrics("","",rif));
             }
-            else
-            if(n.matches(commentregex)){
-                //Gestisco i commenti di tipo title, author, cori e commenti generici
-                rif = parseComment(rif, n);
-            }
-            else{
-                boolean singleRif=false;
-                //gestisco le note e il testo della canzone
-                rif = parseNoteAndLyrics(rif, n, singleRif);
-            }
-
         }
     }
+    boolean rif=false;
+    private NoteLyrics L(String input){
+        if(input.matches(sharpregex)){
+            Log.println(Log.DEBUG, "ChordPro-#", input);
+            return new NoteLyrics("","",false);
+        }
+        else {
+            return M(input);
+        }
+    }
+    private NoteLyrics M(String input){
+        if (input.matches(commentregex)) {
+                int pG=input.indexOf("{");
+                int pC=input.indexOf("}",pG)+1;
+                String comment= input.substring(pG,pC);
+                if(pG==0){
 
-    private boolean parseComment(boolean rif, String n) {
+                    String rest= input.substring(pC,input.length());
+                    Log.println(Log.DEBUG, "ChordPro-M1", input+" ["+comment+" "+rest+"]");
+                    NoteLyrics nl=new NoteLyrics("","",false);
+                    nl.sumNoteLyrics(C(comment));
+                    nl.sumNoteLyrics(M(rest));
+                    return nl;
+                }else{
+                    String rest= input.substring(0,pG);
+                    String commentRest= input.substring(pG,input.length());
+                    Log.println(Log.DEBUG, "ChordPro-M2", input+" ["+rest+" "+commentRest+"]");
+                    NoteLyrics nl=new NoteLyrics("","",false);
+                    nl.sumNoteLyrics(M(rest));
+                    nl.sumNoteLyrics(M(commentRest));
+                    return nl;
+                }
+        }
+        else{
+            Log.println(Log.DEBUG, "ChordPro-M", input);
+            return parseNoteAndLyrics(rif, input);
+        }
+    }
+    private NoteLyrics C(String input){
+        Log.println(Log.DEBUG, "ChordPro-C", input);
+        return parseComment(input);
+    }
+    private NoteLyrics parseComment(String n) {
         String token=n.substring(n.indexOf("{")+1,n.lastIndexOf("}"));
         if(token.equals("soc")||token.equals("start_of_chorus")){
             rif=true;
@@ -68,38 +102,15 @@ public class ChordProParser {
                 //out.setAuthor(corpus);
                 corpus="("+corpus+")";
             }
-            out.addNoteLyrics(new NoteLyrics("",corpus,rif));
+            return new NoteLyrics(getSpace(corpus.length(),0),corpus,rif);
         }
-
-        boolean singleRif=false;
-        boolean go=false;
-        if(n.matches("\\{soc\\}.*")&&(n.length()>5)){
-
-            Log.println(Log.DEBUG, "ChordPro", "Ho trovato una linea strana " + n);
-            n=n.substring(5,n.length());
-            Log.println(Log.DEBUG, "ChordPro", "Epurata divene " + n);
-            rif=true;
-            go=true;
-        }
-        if(n.matches(".*\\{eoc\\}")&&(n.length()>5)){
-
-            Log.println(Log.DEBUG,"ChordPro","Ho trovato una linea strana2 "+n);
-            n=n.substring(0,n.length()-5);
-            Log.println(Log.DEBUG, "ChordPro", "Epurata divene " + n);
-            rif=true;
-            singleRif=true;
-            go=true;
-        }
-        if(go)
-            rif = parseNoteAndLyrics(rif, n, singleRif);
-        Log.println(Log.DEBUG, "ChordPro", "Aggiungo una linea di Commento "+n);
-        return rif;
+        return new NoteLyrics("","",rif);
     }
     public static String capitalize(String s) {
         if (s.length() == 0) return s;
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
-    private boolean parseNoteAndLyrics(boolean rif, String n, boolean singleRif) {
+    private NoteLyrics parseNoteAndLyrics(boolean rif, String n) {
         String note = "";
         String lyric = "";
         String q[] = n.split(chordregex);
@@ -110,66 +121,30 @@ public class ChordProParser {
             lyric += q[i];
             if(n.indexOf(",")!=-1)
                 Log.println(Log.DEBUG, "ChordPro-n","INTENSIVE a "+note);
-
-            //if ((i + 1) < q.length) {
-                try {
-                    //note += getSpace(q[i].length(), accordi) + n.substring(n.indexOf(q[i]) + q[i].length(), n.indexOf(q[i + 1],(n.indexOf(q[i]) + q[i].length())));
-                    note += getSpace(q[i].length(), accordi) + n.substring(n.indexOf("[",acc),n.indexOf("]",acc)+1);
-                    accordi = n.indexOf("]",acc)+1 - n.indexOf("[",acc);
-                    acc=n.indexOf("]",acc)+1;
-                    //accordi = n.indexOf(q[i + 1]) - (n.indexOf(q[i]) + q[i].length());
-                }catch(Exception e){
-                    //Log.println(Log.DEBUG, "ChordPro", "Start: " + (n.indexOf(q[i]) + q[i].length()));
-                    //Log.println(Log.DEBUG,"ChordPro","End: "+n.indexOf(q[i + 1],(n.indexOf(q[i]) + q[i].length())));
-                    Log.println(Log.DEBUG,"ChordPro","I/q.length: "+i+"/"+q.length);
-                    Log.println(Log.DEBUG,"ChordPro","Molto strano "+e.getStackTrace());
-                }
-                if(n.indexOf(",")!=-1)
-                    Log.println(Log.DEBUG, "ChordPro-n","INTENSIVE e"+note);
-            /*}
-            else {
-                Log.println(Log.DEBUG, "ChordPro", "Taste the rainbows");
-                //note += getSpace(q[i].length(), accordi) + n.substring(n.indexOf(q[i]) + q[i].length(), n.length());
-                //accordi=n.length()-(n.indexOf(q[i]) + q[i].length());
-
+            try {
+                //note += getSpace(q[i].length(), accordi) + n.substring(n.indexOf(q[i]) + q[i].length(), n.indexOf(q[i + 1],(n.indexOf(q[i]) + q[i].length())));
                 note += getSpace(q[i].length(), accordi) + n.substring(n.indexOf("[",acc),n.indexOf("]",acc)+1);
                 accordi = n.indexOf("]",acc)+1 - n.indexOf("[",acc);
                 acc=n.indexOf("]",acc)+1;
-                if(n.indexOf(",")!=-1)
-                    Log.println(Log.DEBUG, "ChordPro-n","INTENSIVE f"+note);
-            }*/
-
+                //accordi = n.indexOf(q[i + 1]) - (n.indexOf(q[i]) + q[i].length());
+            }catch(Exception e){
+                //Log.println(Log.DEBUG, "ChordPro", "Start: " + (n.indexOf(q[i]) + q[i].length()));
+                //Log.println(Log.DEBUG,"ChordPro","End: "+n.indexOf(q[i + 1],(n.indexOf(q[i]) + q[i].length())));
+                Log.println(Log.DEBUG,"ChordPro","I/q.length: "+i+"/"+q.length);
+                Log.println(Log.DEBUG,"ChordPro","Molto strano "+e.getStackTrace());
+            }
+            if(n.indexOf(",")!=-1)
+                Log.println(Log.DEBUG, "ChordPro-n","INTENSIVE e"+note);
 
         }
-        /*boolean mem=false;
-        for(int i=0;i<n.length();i++){
-            String c="";
-            if(mem)
-                c=""+n.charAt(i);
-                else
-                c=" ";
-            if(n.charAt(i)=='[') {
-                c="";
-                mem=true;
-            }
-            if(n.charAt(i)==']') {
-                c="";
-                mem = false;
-            }
-            note += "" + c;
-        }*/
         note=note.replaceAll("\\[", "").replaceAll("\\]", "");
 
         if(note.matches(" *"))
             note="";
         Log.println(Log.DEBUG, "ChordPro-l", lyric);
         Log.println(Log.DEBUG, "ChordPro-n", note);
-        out.addNoteLyrics(new NoteLyrics(note,lyric,rif));
-        if(singleRif){
-            singleRif=false;
-            rif=false;
-        }
-        return rif;
+        NoteLyrics nl=new NoteLyrics(note,lyric,rif);
+        return nl;
     }
 
     public Song getSong(){

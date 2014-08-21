@@ -43,36 +43,6 @@ public class CantiScout extends ActionBarActivity {
         setContentView(R.layout.activity_canti_scout);
 
         View linearLayout= findViewById(R.id.canzone);
-        /*TextView p=new TextView(this);
-        p.setText("   DO             SI");
-        p.setId(5);
-        p.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));
-        p.setTextSize(20);
-        ((LinearLayout) linearLayout).addView(p);
-
-        TextView g=new TextView(this);
-        g.setText("La seconda strofa comincia con cacca");
-        g.setId(55);
-        g.setLayoutParams(new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT));
-        g.setTextSize(20);
-        ((LinearLayout) linearLayout).addView(g);*/
-
-        /*ChordProParser cpp=new ChordProParser("{comment:Chorus}\n" +
-                "{start_of_chorus}\n" +
-                "[D]This land is [G]your land, this land is [D]my land\n" +
-                "From Cali[A7]fornia to the New York [D]Island\n" +
-                "From the redwood [G]forests to the Gulf Stream [D]waters\n" +
-                "[A7]This land was made for you and [D]me\n" +
-                "{end_of_chorus}\n" +
-                "\n" +
-                "{comment:Verse 1}\n" +
-                "[D]As I was [G]walking that ribbon of [D]highway\n" +
-                "I looked a[A7]bove me, there in the [D]sky way\n" +
-                "I saw be[G]low me the golden [D]valley\n" +
-                "[A7]This land was made for you and [D]me");*/
-
-
-        //Song s=cpp.getSong();
         id_song=1;
         Bundle extras;
         if (savedInstanceState == null) {
@@ -167,8 +137,9 @@ public class CantiScout extends ActionBarActivity {
             lyrics.setMaxLines(1);
             ((LinearLayout) linearLayout).addView(lyrics);
         }
-    }
 
+        addMoreInfoBottom(linearLayout);
+    }
     private void saveIdSong() {
         SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -179,7 +150,13 @@ public class CantiScout extends ActionBarActivity {
         SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         return prefs.getInt(ID_SONG_KEY, 1);
     }
-
+    public void addMoreInfoBottom(LinearLayout linearLayout){
+        for (int i = 0; i < 3; i++) {
+            TextView info = new TextView(this);
+            info.setMaxLines(1);
+            ((LinearLayout) linearLayout).addView(info);
+        }
+    }
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
