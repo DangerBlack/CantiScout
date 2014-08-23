@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ScoutSong</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_song_list">Song List</string>
+    <string name="title_activity_canti">ScoutSong</string>
+    <string name="title_activity_testo">Song</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Search</string>
+    <string name="favourite">Add. to favourites</string>
+    <string name="unfavourite">Rem. to favourites</string>
+    <string name="songbook">Songbook</string>
+    <string name="favouriteMenu">Favourites</string>
+    <string name="statistics">Statistics</string>
+    <string name="addSong">Add Song</string>
+    <string name="downloadSuccess">Download successfully</string>
+    <string name="downloadInsucces">Unable to complete the Download</string>
+    <string name="databaseUpdated">Database Updated</string>
+    <string name="databaseNotUpdated">Database Already up to date</string>
+    <string name="LC">L/C</string>
+    <string name="EG">E/G</string>
+    <string name="RS">R/S</string>
+    <string name="messa">Church</string>
+    <string name="sync">Force Sync</string>
+    <string name="song404">404 Unable to find the requested song</string>
+    <string name="report">Report</string>
+</resources>

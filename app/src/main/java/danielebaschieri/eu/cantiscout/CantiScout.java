@@ -31,11 +31,13 @@ public class CantiScout extends ActionBarActivity {
 
     private final static String MY_PREFERENCES = "CantiScout";
     private final static String ID_SONG_KEY= "id_song";
+    private final static String SIZE_SONG_KEY= "size_song";
     final public static String URL_PATH_SONG="http://www.512b.it/cantiscout/php/song.php";
     final public static String URL_PATH_REPORT="http://www.512b.it/cantiscout/report.php";
     final public static float max_text_scale=50;
     final public static float min_text_scale=2;
     int id_song=1;
+    public float textScale=12;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class CantiScout extends ActionBarActivity {
         }
 
         saveIdSong();
+        textScale=loadSizeSong();
 
         //Toast.makeText(getApplicationContext(), "Funge:"+id_song, Toast.LENGTH_SHORT).show();
         Song s=QueryManager.findSong(getApplicationContext(),id_song);
@@ -87,6 +90,7 @@ public class CantiScout extends ActionBarActivity {
                 if(textScale>max_text_scale)
                         textScale=max_text_scale;
                 scaleTextSize(textScale);
+                saveSizeSong(textScale);
             }
         });
         zoom.setOnZoomOutClickListener(new OnClickListener() {
@@ -96,6 +100,7 @@ public class CantiScout extends ActionBarActivity {
                 if(textScale<min_text_scale)
                     textScale=min_text_scale;
                 scaleTextSize(textScale);
+                saveSizeSong(textScale);
             }
         });
 
@@ -144,6 +149,7 @@ public class CantiScout extends ActionBarActivity {
         }
 
         addMoreInfoBottom(linearLayout);
+        scaleTextSize(textScale);
     }
     private void saveIdSong() {
         SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
@@ -154,6 +160,16 @@ public class CantiScout extends ActionBarActivity {
     private int loadIdSong(){
         SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         return prefs.getInt(ID_SONG_KEY, 1);
+    }
+    private void saveSizeSong(float size) {
+        SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putFloat(SIZE_SONG_KEY,size);
+        editor.commit();
+    }
+    private float loadSizeSong(){
+        SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        return prefs.getFloat(SIZE_SONG_KEY, 12);
     }
     public void addMoreInfoBottom(LinearLayout linearLayout){
         for (int i = 0; i < 3; i++) {
@@ -191,6 +207,7 @@ public class CantiScout extends ActionBarActivity {
 
             }
         }
+        scaleTextSize(textScale);
     }
     private void scaleTextSize(float size){
         id_song=loadIdSong();
@@ -209,7 +226,7 @@ public class CantiScout extends ActionBarActivity {
         }
     }
 
-    public float textScale=12;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

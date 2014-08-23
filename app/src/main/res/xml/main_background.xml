@@ -1,0 +1,13 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/green" />
+    <item>
+        <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+            android:src="@drawable/campfire"
+            android:tileMode="disabled"
+            android:antialias="true"
+            android:dither="false"
+            android:filter="false"
+            android:gravity="bottom|right"
+            />
+    </item>
+</layer-list>
