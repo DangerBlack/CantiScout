@@ -13,9 +13,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/app_name"
-        android:id="@+id/textView"
+        android:id="@+id/mainTitle"
         android:layout_gravity="center_horizontal"
-        android:textSize="40dp"
+        android:textSize="62dp"
         android:layout_weight="5"
         android:textColor="#FFFFFF"
         />
@@ -33,7 +33,7 @@
         android:paddingRight="20dp"
         android:singleLine="false"
         android:textColor="#5fad2d"
-        android:textSize="25dp"
+        android:textSize="35dp"
         android:background="@xml/menu_button_theme"/>
 
     <Button
@@ -48,7 +48,7 @@
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:textColor="#5fad2d"
-        android:textSize="25dp"
+        android:textSize="35dp"
         android:background="@xml/menu_button_theme"/>
 
     <Button
@@ -63,7 +63,7 @@
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:textColor="#5fad2d"
-        android:textSize="25dp"
+        android:textSize="35dp"
         android:background="@xml/menu_button_theme"/>
 
     <Button
@@ -78,6 +78,6 @@
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:textColor="#5fad2d"
-        android:textSize="25dp"
+        android:textSize="35dp"
         android:background="@xml/menu_button_theme"/>
 </LinearLayout>

@@ -27,6 +27,7 @@
             android:paddingTop="20dp"
             android:singleLine="false"
             android:textColor="#5fad2d"
+            android:textSize="25dp"
             android:background="@xml/menu_button_theme"/>
 
         <Button
@@ -42,6 +43,7 @@
             android:paddingRight="20dp"
             android:paddingTop="20dp"
             android:textColor="#5fad2d"
+            android:textSize="25dp"
             android:background="@xml/menu_button_theme"/>
     </LinearLayout>
     <LinearLayout
@@ -63,6 +65,7 @@
             android:paddingRight="20dp"
             android:paddingTop="20dp"
             android:textColor="#5fad2d"
+            android:textSize="25dp"
             android:background="@xml/menu_button_theme"
             android:layout_margin="15dp" />
 
@@ -79,6 +82,7 @@
             android:paddingRight="20dp"
             android:paddingTop="20dp"
             android:textColor="#5fad2d"
+            android:textSize="25dp"
             android:background="@xml/menu_button_theme"/>
     </LinearLayout>
 </LinearLayout>

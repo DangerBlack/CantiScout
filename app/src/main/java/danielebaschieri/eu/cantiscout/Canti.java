@@ -3,6 +3,7 @@ package danielebaschieri.eu.cantiscout;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Looper;
@@ -45,6 +46,13 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_canti);
 
+        //Typeface font = Typeface.createFromAsset(getAssets(), "fonts/BABYDOLL.TTF");
+        //Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Strato-unlinked.ttf");
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Midan-Black.ttf");
+
+        TextView tv=(TextView)findViewById(R.id.mainTitle);
+        if(tv!=null)
+            tv.setTypeface(font);
         Long lastSync=loadDateOfSync();
         GregorianCalendar g=new GregorianCalendar();
         Long data=g.getTimeInMillis();
@@ -59,6 +67,11 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         Button favourite=(Button)findViewById(R.id.favourite);
         Button stats=(Button)findViewById(R.id.stats);
         Button add=(Button)findViewById(R.id.add);
+
+        songbook.setTypeface(font);
+        favourite.setTypeface(font);
+        stats.setTypeface(font);
+        add.setTypeface(font);
 
         songbook.setOnClickListener(this);
         favourite.setOnClickListener(this);
