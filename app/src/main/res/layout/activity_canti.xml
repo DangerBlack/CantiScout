@@ -5,6 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="10dp">
 
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,7 +14,7 @@
         android:drawableLeft="@drawable/book64"
         android:layout_gravity="center_horizontal"
         android:layout_weight="5"
-        android:layout_margin="5dp"
+        android:layout_margin="15dp"
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:singleLine="false"
@@ -27,7 +28,7 @@
         android:drawableLeft="@drawable/star64"
         android:layout_gravity="center_horizontal"
         android:layout_weight="5"
-        android:layout_margin="5dp"
+        android:layout_margin="15dp"
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:background="@xml/menu_button_theme"/>
@@ -40,7 +41,7 @@
         android:drawableLeft="@drawable/stats64"
         android:layout_gravity="center_horizontal"
         android:layout_weight="5"
-        android:layout_margin="5dp"
+        android:layout_margin="15dp"
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:background="@xml/menu_button_theme"/>
@@ -53,7 +54,7 @@
         android:drawableLeft="@drawable/add64"
         android:layout_gravity="center_horizontal"
         android:layout_weight="5"
-        android:layout_margin="5dp"
+        android:layout_margin="15dp"
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:background="@xml/menu_button_theme"/>

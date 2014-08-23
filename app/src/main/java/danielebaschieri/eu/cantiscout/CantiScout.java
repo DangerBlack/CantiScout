@@ -105,6 +105,9 @@ public class CantiScout extends ActionBarActivity {
 
         setTitle(s.getTitle());
         Vector<NoteLyrics> body = s.getNoteLyrics();
+        //Typeface font = Typeface.createFromAsset(getAssets(), "fonts/SourceSansPro-Regular.ttf");
+
+        //Typeface fontb = Typeface.createFromAsset(getAssets(), "fonts/SourceSansPro-Bold.ttf");
         for (int i = 0; i < body.size(); i++) {
             if (!body.get(i).getNote().equals("")) {
                 TextView note = new TextView(this);
@@ -114,9 +117,10 @@ public class CantiScout extends ActionBarActivity {
                 //note.setTextSize(15);
                 //note.setTextIsSelectable(true);
                 if (body.get(i).isRit()) {
-                    note.setTextColor(Color.BLUE);
+                    //note.setTextColor(Color.BLUE);
                     note.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
                 }
+                //note.setTypeface(font);
                 note.setTypeface(Typeface.MONOSPACE);
                 note.setMaxLines(1);
                 //note.setTypeface(null, Typeface.ITALIC);
@@ -130,9 +134,10 @@ public class CantiScout extends ActionBarActivity {
             //lyrics.setTextSize(15);
             //lyrics.setTextIsSelectable(true);
             if (body.get(i).isRit()) {
-                lyrics.setTextColor(Color.BLUE);
+                //lyrics.setTextColor(Color.BLUE);
                 lyrics.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
             }
+            //lyrics.setTypeface(font);
             lyrics.setTypeface(Typeface.MONOSPACE);
             lyrics.setMaxLines(1);
             ((LinearLayout) linearLayout).addView(lyrics);
@@ -168,17 +173,19 @@ public class CantiScout extends ActionBarActivity {
         if(s!=null) {
             Vector<NoteLyrics> body = s.getNoteLyrics();
             for (int i = 0; i < body.size(); i++) {
+
                 if (!body.get(i).getNote().equals("")) {
                     TextView note = (TextView) findViewById(i);
                     if (body.get(i).isRit()){
-                        note.setTextColor(Color.BLUE);
+                        //note.setTextColor(Color.BLUE);
                         note.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
                     }
                     note.setTypeface(Typeface.MONOSPACE);
+
                 }
                 TextView lyrics = (TextView) findViewById(100 + i);
                 if (body.get(i).isRit()){
-                    lyrics.setTextColor(Color.BLUE);
+                    //lyrics.setTextColor(Color.BLUE);
                     lyrics.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
                 }
 
