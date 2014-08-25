@@ -26,19 +26,31 @@ public class QueryManager {
         db.delete("tag","'a'='a'",null);
         db.close();
     }
-    public static void insertSong(Context context,int id,String title,String author,String body,String time)throws SQLException {
-        DataBaseManager dbManager=new DataBaseManager(context);
+    public static long insertSong(Context context,int id,String title,String author,String body,String time)throws SQLException {
+        DataBaseManager dbManager = new DataBaseManager(context);
         SQLiteDatabase db = dbManager.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("_id",id);
-        contentValues.put("title",title);
-        contentValues.put("author",author);
-        contentValues.put("body",body);
-        contentValues.put("time",time);
-        db.insert("list",null,contentValues);
+        contentValues.put("_id", id);
+        contentValues.put("title", title);
+        contentValues.put("author", author);
+        contentValues.put("body", body);
+        contentValues.put("time", time);
+        long ris=db.insert("list", null, contentValues);
         db.close();
+        return ris;
     }
-
+    public static long updateSong(Context context,int id,String title,String author,String body,String time)throws SQLException {
+        DataBaseManager dbManager = new DataBaseManager(context);
+        SQLiteDatabase db = dbManager.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("title", title);
+        contentValues.put("author", author);
+        contentValues.put("body", body);
+        contentValues.put("time", time);
+        long ris=db.update("list", contentValues,"_id="+id+"",null);
+        db.close();
+        return ris;
+    }
     public static void insertFav(Context context,int id_song)throws SQLException {
         DataBaseManager dbManager=new DataBaseManager(context);
         SQLiteDatabase db = dbManager.getWritableDatabase();

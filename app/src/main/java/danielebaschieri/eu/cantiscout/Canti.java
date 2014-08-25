@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
@@ -189,8 +190,13 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
                 //QueryManager.dropAllSong(getApplicationContext());
                 for (int i = 0; i < jArr.length(); i++) {
                     JSONObject obj = jArr.getJSONObject(i);
-                    QueryManager.insertSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
+                    long ris=QueryManager.insertSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
                     Log.println(Log.DEBUG, "Canti", "insert: " + obj.getString("title"));
+                    if(ris==-1){
+                        Log.println(Log.DEBUG, "Canti", "update: " + obj.getString("title"));
+                        ris=QueryManager.updateSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
+                    }
+
                 }
 
                 elenco=jObj.getString("taglist");
