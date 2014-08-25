@@ -204,7 +204,7 @@ public class CantiScout extends ActionBarActivity {
                     //lyrics.setTextColor(Color.BLUE);
                     lyrics.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
                 }
-
+                lyrics.setTypeface(Typeface.MONOSPACE);
             }
         }
         scaleTextSize(textScale);
