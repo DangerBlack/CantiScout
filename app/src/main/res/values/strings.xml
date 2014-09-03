@@ -22,8 +22,12 @@
     <string name="LC">L/C</string>
     <string name="EG">E/G</string>
     <string name="RS">R/S</string>
-    <string name="messa">Messa</string>
+    <string name="messa">Liturgia</string>
+    <string name="others">Altro</string>
     <string name="sync">Forza Sincronia</string>
     <string name="song404">404 Impossibile trovare la canzone richiesta</string>
     <string name="report">Segnala</string>
+    <string name="title_activity_splash_screen">Caricamento...</string>
+    <string name="loading">Caricamento</string>
+
 </resources>

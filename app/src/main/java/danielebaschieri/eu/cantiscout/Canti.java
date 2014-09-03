@@ -59,9 +59,12 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         Long data=g.getTimeInMillis();
 
         if((lastSync==1)||(data-lastSync>interval)) {
-            Log.println(Log.DEBUG,"Canti",data+"-"+lastSync+">"+interval);
-            DownloadDBTask ddbt = new DownloadDBTask();
-            ddbt.execute(new String[]{});
+
+
+            Intent splashScreen = new Intent(getApplicationContext(), SplashScreen.class);
+            //showList.putExtra("FILTER_BY", DEFAULT_FILTER);
+            startActivity(splashScreen);
+            finish();
         }
 
         Button songbook=(Button)findViewById(R.id.songbook);
@@ -109,8 +112,10 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         int id = item.getItemId();
         switch (item.getItemId()) {
             case R.id.sync:
-                DownloadDBTask ddbt = new DownloadDBTask();
-                ddbt.execute(new String[]{});
+                //DownloadDBTask ddbt = new DownloadDBTask();
+                //ddbt.execute(new String[]{});
+                Intent splashScreen = new Intent(getApplicationContext(), SplashScreen.class);
+                startActivity(splashScreen);
                 break;
 
         }
@@ -144,109 +149,5 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
     }
 
 
-    private class DownloadDBTask extends AsyncTask<String, Void, String> implements Runnable{
-        private String URL_PATH="http://www.512b.it/cantiscout/php/";
-        ProgressBar prb;
-        TextView error;
 
-        private DownloadDBTask(){
-            //this.prb = p;
-            //this.error = err;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //error.setVisibility(View.GONE);
-            //prb.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-              if(result!=null)
-                Toast.makeText(getApplicationContext(), getString(R.string.downloadSuccess), Toast.LENGTH_SHORT).show();
-              else {
-                  Toast.makeText(getApplicationContext(), getString(R.string.downloadInsucces), Toast.LENGTH_SHORT).show();
-                  return;
-              }
-              Log.println(Log.DEBUG, "Canti", "Download2 " + result);
-              if((result!=null)&&(result.indexOf("204")!=0)) {
-                  Thread t=new Thread(this);
-                  fresult=result;
-                  t.start();
-              } else {
-                  saveDateOfSync();
-                  Toast.makeText(getApplicationContext(), getString(R.string.databaseNotUpdated), Toast.LENGTH_SHORT).show();
-              }
-
-
-        }
-
-        private void insertDataOnDB(String result) {
-            try {
-                JSONObject jObj = new JSONObject(result);
-                String elenco=jObj.getString("songlist");
-                Log.println(Log.DEBUG, "Canti", elenco);
-                JSONArray jArr = new JSONArray(elenco);
-                //QueryManager.dropAllSong(getApplicationContext());
-                for (int i = 0; i < jArr.length(); i++) {
-                    JSONObject obj = jArr.getJSONObject(i);
-                    long ris=QueryManager.insertSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
-                    Log.println(Log.DEBUG, "Canti", "insert: " + obj.getString("title"));
-                    if(ris==-1){
-                        Log.println(Log.DEBUG, "Canti", "update: " + obj.getString("title"));
-                        ris=QueryManager.updateSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
-                    }
-
-                }
-
-                elenco=jObj.getString("taglist");
-                jArr = new JSONArray(elenco);
-                //QueryManager.dropAllTag(getApplicationContext());
-                for (int i = 0; i < jArr.length(); i++) {
-                    JSONObject obj = jArr.getJSONObject(i);
-                    QueryManager.insertTag(getApplicationContext(), obj.getInt("id"), obj.getInt("id_song"), obj.getString("tag"));
-                    //Log.println(Log.DEBUG, "Canti", "insert: " + obj.getString("title"));
-                }
-
-
-                Toast.makeText(getApplicationContext(), getString(R.string.databaseUpdated), Toast.LENGTH_LONG).show();
-                saveDateOfSync();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = null;
-            String response = null;
-            try{
-                String lastSongUpdate="";
-                try {
-                    lastSongUpdate = QueryManager.getMax(getApplicationContext());
-                }catch(Exception e){
-                    Log.println(Log.DEBUG, "Canti", "UBER EXCEPTION");
-                }
-                if(lastSongUpdate==null)
-                    lastSongUpdate="";
-                Log.println(Log.DEBUG, "Canti", "Upload Max " + lastSongUpdate);
-                response = CustomHttpClient.executeHttpGet(URL_PATH+"get.php?max="+Uri.encode(lastSongUpdate));
-
-                res = response.toString();
-                Log.println(Log.DEBUG, "Canti", "Download1 " + res);
-                //res = res.replaceAll("\\s+","");
-            } catch (Exception e) {
-
-            }
-            return res;
-        }
-
-        public String fresult;
-        @Override
-        public void run() {
-            Looper.prepare();
-            insertDataOnDB(fresult);
-            Looper.loop();
-        }
-    }
 }

@@ -17,6 +17,8 @@
         android:title="@string/RS" />
     <item android:id="@+id/messa"
         android:title="@string/messa" />
+    <item android:id="@+id/altro"
+        android:title="@string/others" />
 
 
 

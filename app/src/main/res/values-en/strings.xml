@@ -23,7 +23,10 @@
     <string name="EG">E/G</string>
     <string name="RS">R/S</string>
     <string name="messa">Church</string>
+    <string name="others">Others</string>
     <string name="sync">Force Sync</string>
     <string name="song404">404 Unable to find the requested song</string>
+    <string name="title_activity_splash_screen">Loading...</string>
     <string name="report">Report</string>
+    <string name="loading">Loading</string>
 </resources>

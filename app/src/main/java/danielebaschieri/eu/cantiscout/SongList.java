@@ -74,7 +74,7 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
 
         Vector<Couple> lista=new Vector<Couple>();
         if(filter.equals(DEFAULT_FILTER))
-            lista= QueryManager.findListOfTitle(getApplicationContext());
+            lista= QueryManager.findListOfTitle(getApplicationContext());//TODO fix CRASH SQLiteDatabaseLockedException
 
         if(filter.equals(FAV_FILTER))
             lista=QueryManager.findListOfTitleFav(getApplicationContext());
@@ -213,6 +213,9 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
                 break;
             case R.id.messa:
                 doMySearch("messa");
+                break;
+            case R.id.altro:
+                doMySearch("altro");
                 break;
 
         }
