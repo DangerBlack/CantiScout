@@ -121,10 +121,24 @@ public class QueryManager {
         db.close();
         return list;
     }
+    public static Vector<Couple> findListOfTitleFav(Context context,String filter){
+        DataBaseManager dbManager=new DataBaseManager(context);
+        SQLiteDatabase db = dbManager.getWritableDatabase();
+        final String sql = "SELECT l._id,l.title FROM list AS l LEFT JOIN tag AS t ON l._id=t.id_song JOIN favourite AS f ON l._id=f.id_song WHERE l.title LIKE '%"+filter+"%' OR t.tag LIKE '%"+filter+"%' GROUP BY l._id ORDER BY l.title";
+        Vector<Couple> list=new Vector<Couple>();
+        Cursor c = db.rawQuery(sql, null);
+        if(c.moveToFirst()){
+            do{
+                list.add(new Couple(getId(c),getTitle(c)));
+            } while(c.moveToNext());
+        }
+        db.close();
+        return list;
+    }
     public static Vector<Couple> findListOfTitleFav(Context context){
         DataBaseManager dbManager=new DataBaseManager(context);
         SQLiteDatabase db = dbManager.getWritableDatabase();
-        final String sql = "SELECT l._id,l.title FROM list AS l,favourite AS f WHERE l._id=f.id_song ORDER BY title";
+        final String sql = "SELECT l._id,l.title FROM list AS l,favourite AS f WHERE l._id=f.id_song ORDER BY l.title";
         Vector<Couple> list=new Vector<Couple>();
         Cursor c = db.rawQuery(sql, null);
         if(c.moveToFirst()){

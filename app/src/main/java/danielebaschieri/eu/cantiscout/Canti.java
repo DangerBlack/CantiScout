@@ -146,6 +146,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
                 startActivity(showList);
                 break;
             case R.id.favourite:
+                eraseQueryFilter();
                 Intent showListFav = new Intent(getApplicationContext(), SongList.class);
                 showListFav.putExtra("FILTER_BY", FAV_FILTER);
                 startActivity(showListFav);

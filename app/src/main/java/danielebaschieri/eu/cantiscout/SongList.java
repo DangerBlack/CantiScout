@@ -33,9 +33,10 @@ import java.util.Vector;
 
 public class SongList extends ActionBarActivity implements View.OnClickListener {
 
-    final private String DEFAULT_FILTER="none";
-    final private String FAV_FILTER="favourite";
+    private final String DEFAULT_FILTER="none";
+    private final String FAV_FILTER="favourite";
     private final static String MY_PREFERENCES = "CantiScout";
+    private final static String KIND_OF_FILTER="filter";
     private final static String QUERY_FILTER = "";
 
     private String filter="none";
@@ -52,13 +53,14 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
             } else {
                 filter= extras.getString("FILTER_BY");
                 if(filter==null){
-                    filter=DEFAULT_FILTER;
+                    //filter=DEFAULT_FILTER;
+                    filter=loadKindOfFilter();
                 }
             }
+            saveKindOfFilter(filter);
         } else {
-            //filter= (String) savedInstanceState.getSerializable("FILTER_BY");
+            filter=loadKindOfFilter();
         }
-
         createInterface();
 
         Intent intent = getIntent();
@@ -82,22 +84,40 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
         return prefs.getString(QUERY_FILTER, "");
     }
 
+    private void saveKindOfFilter(String filter) {
+        SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(KIND_OF_FILTER, filter);
+        editor.commit();
+    }
+    private String loadKindOfFilter(){
+        SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        return prefs.getString(KIND_OF_FILTER, DEFAULT_FILTER);
+    }
     ListView listOfSong;
     private void createInterface() {
         listOfSong= (ListView)findViewById(R.id.listOfSong);
-
         Vector<Couple> lista=new Vector<Couple>();
         String query=loadQueryFilter();
+        String filter=loadKindOfFilter();
+        Log.println(Log.DEBUG,"SongList","FILTRO : "+filter);
         if(filter.equals(DEFAULT_FILTER))
             lista= QueryManager.findListOfTitle(getApplicationContext(),query);//TODO fix CRASH SQLiteDatabaseLockedException
 
-        if(filter.equals(FAV_FILTER))
-            lista=QueryManager.findListOfTitleFav(getApplicationContext());
+        if(filter.equals(FAV_FILTER)) {
+            Log.println(Log.DEBUG,"SongList","Ricerco favoriti %"+query+"%");
+            lista = QueryManager.findListOfTitleFav(getApplicationContext(),query);
+        }
+        Log.println(Log.DEBUG,"SongList","Trovati "+lista.size());
 
         renderList(listOfSong, lista);
 
     }
-
+    public void doMySearch(String query){
+        saveQueryFilter(query);
+        saveKindOfFilter(filter);
+        createInterface();
+    }
     private static final String LIST_STATE = "listState";
     private Parcelable mListState = null;
     @Override
@@ -117,20 +137,13 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
     @Override
     protected void onResume() {
         super.onResume();
-        createInterface();
+        //createInterface();
 
         if (mListState != null)
             getListView().onRestoreInstanceState(mListState);
         mListState = null;
     }
-    public void doMySearch(String query){
-        saveQueryFilter(query);
-        ListView listOfSong= (ListView)findViewById(R.id.listOfSong);
-        Vector<Couple> lista=new Vector<Couple>();
-        lista=QueryManager.findListOfTitle(getApplicationContext(),query);
-        Log.println(Log.DEBUG,"SongList","Trovati "+lista.size());
-        renderList(listOfSong, lista);
-    }
+
 
     private void renderList(ListView listOfSong, Vector<Couple> lista) {
         final ArrayList<String> list = new ArrayList<String>();
