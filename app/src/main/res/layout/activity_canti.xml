@@ -15,17 +15,16 @@
         android:text="@string/app_name"
         android:id="@+id/mainTitle"
         android:layout_gravity="center_horizontal"
-        android:textSize="62dp"
+        android:textSize="62sp"
         android:layout_weight="5"
         android:textColor="#FFFFFF"
         />
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/songbook"
         android:id="@+id/songbook"
-        android:drawableLeft="@drawable/book64"
+        android:drawableLeft="@drawable/main_book"
         android:layout_gravity="center_horizontal"
         android:layout_weight="5"
         android:layout_margin="15dp"
@@ -33,7 +32,7 @@
         android:paddingRight="20dp"
         android:singleLine="false"
         android:textColor="#5fad2d"
-        android:textSize="35dp"
+        android:textSize="35sp"
         android:background="@xml/menu_button_theme"/>
 
     <Button
@@ -41,14 +40,14 @@
         android:layout_height="wrap_content"
         android:text="@string/favouriteMenu"
         android:id="@+id/favourite"
-        android:drawableLeft="@drawable/star64"
+        android:drawableLeft="@drawable/main_star"
         android:layout_gravity="center_horizontal"
         android:layout_weight="5"
         android:layout_margin="15dp"
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:textColor="#5fad2d"
-        android:textSize="35dp"
+        android:textSize="35sp"
         android:background="@xml/menu_button_theme"/>
 
     <Button
@@ -56,14 +55,14 @@
         android:layout_height="wrap_content"
         android:text="@string/statistics"
         android:id="@+id/stats"
-        android:drawableLeft="@drawable/stats64"
+        android:drawableLeft="@drawable/main_stats"
         android:layout_gravity="center_horizontal"
         android:layout_weight="5"
         android:layout_margin="15dp"
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:textColor="#5fad2d"
-        android:textSize="35dp"
+        android:textSize="35sp"
         android:background="@xml/menu_button_theme"/>
 
     <Button
@@ -71,13 +70,13 @@
         android:layout_height="wrap_content"
         android:text="@string/addSong"
         android:id="@+id/add"
-        android:drawableLeft="@drawable/add64"
+        android:drawableLeft="@drawable/main_add"
         android:layout_gravity="center_horizontal"
         android:layout_weight="5"
         android:layout_margin="15dp"
         android:paddingLeft="50dp"
         android:paddingRight="20dp"
         android:textColor="#5fad2d"
-        android:textSize="35dp"
-        android:background="@xml/menu_button_theme"/>
+        android:textSize="35sp"
+        android:background="@xml/menu_button_theme" />
 </LinearLayout>

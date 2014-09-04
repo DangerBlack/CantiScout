@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:text="@string/songbook"
             android:id="@+id/songbook"
-            android:drawableTop="@drawable/book64"
+            android:drawableTop="@drawable/main_book"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:layout_margin="15dp"
@@ -27,7 +27,7 @@
             android:paddingTop="20dp"
             android:singleLine="false"
             android:textColor="#5fad2d"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:background="@xml/menu_button_theme"/>
 
         <Button
@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:text="@string/favouriteMenu"
             android:id="@+id/favourite"
-            android:drawableTop="@drawable/star64"
+            android:drawableTop="@drawable/main_star"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:layout_margin="15dp"
@@ -43,7 +43,7 @@
             android:paddingRight="20dp"
             android:paddingTop="20dp"
             android:textColor="#5fad2d"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:background="@xml/menu_button_theme"/>
     </LinearLayout>
     <LinearLayout
@@ -58,14 +58,14 @@
             android:layout_height="match_parent"
             android:text="@string/statistics"
             android:id="@+id/stats"
-            android:drawableTop="@drawable/stats64"
+            android:drawableTop="@drawable/main_stats"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="20dp"
             android:textColor="#5fad2d"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:background="@xml/menu_button_theme"
             android:layout_margin="15dp" />
 
@@ -74,7 +74,7 @@
             android:layout_height="match_parent"
             android:text="@string/addSong"
             android:id="@+id/add"
-            android:drawableTop="@drawable/add64"
+            android:drawableTop="@drawable/main_add"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:layout_margin="15dp"
@@ -82,7 +82,7 @@
             android:paddingRight="20dp"
             android:paddingTop="20dp"
             android:textColor="#5fad2d"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:background="@xml/menu_button_theme"/>
     </LinearLayout>
 </LinearLayout>

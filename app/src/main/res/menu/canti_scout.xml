@@ -4,7 +4,6 @@
     tools:context=".CantiScout" >
     <group android:checkableBehavior="single">
         <item android:id="@+id/addFavourite"
-            android:icon="@drawable/star"
             android:title="@string/favourite" />
     </group>
 
