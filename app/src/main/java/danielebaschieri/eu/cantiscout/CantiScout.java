@@ -1,6 +1,7 @@
 package danielebaschieri.eu.cantiscout;
 
 import android.app.ActionBar;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import android.view.View.OnClickListener;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.Vector;
 
 
@@ -279,6 +281,14 @@ public class CantiScout extends ActionBarActivity {
                 startActivity(sendIntent);
             break;
 
+            case R.id.export:
+                Song song=QueryManager.findSong(getApplicationContext(),id_song);
+                View linearLayout= findViewById(R.id.canzone);
+                String fileName= SongToPdf.convertToPdf2(song,linearLayout,getApplicationContext());
+                Toast.makeText(getApplicationContext(), "PDF salvato in Documenti con successo!", Toast.LENGTH_LONG).show();
+                openPdfView(fileName);
+                break;
+
             case R.id.report:
                 Intent browserIntentStats = new Intent(Intent.ACTION_VIEW, Uri.parse(URL_PATH_REPORT+"?id="+id_song));
                 startActivity(browserIntentStats);
@@ -287,5 +297,25 @@ public class CantiScout extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openPdfView(String fileName) {
+        File pdfFile = new File(fileName);
+        if(pdfFile.exists())
+        {
+            Uri path = Uri.fromFile(pdfFile);
+            Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+            pdfIntent.setDataAndType(path, "application/pdf");
+            pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            try
+            {
+                startActivity(pdfIntent);
+            }
+            catch(ActivityNotFoundException e)
+            {
+                Toast.makeText(getApplicationContext(), "No Application available to view pdf", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

@@ -48,4 +48,15 @@ public class Song{
     public void setBody(Vector<NoteLyrics> body) {
         this.body = body;
     }
+
+    public int getSongMaxWidth(){
+        int max=0;
+        for(int i=0;i<body.size();i++){
+            if(body.get(i).getNote().length()>max)
+                max=body.get(i).getNote().length();
+            if(body.get(i).getLyric().length()>max)
+                max=body.get(i).getLyric().length();
+        }
+        return max;
+    }
 }

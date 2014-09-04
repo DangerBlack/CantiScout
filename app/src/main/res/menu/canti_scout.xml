@@ -10,6 +10,8 @@
 
     <item android:id="@+id/share"
         android:title="@string/abc_shareactionprovider_share_with" />
+    <item android:id="@+id/export"
+        android:title="Esporta pdf" />
     <item android:id="@+id/report"
         android:title="@string/report" />
 </menu>
