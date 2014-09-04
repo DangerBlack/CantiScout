@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -34,12 +35,15 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
 
     final private String DEFAULT_FILTER="none";
     final private String FAV_FILTER="favourite";
+    private final static String MY_PREFERENCES = "CantiScout";
+    private final static String QUERY_FILTER = "";
+
     private String filter="none";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_list);
-
+        //saveQueryFilter("");
         Bundle extras;
         if (savedInstanceState == null) {
             extras = getIntent().getExtras();
@@ -60,21 +64,32 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            stop=true;
             doMySearch(query);
         }
 
 
 
     }
-    boolean stop=false;
+
+    private void saveQueryFilter(String query) {
+        SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(QUERY_FILTER, query);
+        editor.commit();
+    }
+    private String loadQueryFilter(){
+        SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        return prefs.getString(QUERY_FILTER, "");
+    }
+
     ListView listOfSong;
     private void createInterface() {
         listOfSong= (ListView)findViewById(R.id.listOfSong);
 
         Vector<Couple> lista=new Vector<Couple>();
+        String query=loadQueryFilter();
         if(filter.equals(DEFAULT_FILTER))
-            lista= QueryManager.findListOfTitle(getApplicationContext());//TODO fix CRASH SQLiteDatabaseLockedException
+            lista= QueryManager.findListOfTitle(getApplicationContext(),query);//TODO fix CRASH SQLiteDatabaseLockedException
 
         if(filter.equals(FAV_FILTER))
             lista=QueryManager.findListOfTitleFav(getApplicationContext());
@@ -102,21 +117,18 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
     @Override
     protected void onResume() {
         super.onResume();
-        if(!stop)
-            createInterface();
-        else
-           stop=false;
+        createInterface();
 
         if (mListState != null)
             getListView().onRestoreInstanceState(mListState);
         mListState = null;
     }
     public void doMySearch(String query){
+        saveQueryFilter(query);
         ListView listOfSong= (ListView)findViewById(R.id.listOfSong);
         Vector<Couple> lista=new Vector<Couple>();
         lista=QueryManager.findListOfTitle(getApplicationContext(),query);
         Log.println(Log.DEBUG,"SongList","Trovati "+lista.size());
-
         renderList(listOfSong, lista);
     }
 
@@ -209,7 +221,7 @@ public class SongList extends ActionBarActivity implements View.OnClickListener 
                 doMySearch("reparto");
                 break;
             case R.id.RS:
-                doMySearch("lupetti");
+                doMySearch("clan");
                 break;
             case R.id.messa:
                 doMySearch("messa");

@@ -29,5 +29,7 @@
     <string name="report">Segnala</string>
     <string name="title_activity_splash_screen">Caricamento...</string>
     <string name="loading">Caricamento</string>
+    <string name="pdfSavedSuccessfully">PDF salvato in Documenti con successo!</string>
+    <string name="noPdfProgram">Nessuna applicazione per aprire i PDF sul telefono</string>
 
 </resources>

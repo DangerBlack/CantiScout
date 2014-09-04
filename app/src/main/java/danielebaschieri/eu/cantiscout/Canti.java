@@ -35,8 +35,9 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
 
     final public static String URL_PATH_INDEX="http://www.512b.it/cantiscout/index.html";
     final public static String URL_PATH_STATS="http://www.512b.it/cantiscout/stats.html";
-    private final static String DATE_OF_SYNC = "SyncDate";
     private final static String MY_PREFERENCES = "CantiScout";
+    private final static String DATE_OF_SYNC = "SyncDate";
+    private final static String QUERY_FILTER = "";
     private final static long interval=86400000;
     //one day  86400000
     //one hour  3600000
@@ -97,6 +98,17 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         return prefs.getLong(DATE_OF_SYNC, 1);
     }
 
+    /**
+     * This methods erase the value of the last search in app,
+     * it's useful because from main menù the SongList must be
+     * reinitialized.
+     */
+    public void eraseQueryFilter() {
+        SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(QUERY_FILTER, "");
+        editor.commit();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -128,6 +140,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.songbook:
+                eraseQueryFilter();
                 Intent showList = new Intent(getApplicationContext(), SongList.class);
                 showList.putExtra("FILTER_BY", DEFAULT_FILTER);
                 startActivity(showList);

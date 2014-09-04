@@ -273,7 +273,6 @@ public class CantiScout extends ActionBarActivity {
 
         switch(id){
             case R.id.share:
-
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, URL_PATH_SONG + "?id=" + id_song);
@@ -285,7 +284,7 @@ public class CantiScout extends ActionBarActivity {
                 Song song=QueryManager.findSong(getApplicationContext(),id_song);
                 View linearLayout= findViewById(R.id.canzone);
                 String fileName= SongToPdf.convertToPdf2(song,linearLayout,getApplicationContext());
-                Toast.makeText(getApplicationContext(), "PDF salvato in Documenti con successo!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.pdfSavedSuccessfully), Toast.LENGTH_LONG).show();
                 openPdfView(fileName);
                 break;
 
@@ -314,7 +313,7 @@ public class CantiScout extends ActionBarActivity {
             }
             catch(ActivityNotFoundException e)
             {
-                Toast.makeText(getApplicationContext(), "No Application available to view pdf", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.noPdfProgram), Toast.LENGTH_LONG).show();
             }
         }
     }
