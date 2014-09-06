@@ -1,47 +1,54 @@
 <resources>
-        <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_settings">Impostazioni</string>
 
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <string name="pref_header_general">Generale</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact based on your message history</string>
+    <string name="pref_adapt_to_screen">Adatta il testo allo schermo</string>
+    <string name="pref_description_adapt_to_screen">Adatta il testo delle canzoni allo schermo del dispositivo</string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_auto_scroll">Scorrimento automatico</string>
+    <string name="pref_description_auto_scroll">Abilita lo scorrimento Automatico</string>
+
+    <string name="pref_size_of_text_name">Dimensione del testo</string>
+    <string name="pref_default_size_of_text_name">12</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
+    <string-array name="pref_auto_scroll_list_titles">
+        <item>Lento</item>
+        <item>Normale</item>
+        <item>Veloce</item>
+        <item>Disabilitato</item>
     </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
+    <string-array name="pref_auto_scroll_list_values">
         <item>0</item>
+        <item>1</item>
+        <item>2</item>
         <item>-1</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string name="pref_title_sync_frequency">Frequenza di sincronizazione</string>
     <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
+        <item>1 hours</item>
         <item>6 hours</item>
+        <item>12 hours</item>
+        <item>1 day</item>
+        <item>15 day</item>
+        <item>30 day</item>
         <item>Never</item>
     </string-array>
     <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
+        <item>3600000</item>
+        <item>21600000</item>
+        <item>43200000</item>
+        <item>86400000</item>
+        <item>1296000000</item>
+        <item>2592000000</item>
         <item>-1</item>
     </string-array>
 
