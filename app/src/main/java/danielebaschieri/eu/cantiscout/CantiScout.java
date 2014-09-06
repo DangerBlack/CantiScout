@@ -1,5 +1,6 @@
 package danielebaschieri.eu.cantiscout;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -9,10 +10,13 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +48,7 @@ public class CantiScout extends ActionBarActivity {
     int id_song=1;
     public float textScale=12;
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,20 +177,45 @@ public class CantiScout extends ActionBarActivity {
         editor.putFloat(SIZE_SONG_KEY,size);
         editor.commit();
     }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private float loadSizeSong(){
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean adapt=sharedPrefs.getBoolean("pref_adapt_checkbox", false);
         if(adapt){
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int width=size.x;
+
+            double width=getScreenSize();
             Song s=QueryManager.findSong(getApplicationContext(),id_song);
             int max=s.getSongMaxWidth();
-            return (float)(width/(max/0.6));
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
+            float densityDpi =(metrics.density);
+            /**
+             * We add some magic number in order to display the text in correct width.
+             * We absolutely don't know why it works and we hope a future bugfix in order
+             * to fix this weird stuff
+             * 6.4 = 320/50 (50 number of character in a line) (320 = default width of screen with density 1)
+             * 12 = default width of a character height
+             * 0.8 = ratio of a character 12*0.8= character width
+             */
+            width=width/(6.4*densityDpi);
+            Log.println(Log.DEBUG,"CantiScout","WIDTH="+width+" #LET="+max+" PROP="+(float)((width/max)*12*0.8)+" DENS="+densityDpi);
+            return (float)((width/max)*12*0.8);
         }else {
             SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
             return prefs.getFloat(SIZE_SONG_KEY, 12);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public int getScreenSize(){
+        if (android.os.Build.VERSION.SDK_INT>= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            return size.x;
+        }else {
+            Display display = getWindowManager().getDefaultDisplay();
+            int width = display.getWidth();  // deprecated
+            return width;
         }
     }
     public void addMoreInfoBottom(LinearLayout linearLayout){
@@ -235,10 +265,10 @@ public class CantiScout extends ActionBarActivity {
             for (int i = 0; i < body.size(); i++) {
                 if (!body.get(i).getNote().equals("")) {
                     TextView note = (TextView) findViewById(i);
-                    note.setTextSize(size);
+                    note.setTextSize(TypedValue.COMPLEX_UNIT_SP,size);
                 }
                 TextView lyrics = (TextView) findViewById(100 + i);
-                lyrics.setTextSize(size);
+                lyrics.setTextSize(TypedValue.COMPLEX_UNIT_SP,size);
             }
         }
     }
