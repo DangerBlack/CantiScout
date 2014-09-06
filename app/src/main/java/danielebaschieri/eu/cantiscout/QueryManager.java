@@ -26,6 +26,24 @@ public class QueryManager {
         db.delete("tag","'a'='a'",null);
         db.close();
     }
+    public static SQLiteDatabase open(Context context)throws SQLException{
+        DataBaseManager dbManager = new DataBaseManager(context);
+        SQLiteDatabase db = dbManager.getWritableDatabase();
+        return db;
+    }
+    public static void close(SQLiteDatabase db){
+        db.close();
+    }
+    public static long insertSongLong(SQLiteDatabase db,int id,String title,String author,String body,String time)throws SQLException {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("_id", id);
+        contentValues.put("title", title);
+        contentValues.put("author", author);
+        contentValues.put("body", body);
+        contentValues.put("time", time);
+        long ris=db.insert("list", null, contentValues);
+        return ris;
+    }
     public static long insertSong(Context context,int id,String title,String author,String body,String time)throws SQLException {
         DataBaseManager dbManager = new DataBaseManager(context);
         SQLiteDatabase db = dbManager.getWritableDatabase();
@@ -37,6 +55,15 @@ public class QueryManager {
         contentValues.put("time", time);
         long ris=db.insert("list", null, contentValues);
         db.close();
+        return ris;
+    }
+    public static long updateSongLong(SQLiteDatabase db,int id,String title,String author,String body,String time)throws SQLException {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("title", title);
+        contentValues.put("author", author);
+        contentValues.put("body", body);
+        contentValues.put("time", time);
+        long ris=db.update("list", contentValues,"_id="+id+"",null);
         return ris;
     }
     public static long updateSong(Context context,int id,String title,String author,String body,String time)throws SQLException {
@@ -61,6 +88,13 @@ public class QueryManager {
         db.close();
     }
 
+    public static void insertTagLong(SQLiteDatabase db,int id,int id_song,String tag)throws SQLException {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("_id",id);
+        contentValues.put("id_song",id_song);
+        contentValues.put("tag",tag);
+        db.insert("tag",null,contentValues);
+    }
     public static void insertTag(Context context,int id,int id_song,String tag)throws SQLException {
         DataBaseManager dbManager=new DataBaseManager(context);
         SQLiteDatabase db = dbManager.getWritableDatabase();

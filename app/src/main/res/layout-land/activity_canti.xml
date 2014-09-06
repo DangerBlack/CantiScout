@@ -4,7 +4,8 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="10dp"
-    android:background="@xml/main_background">
+    android:background="@xml/main_background"
+    >
 
     <LinearLayout
         android:orientation="horizontal"
@@ -12,11 +13,11 @@
         android:layout_height="wrap_content"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_weight="5"
+        android:paddingTop="20dp"
         >
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/songbook"
             android:id="@+id/songbook"
             android:drawableTop="@drawable/main_book"
             android:layout_gravity="center_horizontal"
@@ -33,7 +34,6 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/favouriteMenu"
             android:id="@+id/favourite"
             android:drawableTop="@drawable/main_star"
             android:layout_gravity="center_horizontal"
@@ -56,7 +56,6 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/statistics"
             android:id="@+id/stats"
             android:drawableTop="@drawable/main_stats"
             android:layout_gravity="center_horizontal"
@@ -72,7 +71,6 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/addSong"
             android:id="@+id/add"
             android:drawableTop="@drawable/main_add"
             android:layout_gravity="center_horizontal"

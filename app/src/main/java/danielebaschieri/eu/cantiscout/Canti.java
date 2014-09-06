@@ -129,6 +129,10 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
                 Intent splashScreen = new Intent(getApplicationContext(), SplashScreen.class);
                 startActivity(splashScreen);
                 break;
+            case R.id.settings:
+                Intent settingScreen = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(settingScreen);
+                break;
 
         }
         return super.onOptionsItemSelected(item);

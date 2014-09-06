@@ -3,6 +3,7 @@ package danielebaschieri.eu.cantiscout;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Looper;
@@ -124,6 +125,7 @@ public class SplashScreen extends ActionBarActivity {
 
         private void insertDataOnDB(String result) {
             try {
+                SQLiteDatabase db=QueryManager.open(getApplicationContext());
                 JSONObject jObj = new JSONObject(result);
                 String elenco=jObj.getString("songlist");
                 Log.println(Log.DEBUG, "SplashScreen", elenco);
@@ -131,24 +133,23 @@ public class SplashScreen extends ActionBarActivity {
                 //QueryManager.dropAllSong(getApplicationContext());
                 for (int i = 0; i < jArr.length(); i++) {
                     JSONObject obj = jArr.getJSONObject(i);
-                    long ris=QueryManager.insertSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
+                    long ris=QueryManager.insertSongLong(db, obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
                     Log.println(Log.DEBUG, "SplashScreen", "insert: " + obj.getString("title"));
                     if(ris==-1){
                         Log.println(Log.DEBUG, "SplashScreen", "update: " + obj.getString("title"));
-                        ris=QueryManager.updateSong(getApplicationContext(), obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
+                        ris=QueryManager.updateSongLong(db, obj.getInt("id"), obj.getString("title"), obj.getString("author"), obj.getString("body"), obj.getString("time"));
                     }
 
                 }
-
                 elenco=jObj.getString("taglist");
                 jArr = new JSONArray(elenco);
                 //QueryManager.dropAllTag(getApplicationContext());
                 for (int i = 0; i < jArr.length(); i++) {
                     JSONObject obj = jArr.getJSONObject(i);
-                    QueryManager.insertTag(getApplicationContext(), obj.getInt("id"), obj.getInt("id_song"), obj.getString("tag"));
+                    QueryManager.insertTagLong(db, obj.getInt("id"), obj.getInt("id_song"), obj.getString("tag"));
                     //Log.println(Log.DEBUG, "Canti", "insert: " + obj.getString("title"));
                 }
-
+                QueryManager.close(db);
 
                 Toast.makeText(getApplicationContext(), getString(R.string.databaseUpdated), Toast.LENGTH_LONG).show();
                 saveDateOfSync();
