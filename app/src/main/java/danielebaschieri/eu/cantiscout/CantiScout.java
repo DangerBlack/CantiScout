@@ -40,7 +40,7 @@ public class CantiScout extends ActionBarActivity {
 
     private final static String MY_PREFERENCES = "CantiScout";
     private final static String ID_SONG_KEY= "id_song";
-    private final static String SIZE_SONG_KEY= "size_song";
+    private final static String SIZE_SONG_KEY= "pref_size_of_text";
     final public static String URL_PATH_SONG="http://www.512b.it/cantiscout/php/song.php";
     final public static String URL_PATH_REPORT="http://www.512b.it/cantiscout/report.php";
     final public static float max_text_scale=50;
@@ -172,9 +172,9 @@ public class CantiScout extends ActionBarActivity {
         return prefs.getInt(ID_SONG_KEY, 1);
     }
     private void saveSizeSong(float size) {
-        SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putFloat(SIZE_SONG_KEY,size);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(SIZE_SONG_KEY,(new Float(size)).toString());
         editor.commit();
     }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -200,8 +200,11 @@ public class CantiScout extends ActionBarActivity {
             Log.println(Log.DEBUG,"CantiScout","WIDTH="+width+" #LET="+max+" PROP="+(float)((width/max)*12*0.8)+" DENS="+densityDpi);
             return (float)((width/max)*12*0.8);
         }else {
-            SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
-            return prefs.getFloat(SIZE_SONG_KEY, 12);
+            SharedPreferences prefs2 = PreferenceManager.getDefaultSharedPreferences(this);
+            String siz=prefs2.getString(SIZE_SONG_KEY,"12");
+            Log.println(Log.DEBUG,"CantiScout","SIZE OF TEXT IN PREF "+siz);
+            float f=Float.parseFloat(siz);
+            return f;//prefs.getFloat(SIZE_SONG_KEY, 12);
         }
     }
 

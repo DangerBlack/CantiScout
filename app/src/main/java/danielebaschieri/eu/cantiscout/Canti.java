@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,7 +39,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
     private final static String MY_PREFERENCES = "CantiScout";
     private final static String DATE_OF_SYNC = "SyncDate";
     private final static String QUERY_FILTER = "";
-    private final static long interval=86400000;
+    private long interval=86400000;
     //one day  86400000
     //one hour  3600000
     //one minute  60000
@@ -59,6 +60,7 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         GregorianCalendar g=new GregorianCalendar();
         Long data=g.getTimeInMillis();
 
+        loadInterval();
         if((lastSync==1)||(data-lastSync>interval)) {
 
 
@@ -84,7 +86,11 @@ public class Canti extends ActionBarActivity implements View.OnClickListener {
         add.setOnClickListener(this);
     }
 
-
+    private void loadInterval(){
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        interval=Long.parseLong(sharedPrefs.getString("sync_frequency", "86400000"));
+        Log.println(Log.DEBUG,"Canti","SYNC_FREQUENCY "+interval);
+    }
     private void saveDateOfSync() {
         SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
