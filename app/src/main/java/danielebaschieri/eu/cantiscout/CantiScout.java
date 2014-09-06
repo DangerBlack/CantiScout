@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -170,8 +173,20 @@ public class CantiScout extends ActionBarActivity {
         editor.commit();
     }
     private float loadSizeSong(){
-        SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
-        return prefs.getFloat(SIZE_SONG_KEY, 12);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean adapt=sharedPrefs.getBoolean("pref_adapt_checkbox", false);
+        if(adapt){
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width=size.x;
+            Song s=QueryManager.findSong(getApplicationContext(),id_song);
+            int max=s.getSongMaxWidth();
+            return (float)(width/(max/0.6));
+        }else {
+            SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+            return prefs.getFloat(SIZE_SONG_KEY, 12);
+        }
     }
     public void addMoreInfoBottom(LinearLayout linearLayout){
         for (int i = 0; i < 3; i++) {
