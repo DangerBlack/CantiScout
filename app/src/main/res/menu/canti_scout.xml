@@ -13,4 +13,6 @@
         android:title="Esporta pdf" />
     <item android:id="@+id/report"
         android:title="@string/report" />
+    <item android:id="@+id/settings"
+        android:title="@string/action_settings"  />
 </menu>

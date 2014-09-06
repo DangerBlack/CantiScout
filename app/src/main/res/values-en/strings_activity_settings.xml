@@ -1,26 +1,26 @@
 <resources>
-    <string name="title_activity_settings">Impostazioni</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">Generale</string>
+    <string name="pref_header_general">General</string>
 
-    <string name="pref_adapt_to_screen">Adatta il testo allo schermo</string>
-    <string name="pref_description_adapt_to_screen">Adatta il testo delle canzoni allo schermo del dispositivo</string>
+    <string name="pref_adapt_to_screen">Adapt text to screen size</string>
+    <string name="pref_description_adapt_to_screen">Adapt the text of the song to the screen size of the device</string>
 
-    <string name="pref_auto_scroll">Scorrimento automatico</string>
-    <string name="pref_description_auto_scroll">Abilita lo scorrimento Automatico</string>
+    <string name="pref_auto_scroll">Auto Scroll</string>
+    <string name="pref_description_auto_scroll">Enable the auto scroll of the text</string>
 
-    <string name="pref_size_of_text_name">Dimensione del testo</string>
+    <string name="pref_size_of_text_name">Size of text</string>
     <string name="pref_default_size_of_text_name">12</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_auto_scroll_list_titles">
-        <item>Lento</item>
-        <item>Normale</item>
-        <item>Veloce</item>
-        <item>Disabilitato</item>
+        <item>Slow</item>
+        <item>Default</item>
+        <item>Fast</item>
+        <item>Disabled</item>
     </string-array>
     <string-array name="pref_auto_scroll_list_values">
         <item>0</item>

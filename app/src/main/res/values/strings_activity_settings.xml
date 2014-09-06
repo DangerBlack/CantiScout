@@ -34,12 +34,12 @@
 
     <string name="pref_title_sync_frequency">Frequenza di sincronizazione</string>
     <string-array name="pref_sync_frequency_titles">
-        <item>1 hours</item>
-        <item>6 hours</item>
-        <item>12 hours</item>
-        <item>1 day</item>
-        <item>15 day</item>
-        <item>30 day</item>
+        <item>1 ora</item>
+        <item>6 ore</item>
+        <item>12 ore</item>
+        <item>1 giorno</item>
+        <item>15 giorni</item>
+        <item>30 giorni</item>
         <item>Never</item>
     </string-array>
     <string-array name="pref_sync_frequency_values">

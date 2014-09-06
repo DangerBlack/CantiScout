@@ -332,13 +332,25 @@ public class CantiScout extends ActionBarActivity {
                 Song song=QueryManager.findSong(getApplicationContext(),id_song);
                 View linearLayout= findViewById(R.id.canzone);
                 String fileName= SongToPdf.convertToPdf2(song,linearLayout,getApplicationContext());
-                Toast.makeText(getApplicationContext(), getString(R.string.pdfSavedSuccessfully), Toast.LENGTH_LONG).show();
+                if(fileName.indexOf("/Documents/")!=-1){
+                    fileName=fileName.substring(fileName.indexOf("/Documents/"));
+                }else{
+                    if(fileName.indexOf("/Music/")!=-1){
+                        fileName=fileName.substring(fileName.indexOf("/Music/"));
+                    }
+                }
+                Toast.makeText(getApplicationContext(), getString(R.string.pdfSavedSuccessfully)+"\n"+fileName, Toast.LENGTH_LONG).show();
                 openPdfView(fileName);
                 break;
 
             case R.id.report:
                 Intent browserIntentStats = new Intent(Intent.ACTION_VIEW, Uri.parse(URL_PATH_REPORT+"?id="+id_song));
                 startActivity(browserIntentStats);
+                break;
+
+            case R.id.settings:
+                Intent settingScreen = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(settingScreen);
                 break;
 
         }
