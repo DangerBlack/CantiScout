@@ -32,7 +32,7 @@
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
 
-    <string name="pref_title_sync_frequency">Frequenza di sincronizazione</string>
+    <string name="pref_title_sync_frequency">Frequenza di sincronizzazione</string>
     <string-array name="pref_sync_frequency_titles">
         <item>1 ora</item>
         <item>6 ore</item>

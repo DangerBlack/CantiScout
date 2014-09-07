@@ -10,7 +10,9 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
@@ -55,6 +58,8 @@ public class CantiScout extends ActionBarActivity {
         setContentView(R.layout.activity_canti_scout);
 
         View linearLayout= findViewById(R.id.canzone);
+
+
         id_song=1;
         Bundle extras;
         if (savedInstanceState == null) {
@@ -160,6 +165,7 @@ public class CantiScout extends ActionBarActivity {
 
         addMoreInfoBottom(linearLayout);
         scaleTextSize(textScale);
+
     }
     private void saveIdSong() {
         SharedPreferences prefs = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
@@ -208,6 +214,23 @@ public class CantiScout extends ActionBarActivity {
         }
     }
 
+    public int getAutoScrollSpeed(){
+        SharedPreferences prefs2 = PreferenceManager.getDefaultSharedPreferences(this);
+        String speedS=prefs2.getString("pref_auto_scroll_list","-1");
+        int speed=Integer.parseInt(speedS);
+        switch(speed){
+            case -1:
+                return -1;
+            case 0:
+                return 250;
+            case 1:
+                return 125;
+            case 2:
+                return 50;
+            default:
+                return -1;
+        }
+    }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public int getScreenSize(){
         if (android.os.Build.VERSION.SDK_INT>= Build.VERSION_CODES.HONEYCOMB_MR2) {
@@ -221,6 +244,19 @@ public class CantiScout extends ActionBarActivity {
             return width;
         }
     }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public int getScreenHeight(){
+        if (android.os.Build.VERSION.SDK_INT>= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            return size.y;
+        }else {
+            Display display = getWindowManager().getDefaultDisplay();
+            int height = display.getHeight();  // deprecated
+            return height;
+        }
+    }
     public void addMoreInfoBottom(LinearLayout linearLayout){
         for (int i = 0; i < 3; i++) {
             TextView info = new TextView(this);
@@ -228,11 +264,11 @@ public class CantiScout extends ActionBarActivity {
             ((LinearLayout) linearLayout).addView(info);
         }
     }
+    AutoScroll AS=new AutoScroll();
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-
         id_song=loadIdSong();
         Log.println(Log.DEBUG,"CantiScout","Ho caricato dalla memoria la canzone "+id_song);
         Song s=QueryManager.findSong(getApplicationContext(),id_song);
@@ -258,6 +294,19 @@ public class CantiScout extends ActionBarActivity {
             }
         }
         scaleTextSize(textScale);
+        if((getAutoScrollSpeed()!=-1)) {
+            Log.println(Log.DEBUG,"CantiScout","Il thread è stato fatto partire perchè ");
+            ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView2);
+            AS.stop();
+            AS = new AutoScroll(scrollView);
+            //AS.execute(new String[]{});
+        }
+
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        AS.stop();
     }
     private void scaleTextSize(float size){
         id_song=loadIdSong();
@@ -377,4 +426,63 @@ public class CantiScout extends ActionBarActivity {
             }
         }
     }
+   public class AutoScroll implements Runnable {
+       ScrollView scrollView;
+       int uid=0000;
+       public boolean go=true;
+       public AutoScroll(){
+            uid=(int)(Math.random()*100);
+       }
+       public AutoScroll(ScrollView scrollView) {
+           this.scrollView = scrollView;
+           uid=(int)(Math.random()*100);
+           Thread t=new Thread(this);
+           t.start();
+       }
+       public void stop(){
+           go=false;
+           Log.println(Log.DEBUG,"AutoScroll","SCROLL SET TO "+go);
+       }
+       public void autoScroll() {
+           scrollView.scrollTo(0,scrollView.getScrollY() + 2);
+       }
+       public boolean isBottom() {
+           if (scrollView.getScrollY()+getScreenHeight() >= (scrollView.getChildAt(0).getHeight()+30)) {
+               Log.println(Log.DEBUG, "AutoScroll",uid+" SCROLL: " + (scrollView.getScrollY()+getScreenHeight()) + ">=" + scrollView.getChildAt(0).getHeight());
+               return true;
+           } else {
+               Log.println(Log.DEBUG, "AutoScroll",uid+" SCROLL: " + (scrollView.getScrollY()+getScreenHeight()) + "<" + scrollView.getChildAt(0).getHeight());
+               return false;
+           }
+       }
+       @Override
+       public void run() {
+           Looper.prepare();
+           int scrollSpeed=25;
+           //250 lento
+           //125 è perfetto
+           //25 veloce
+           while(scrollView.getChildAt(0).getHeight()==0){
+               try {
+                   Thread.sleep(500,0);
+                   Log.println(Log.DEBUG, "AutoScroll", "ASPETTO LOOP");
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
+               }
+           }
+           while((!isBottom())&&go) {
+               Log.println(Log.DEBUG, "AutoScroll", "SCROLL LOOP "+go);
+               try {
+                   autoScroll();
+                   scrollSpeed=getAutoScrollSpeed();
+                   if(scrollSpeed==-1)
+                       break;
+                   Thread.sleep(scrollSpeed, 0);
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
+               }
+           }
+           Looper.loop();
+       }
+   }
 }
