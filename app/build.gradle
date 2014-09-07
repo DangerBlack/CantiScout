@@ -8,8 +8,8 @@ android {
         applicationId "danielebaschieri.eu.cantiscout"
         minSdkVersion 10
         targetSdkVersion 20
-        versionCode 12
-        versionName "3.4"
+        versionCode 13
+        versionName "3.5"
     }
     buildTypes {
         release {

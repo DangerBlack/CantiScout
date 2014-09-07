@@ -464,7 +464,7 @@ public class CantiScout extends ActionBarActivity {
            //25 veloce
            while(scrollView.getChildAt(0).getHeight()==0){
                try {
-                   Thread.sleep(500,0);
+                   Thread.sleep(2000,0);
                    Log.println(Log.DEBUG, "AutoScroll", "ASPETTO LOOP");
                } catch (InterruptedException e) {
                    e.printStackTrace();
