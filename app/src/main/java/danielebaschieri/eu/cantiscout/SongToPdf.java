@@ -41,10 +41,12 @@ public class SongToPdf {
             int max= song.getSongMaxWidth();
             int paddingLeft=100;
             int tsize=12;
+            int nsize=10;
 
             Log.println(Log.DEBUG, "SongToPdf", "Max "+max);
             while(max*(tsize*0.6)>(PaperSize.A4_WIDTH-paddingLeft-paddingLeft/2)){
                 tsize--;
+                nsize--;
                 Log.println(Log.DEBUG, "SongToPdf", "Riduco la dimnesione del testo "+tsize);
             }
 
@@ -55,8 +57,8 @@ public class SongToPdf {
                 else
                     pdf.setFont(StandardFonts.COURIER, StandardFonts.COURIER);
                 if(song.getBody().get(i).getNote()!="") {
-                    padding += tsize;
-                    pdf.addText(paddingLeft, PaperSize.A4_HEIGHT - padding, tsize, song.getBody().get(i).getNote());
+                    padding += nsize;
+                    pdf.addText(paddingLeft, PaperSize.A4_HEIGHT - padding, nsize, song.getBody().get(i).getNote());
                 }
                 padding+=tsize;
                 String lyrics=song.getBody().get(i).getLyric();

@@ -381,13 +381,13 @@ public class CantiScout extends ActionBarActivity {
                 Song song=QueryManager.findSong(getApplicationContext(),id_song);
                 View linearLayout= findViewById(R.id.canzone);
                 String fileName= SongToPdf.convertToPdf2(song,linearLayout,getApplicationContext());
-                if(fileName.indexOf("/Documents/")!=-1){
+                /*if(fileName.indexOf("/Documents/")!=-1){
                     fileName=fileName.substring(fileName.indexOf("/Documents/"));
                 }else{
                     if(fileName.indexOf("/Music/")!=-1){
                         fileName=fileName.substring(fileName.indexOf("/Music/"));
                     }
-                }
+                }*/
                 Toast.makeText(getApplicationContext(), getString(R.string.pdfSavedSuccessfully)+"\n"+fileName, Toast.LENGTH_LONG).show();
                 openPdfView(fileName);
                 break;
@@ -415,15 +415,19 @@ public class CantiScout extends ActionBarActivity {
             Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
             pdfIntent.setDataAndType(path, "application/pdf");
             pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
+            Log.println(Log.DEBUG,"CantiScout","Sto costruendo per il lancio pdf");
             try
             {
+                Log.println(Log.DEBUG,"CantiScout","lancio pdf");
                 startActivity(pdfIntent);
             }
             catch(ActivityNotFoundException e)
             {
+                Log.println(Log.DEBUG,"CantiScout","Errore lancio pdf");
                 Toast.makeText(getApplicationContext(), getString(R.string.noPdfProgram), Toast.LENGTH_LONG).show();
             }
+        }else{
+            Log.println(Log.DEBUG,"CantiScout","File non trovato pdf");
         }
     }
    public class AutoScroll implements Runnable {
