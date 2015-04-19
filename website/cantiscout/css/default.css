@@ -1,0 +1,303 @@
+﻿body
+{
+	//background-image:url('img/background.gif');
+	//background-repeat:no-repeat;
+	//background-attachment:fixed;
+	//background-position:left;
+	//background-size:25%;
+}
+
+.navbar-form{
+	width:auto;
+	float:left;
+}
+.navbar-form .input-group{
+margin-left:200px;
+}
+.navbar-form .input-group input{
+	width:450px;
+}
+input{
+	width:20%;
+	margin-bottom:5px;
+}
+.scelta{
+	width:20%;
+	float:left;
+}
+.scelta input{
+	float:left;
+}
+.scelta span{
+	float:left;
+}
+textarea{
+	width:100%;
+	height:300px;
+	margin-bottom:5px; 
+}
+#submit{
+	margin-top:20px;
+	margin-bottom:20px;
+	width:100px;
+}
+body{
+}
+.error{
+		color:red;
+}
+#tag{
+	width:100%;
+}
+#tos{
+	width:5%;
+}
+#tosbox{
+	margin-top:50px;
+}
+button.loginarea{
+	float:left;
+	margin-left:2px;
+}
+.warning{
+	color:orange;
+}
+h1 a{
+	text-decoration: none;
+	color: #000000;
+}
+#left button{
+	width:85%;
+}
+.small{
+	font-size:0.5em;
+}
+button{
+	margin-top:2px;
+}
+#paypalForm{
+	margin-top:4px;
+}
+#paypalButton{
+	width:120px;
+}
+#paypalForm2{
+	margin-top:4px;
+}
+#tagList{
+	list-style-type: none;
+	padding: 0px;
+    margin: 0px;
+}
+#tagList li{
+	float:left;
+	border:solid;
+	border-width:1px;
+	padding-left:5px;
+	padding-right:5px;
+	margin:2px 2px 2px 2px;	
+}
+#songList{
+	list-style-type: none;
+	padding: 0px;
+    margin: 0px;
+}
+.songL{
+	//border:solid;
+	//border-width:1px;
+	padding-left:5px;
+	padding-top:2px;
+	padding-bottom:2px;
+	min-height:35px;
+	width:98%;
+}
+.songL a{
+	text-decoration: none;
+	color: #000000;
+}
+#songList img{
+	float:left;
+	max-width:20px;
+	margin-right:5px;
+}
+#songList .counter{
+	min-width:30px;
+	display:inline-block;
+}
+#songList .title{
+	padding-left:5px;
+}
+#open_menu{
+		display:inline;
+		position:absolute;
+		position:fixed;
+		margin-top:0px;
+		margin-left:0px;
+		float:left;
+		z-index:100;
+	}
+	
+.img-big-prev{
+	max-width:70%;
+	max-height:200px;
+	margin-left:20%;
+	clear:both;
+}
+.img-list{
+	list-style-type: none;
+	padding: 0px;
+    margin: 0px;
+    width:100%;
+    clear:both;
+    height:100px;
+}
+.img-list li{
+	float:left;
+	padding-left:5px;
+}
+.img-small-prev{
+	max-width:100px;
+	max-height:100px;
+	cursor:pointer;
+}
+.hashtags{	
+	width:100%;
+	clear:both;
+	list-style-type: none;
+	padding: 0px;
+    margin: 0px;
+    margin-top:30px;
+}
+#kind{
+	width:50%;
+	height:35px;
+	margin-bottom:10px;
+	margin-top:10px;
+	padding-left:25px;
+	-webkit-border-top-left-radius: 9px;
+	-webkit-border-bottom-left-radius: 9px;
+	-moz-border-radius-topleft: 9px;
+	-moz-border-radius-bottomleft: 9px;
+	border-top-left-radius: 9px;
+	border-bottom-left-radius: 9px;
+}
+.stats-field{
+	width:100%;
+	margin-bottom:20px;
+}
+#wordCloud{
+	width:70%;
+}
+.small-circle{
+	margin-left:5px;
+	margin-top:0px;
+	margin-bottom:0px;
+	width:20px;
+	height:20px;
+	background-color:white;
+	-webkit-border-radius: 120px;
+	-moz-border-radius: 120px;
+	border-radius: 120px;
+}
+@media only screen and (max-device-width: 480px){
+	#left
+	{
+		display:none;
+	}
+	#right
+	{
+		display:none;
+	}
+	#middle{
+		width:100%;
+	}
+	input{
+		width:100%;
+		height:120px;
+		font-size:40px;
+		margin-bottom:5px;
+	}
+	#paypalButton2{
+		height:150px;
+	}
+	.scelta{
+		width:25%;
+		float:left;
+	}
+	.scelta input{
+		width:20%;
+		float:left;
+		
+		
+		//-ms-transform: scale(5); /* IE */
+		
+		//-webkit-transform: scale(5); /* Safari and Chrome */
+		//-o-transform: scale(5);
+	}
+	.scelta span{
+		float:left;
+		
+		margin-top:40px;
+	}
+	textarea{
+		width:100%;
+		height:600px;
+		font-size:40px;
+		margin-bottom:5px; 
+	}
+	#submit{
+		height:120px;
+		font-size:40px;
+		margin-top:20px;
+		margin-bottom:20px;
+		width:100%;
+	}
+	.bottomButton{
+		height:120px;
+		font-size:40px;
+		margin-top:20px;
+		margin-bottom:20px;
+		width:100%;
+	}
+	body{
+		font-size:40px;
+	}
+	.error{
+			color:red;
+	}
+	#tos{
+		width:5%;
+		float:left;
+	}
+	#tosbox span{
+		padding-top:40px;
+		float:left;
+	}
+	button.loginarea{
+		height:120px;
+		font-size:40px;
+		margin-top:20px;
+		margin-bottom:20px;
+		width:46%;
+		float:left;
+		margin-left:2%;
+		margin-right:2%;
+	}
+	select{
+		width:100%;
+		font-size:40px;
+		height:120px;
+		margin-bottom:20px;
+	}
+	#open_menu{
+		display:inline;
+		position:absolute;
+		position:fixed;
+		margin-top:0px;
+		margin-left:0px;
+		width:20px;
+		height:25px;
+		float:left;
+	}
+}
+

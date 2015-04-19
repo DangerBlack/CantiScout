@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta name="author" content="Daniele Baschieri" />
+<meta name="description" content="Un semplice canzoniere da viaggio per android. Pratico per le route o per tutti gli Scout smemorati." />
+<meta name ="copyright" content="" />
+<meta name="keywords" content="" />
+
+<title>CantiScout</title>
+<link rel="stylesheet" type="text/css" href="css/default.css" />
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="css/dashboard.css" />
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />
+
+
+<link rel="icon" 
+      type="image/png" 
+      href="css/img/ic_launcher.png.png" />
+      
+ <link rel="icon" href="css/img/favicon.ico" type="image/gif" sizes="16x16" /> 
+      
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script> -->
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript"  src="js/default.js"></script>
+<script type="text/javascript"  src="js/sha1.js"></script>
+
+<style>
+	.hiddenTag{
+		display:none;
+	}
+</style>
+ 
+ <script type="text/javascript" > 
+ $(document).ready(function(){
+					init();
+					$("#nSong").load('php/getStats.php?stats=song',function(){
+						var color=new Array();					
+						color.push("#e3da72");//yellow
+						color.push("#e3bd72");//orange
+						color.push("#e25a50");//red
+						color.push("#e372a7");//viola
+						color.push("#9da1cd");//blue
+						color.push("#72cde3");//azure
+						color.push("#8ae372");//green
+						color.push("#dfd3d3");//bianchino
+						
+						var l=$("#nSong").text();
+						for(var i=0;i<l;i++){
+							var r=Math.floor(Math.random()*color.length);
+							$("#nSongView").append('<img style="background-color:'+color[r]+'" src="css/img/note_inverse.png" alt="song" title="song'+i+'" />');
+						}
+						$("#nUser").load('php/getStats.php?stats=user',function(){
+							var l=$("#nUser").text();
+							for(var i=0;i<l;i++){
+								var r=Math.floor(Math.random()*color.length);
+								$("#nUserView").append('<img style="background-color:'+color[r]+'" src="css/img/user_inverse.png" alt="user" title="user'+i+'"/>');
+							}
+							$("#nTag").load('php/getStats.php?stats=tag',function(){
+								$.get('php/getStats.php?stats=tagList',function(data){
+									$("#nTagView").append('<table id="tTag" ></table>');
+									var js=JSON.parse(data);
+									for(var i=0;i<js.length;i++){
+										if(i<10)
+											$("#tTag").append('<tr><td>#'+js[i].tag+'</td><td>'+js[i].freq+'</td></tr>');
+										else
+											$("#tTag").append('<tr class="hiddenTag"><td>#'+js[i].tag+'</td><td>'+js[i].freq+'</td></tr>');
+									}
+									$("#moreTag").click(function(){
+										$(".hiddenTag").show();
+										$("#moreTag").hide();
+									});
+								});
+							});
+						});
+					});
+					
+					
+			});
+</script>
+
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">CantiScout</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+          </ul>
+          <ul class="nav navbar-nav navbar-right" id="userSpace">
+			  <li><a href="login.html">Login</a></li>			
+          </ul>
+          <form class="navbar-form navbar-center form-group">
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="Search...">
+				<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+			</div>
+          </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+			   <ul id="menu" class="nav nav-sidebar">
+					<li><a href="index.html">Home</a></li>
+					<li><a href="edit.html">Inserici Canzone</a></li>
+					<li><a href="canzoniere.html">Canzoniere</a></li>
+					<li class="active"><a href="stats.html">Statistiche</a></li>
+					<li><a href="credits.html">Chi Siamo</a></li>
+					<li><a href="https://play.google.com/store/apps/details?id=danielebaschieri.eu.cantiscout">
+					  <img alt="Get it on Google Play" title="CantiScout download from Google Play"
+						   src="css/img/it_generic_rgb_wo_45.png" width="100%" />
+					</a></li>
+				</ul>
+			</div>
+			<div id="main" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<h1>Statistiche</h1>
+				<div class="panel panel-default ">
+						<div class="panel-heading"><b>Numero di canzoni nell'archivio:</b> <span id="nSong" class="badge pull-right"></span></span></div>
+						<div class="panel-body">
+							<div id="nSongView"></div>
+						</div>
+				</div>
+				<div class="panel panel-default ">
+						<div class="panel-heading"><b>Numero di utenti: <span id="nUser" class="badge pull-right"></span></div>
+						<div class="panel-body">
+							<div id="nUserView"></div>
+						</div>
+				</div>
+				<div class="panel panel-default ">
+						<div class="panel-heading"><b>Numero tag:</b> <span id="nTag" class="badge pull-right"></span></div>
+						<div class="panel-body">
+							<a name="tagAnchor"></a>
+							<div id="nTagView"></div>
+							<a href="#tagAnchor" id="moreTag">Mostra altri</a><br/ >
+						</div>
+				</div>
+				<div class="panel panel-default ">
+						<div class="panel-heading"><b>Parole più usate nelle canzoni:</b></div>
+						<div class="panel-body">
+							<img id="wordCloud" src="css/img/wordcloud.png" title="word cloud" alt="word cloud">
+						</div>
+				</div>
+				<p>Le statistiche aumenteranno in futuro</p>
+				<form id="paypalForm" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="2PG76GLSEMBAC">
+					<input id="paypalButton" type="image" src="https://www.paypalobjects.com/it_IT/IT/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - Il metodo rapido, affidabile e innovativo per pagare e farsi pagare.">
+					<img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif">
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-54152381-1', 'auto');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>
+</html>

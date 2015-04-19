@@ -1,0 +1,13 @@
+ <ul id="menu" class="nav nav-sidebar">
+	<li class="active"><a href="index.html">Home</a></li>
+	<li><a href="index.html">Inserici Canzone</a></li>
+	<li><a href="canzoniere.html">Canzoniere</a></li>
+	<li><a class="id_php" href="report.php">Segnala</a></li>
+	<li><a class="id_php" href="update.php">Modifica canzone</a></li>
+	<li><a href="stats.html">Statistiche</a></li>
+	<li><a href="credits.html">Crediti</a></li>
+	<li><a href="https://play.google.com/store/apps/details?id=danielebaschieri.eu.cantiscout">
+	  <img alt="Get it on Google Play" title="CantiScout download from Google Play"
+		   src="css/img/it_generic_rgb_wo_45.png" width="25%" />
+	</a></li>
+</ul>

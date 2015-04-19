@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta name="author" content="Daniele Baschieri" />
+<meta name="description" content="Un semplice canzoniere da viaggio per android. Pratico per le route o per tutti gli Scout smemorati." />
+<meta name ="copyright" content="" />
+<meta name="keywords" content="" />
+
+<title>CantiScout</title>
+<link rel="stylesheet" type="text/css" href="css/default.css" />
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="css/dashboard.css" />
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />
+
+
+<link rel="icon" 
+      type="image/png" 
+      href="css/img/ic_launcher.png.png" />
+      
+ <link rel="icon" href="css/img/favicon.ico" type="image/gif" sizes="16x16" /> 
+      
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script> -->
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript"  src="js/default.js"></script>
+
+
+ 
+<script type="text/javascript" > 
+		$(document).ready(function(){
+				init();
+			});
+</script>
+<style>
+</style>
+
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">CantiScout</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+          </ul>
+          <ul class="nav navbar-nav navbar-right" id="userSpace">
+			  <li><a href="login.html">Login</a></li>			
+          </ul>
+          <form class="navbar-form navbar-center form-group">
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="Search...">
+				<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+			</div>
+          </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+			   <ul id="menu" class="nav nav-sidebar">
+					<li class="active"><a href="index.html">Home</a></li>
+					<li><a href="edit.html">Inserici Canzone</a></li>
+					<li><a href="canzoniere.html">Canzoniere</a></li>
+					<li><a href="stats.html">Statistiche</a></li>
+					<li><a href="credits.html">Chi Siamo</a></li>
+					<li><a href="https://play.google.com/store/apps/details?id=danielebaschieri.eu.cantiscout">
+					  <img alt="Get it on Google Play" title="CantiScout download from Google Play"
+						   src="css/img/it_generic_rgb_wo_45.png" width="100%" />
+					</a></li>
+				</ul>
+			</div>
+			<div id="main" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<article>
+					<div class="panel panel-default ">
+						<div class="panel-heading"><b>Chi Siamo</b></div>
+						<div class="panel-body">
+							<p>
+								L'applicazione sia web che mobile è stata sviluppata interamente da Daniele Baschieri (<i>aka</i> DangerBlack),
+								reperibile a <a href="http://www.danielebaschieri.eu" target="_black">danielebaschieri.eu</a>.
+							</p>
+						</div>
+					</div>
+					<div class="panel panel-default ">
+						<div class="panel-heading"><b>Sviluppo</b></div>
+						<div class="panel-body">
+							<p>
+								L'applicazione CantiScout è stata distribuita sotto licenza GPL 3 o superiore il suo codice è
+								disponibile a questo <a href="https://github.com/DangerBlack/CantiScout">indirizzo</a>.
+							</p>
+							<p>
+								E' stata prodotta con l'intento di fornire un canzoniere da viaggio a tutti coloro che amano cantare
+								sotto le stelle e vogliono poter sorridere insieme in qualsiasi momento anche quando per qualsiasi ragione
+								non abbiano modo di portarsi un canzoniere tradizionale.
+							</p>
+							<p>
+								Uno tra gli obiettivi impliciti di questo lavoro è cambiare l'ottica con la quale si percepiscono i
+								dispositivi mobili quali smartphone tablet etc, che normalmente sono strumento di divsione
+								dove le persone tendono a rifugiarsi e a fuggire alla socializzazione diretta, con CantiScout invece
+								si ridà dignità allo strumento del tablet e dello smartphone trasformandolo in uno strumento di condivisione e di
+								socializzazione. Mostrando come con coraggio e intelletto uno scout possa piegare gli strumenti
+								alle sue esigenza per fare del suo meglio.
+							</p>
+						</div>
+					</div>
+					<div class="panel panel-default ">
+						<div class="panel-heading"><b>Ringraziamenti e Beta Testing</b></div>
+						<div class="panel-body">
+							<p>
+								Si ringraziano per il forte supporto e per l'aiuto datomi tramite beta testing nella fase alpha della
+								applicazione, quando ancora non ci si credeva: <strong>Mia madre</strong>, <strong>Eugenio</strong>, <strong>Giorgio</strong>, <strong>Guido</strong>, <strong>Riccardo</strong>, <strong>Enrico</strong>, <strong>Elf</strong>, <strong>Claudia</strong>.
+							</p>
+							<p>
+								Si ringrazia l'intera Staff IT di San Rossore per avermi supportato con consigli e idee quando ribolliva
+								nel mio stomaco il desiderio di creare questa applicazione.
+							</p>
+							<p>
+								Si ringraziano i miei amici di facebook che mi hanno sopportato e supportato con un sacco di mi piace quando
+								ho lanciato la palla dimostrando ancora una volta di volermi bene.
+							</p>
+						</div>
+					</div>
+					<div class="panel panel-default ">
+						<div class="panel-heading"><b>Riconoscimenti</b></div>
+						<div class="panel-body">
+							<p>
+								Un sentito ringraziamento forse il più forte mai fatto a un completo sconosciuto va a <strong>Luca Allulli</strong>
+								che ha sviluppato una fantastica applicazione desktop chiamata <a href="http://web.skeed.it/index.php?id=54#Download" target="_black">Songpress</a>.
+								Ed avendola rilasciata con licenza OpenSource mi ha permesso di contribuire creando questa fantastica applicazione mobile e web.
+							</p>
+							<p>
+								Ringrazio anche <strong>Jonathan Perkin</strong> per aver diffuso con licenza simile il suo software <a href="https://github.com/jperkin/chordpro.js">javascript</a> che mi ha permesso di
+								fornire il testo della canzone via web già convertito senza dover reinventare la ruota.
+							</p>
+							<p>
+								Un ringraziamento speciale va ad <strong>Elena Frabetti</strong> per essere sempre disposta a farmi disegnini buffi per i miei progetti, nonostante tutti i suoi impegni da architetto.
+								Per essere sempre in grado di leggermi nel pensiero e produrre la grafica che desideravo ma che non ero in grado di esprimere.
+							</p>
+						</div>
+					</div>
+					<div class="panel panel-default ">
+						<div class="panel-heading"><b>A Te</b></div>
+						<div class="panel-body">
+							<p>
+								Che contribuisci con le canzoni del tuo reparto, che hai letto questi ringraziamenti, 
+								che hai scaricato la mia piccola applicazione e che canterai attorno ad un fuoco.
+							</p>
+							<p>
+								A te che forse hai imparato a suonare perchè ti piaceva e non hai idea di quanto sarebbe
+								più cupo il mondo se non prendessi in mano quella chitarra per animare la sera, a te io
+								dedico questa mia applicazione. Perchè tu possa avere sempre le note per rendere lo spartito
+								della vita migliore.
+							</p>
+						</div>
+					</div>
+				</article>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-54152381-1', 'auto');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>
+</html>

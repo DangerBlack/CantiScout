@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta name="author" content="Daniele Baschieri" />
+<meta name="description" content="Un semplice canzoniere da viaggio per android. Pratico per le route o per tutti gli Scout smemorati." />
+<meta name ="copyright" content="2014" />
+<meta name="keywords" content="CantiScout,canzoniere,canti,canzoni,bans,ballate,cantare,cantiamo,insieme,gioia,scouting,boys,canta,cammina,camminiamo,route,hike,strada,coraggio" />
+
+<title>CantiScout</title>
+<link rel="stylesheet" type="text/css" href="css/default.css" />
+<link href="css/jquery-ui.min.css" rel="stylesheet">
+<link rel="icon" 
+      type="image/png" 
+      href="css/img/ic_launcher.png.png">
+      
+ <link rel="icon" href="css/img/favicon.ico" type="image/gif" sizes="16x16"> 
+      
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+
+
+
+<script type="text/javascript"  src="js/default.js"></script>
+
+
+ 
+ <script type="text/javascript" > 
+ $(document).ready(function(){
+				init();
+				var is_mobile = false;
+
+				if( screen.width<480) {
+					is_mobile = true;     
+				}
+				if($.browser.mozilla&&is_mobile){
+					$(".scelta input").css("margin-top","40px");
+					$(".scelta input").css("-moz-transform","scale(4)"); /* FF */
+					$(".scelta span").css("margin-left","25px");
+					//$("body").css("background-color","red");
+					
+					$("#tos").css("margin-top","40px");
+					$("#tos").css("-moz-transform","scale(4)");
+					$("#tosbox span").css("margin-left","25px");
+				}
+				$.post("php/login.php",function(data){
+					if(data==200){						
+					}else{
+						location.replace("login.html");
+					}
+				});
+				$("#submit").click(function(){
+					var go=true;
+					if(!$("#tos").is(':checked')){
+						$(".error").html("Attenzione! Se non accettate il Contratto di Licenza non potete aggiungere canzoni");
+						go=false;
+						return true;
+					}
+					var tag=$("#tag").val().replace(/#/g,"").replace(/ /g,",").replace(/,,/g,",");
+					if($("#chiesa").is(':checked'))
+						tag+=",chiesa,messa,liturgia,preghiera";
+					if($("#lc").is(':checked'))
+						tag+=",lc,lupetti,coccinelle,branco,cerchio";
+					if($("#eg").is(':checked'))
+						tag+=",eg,esploratori,guide,reparto";
+					if($("#rs").is(':checked'))
+						tag+=",rs,rover,scolte,clan";
+					if($("#altro").is(':checked'))
+						tag+=",altro";
+					if($("#tag").val()==""){
+						$("#tagWarning").html("Non avete inserito nessun tag siete sicuri");
+						var r = confirm("Non avete inserito nessun tag, procedere comunque?");
+						if (r == true) {
+							x = "You pressed OK!";
+						} else {
+							x = "You pressed Cancel!";
+							go=false;
+							return;
+						} 
+					}
+					if($("#title").val()==""){
+						$(".error").html("Attenzione! Non avete inserito nessun titolo per questa canzone");
+						go=false;
+						return true;
+					}
+					if($("#body").val()==""){
+						$(".error").html("Attenzione! Non avete inserito il testo della canzone");
+						go=false;
+						return true;
+					}
+					if($("#body").val().indexOf("[")==-1){
+						$(".error").html("Attenzione! Non avete inserito nessuna nota in questa canzone");
+						go=false;
+						return true;
+					}
+					if(go)
+					$.post("php/post.php",{"title":$("#title").val(),"author":$("#author").val(),"body":$("#body").val(),"tag":tag},function(data){
+							if(data=="201"){
+								$("#title").val("");
+								$("#author").val("");
+								$("#body").val("");
+								$("#tag").val("");
+								alert("Canzone caricata con successo!");
+							}else{
+								if(data=="400"){
+									$(".error").html("Attenzione! c'è un errore nel testo della canzone!");
+								}else{
+									$(".error").html("Attenzione! Non avete i permessi per creare contenuti");
+								}
+							}
+						});
+				});
+			});
+</script>
+<style>
+	
+</style>
+
+</head>
+
+<body>
+	<img id="open_menu" src="css/img/menu.png" width="250" height="250" >
+	<div id="top">		
+		<h1><a href="index.html">CantiScout t</a></h1>
+	</div>
+	<div id="left">
+		<div id="menu">
+		</div>
+	</div>
+	<div id="middle">
+		<p class="error"></p>
+		<input type="text" id="title" name="title" placeholder="titolo" /><br />
+		<input type="text" id="author" name="author" placeholder="autore" /><br />
+		<p>Inserire testo in formato <a href="http://web.skeed.it/index.php?q=chordpro-it.html">ChordPro</a></p>
+		<textarea id="body" placeholder="testo e note chordpro {title:Il titolo della canzone} {author:L'autore della canzone} {soc}ritornello{eoc}"></textarea>
+		<span class="warning" id="tagWarning"></span>
+		<input type="text" id="tag" name="hashtag" placeholder="#hashtag #chiesa #amore #bans #fuoco #rs #coccinelle  " /><br />
+		<div>
+			<div class="scelta">
+				<input type="checkbox" name="chiesa" value="chiesa" id="chiesa"/><span>chiesa</span>
+			</div>
+			<div class="scelta">
+				<input type="checkbox" name="lc" value="lc" id="lc" /><span>L/C</span> 
+			</div>
+			<div class="scelta">
+				<input type="checkbox" name="eg" value="eg" id="eg" /><span>E/G</span>
+			</div>
+			<div class="scelta">
+				<input type="checkbox" name="rs" value="rs" id="rs" /><span>R/S</span>
+			</div>
+			<div class="scelta">
+				<input type="checkbox" name="altro" value="altro" id="altro" /><span>altro</span>
+			</div>
+		</div>
+		<div id="tosbox"><input type="checkbox" name="tos" value="tos" id="tos" /><span>Accetto i <a href="tos.html">Termini di servizio</a> e le <a href="tos.html">norme</a> sulla privacy di CantiScout</span></div>
+		<button id="submit">Submit</button>
+	</div>
+	<div id="right">
+		<button id="logout">logout</button><br />
+		<form id="paypalForm" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+			<input type="hidden" name="cmd" value="_s-xclick">
+			<input type="hidden" name="hosted_button_id" value="2PG76GLSEMBAC">
+			<input id="paypalButton" type="image" src="https://www.paypalobjects.com/it_IT/IT/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - Il metodo rapido, affidabile e innovativo per pagare e farsi pagare.">
+			<img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif">
+		</form>
+
+	</div>
+	<div id="bottom"></div>
+
+</body>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-54152381-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
