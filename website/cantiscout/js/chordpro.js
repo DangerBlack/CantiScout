@@ -119,7 +119,7 @@ var ChordPro = function() {
   });
 }();
 
-exports.name = ChordPro.name;
+/*exports.name = ChordPro.name;
 exports.version = ChordPro.version;
 
-exports.to_txt = ChordPro.to_txt;
+exports.to_txt = ChordPro.to_txt;*/

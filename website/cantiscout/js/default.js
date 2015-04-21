@@ -2,7 +2,8 @@ function init(){
 	loadUserSpace();
 }
 
-function caricaListaTag(id,where, path="php/"){
+function caricaListaTag(id,where, path){
+	path = typeof path === 'undefined' ? 'php/' : path;
 	$.get(path+'getTagList.php?id='+id,function(data){
 			var js=JSON.parse(data);
 			for(var i=0;i<js.length;i++){
@@ -10,8 +11,8 @@ function caricaListaTag(id,where, path="php/"){
 			}  
 	});
 }
-function loadUserSpace(path="php/"){
-	
+function loadUserSpace(path){
+	path = typeof path === 'undefined' ? 'php/' : path;
 	$.get(path+"getUserInfo.php",function(data){
 		if(data=="404"){
 			$("#userSpace").html('<li><a href="login.html">Login</a></li>');

@@ -13,6 +13,8 @@
 }
 .navbar-form .input-group{
 margin-left:200px;
+width: 50px;
+
 }
 .navbar-form .input-group input{
 	width:450px;
