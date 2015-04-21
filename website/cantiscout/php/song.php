@@ -38,8 +38,8 @@
 				  $("#song").html("");
 				  $("#song").html('<h1>'+js[0].title+' <a href="../update.php?id='+js[0].id+'"><button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></a> <a href="../report.php?id='+js[0].id+'"><button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span></button></a></h1>');
 				  $("#song").append('<h2>'+js[0].author+'</h2>');
-				  $("#song").append('<textarea>'+output+'</textarea><br /><p class="small">Conversione della canzone da chordpro di Jonathan Perkin</p>');
-				  $("#songRaw").append('<h2></h2><textarea>'+js[0].body+'</textarea><br />');
+				  $("#song").append('<textarea class="canzone_mono">'+output+'</textarea><br /><p class="small">Conversione della canzone da chordpro di Jonathan Perkin</p>');
+				  $("#songRaw").append('<h2></h2><textarea class="canzone_mono">'+js[0].body+'</textarea><br />');
 				  $("#showRaw").click(function(){
 					  $("#songRaw").show();
 					  $("#song").hide();

@@ -34,8 +34,8 @@ input{
 textarea{
 	width:100%;
 	height:300px;
-	margin-bottom:5px; 
-}
+	margin-bottom:5px;
+}   
 #submit{
 	margin-top:20px;
 	margin-bottom:20px;
@@ -198,6 +198,13 @@ button{
 	-webkit-border-radius: 120px;
 	-moz-border-radius: 120px;
 	border-radius: 120px;
+}
+
+.canzone_mono{
+    font-family: monospace;
+}
+#conversion{
+    cursor:not-allowed;
 }
 @media only screen and (max-device-width: 480px){
 	#left

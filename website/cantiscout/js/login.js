@@ -64,7 +64,7 @@ function injectRegister(){
 			error=true;
 		}
 		if(!error)
-		$.post("php/register.php",{"name":user,"email":email,"pswd":pswd},function(data){
+		$.post("php/register.php",{"name":user,"mail":email,"pswd":hex_sha1(pswd)},function(data){
 			if(data==201){
 				location.href="index.html";
 			}else{				

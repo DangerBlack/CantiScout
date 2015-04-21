@@ -177,11 +177,11 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<h5>Canzone sorgente</h5>
-						<textarea id="body" placeholder="testo e note chordpro {title:Il titolo della canzone} {author:L'autore della canzone} {soc}ritornello{eoc}"></textarea>
+						<textarea class="canzone_mono" id="body" placeholder="testo e note chordpro {title:Il titolo della canzone} {author:L'autore della canzone} {soc}ritornello{eoc}"></textarea>
 					</div>
 					<div class="col-sm-6">
 						<h5>Canzone convertita</h5>
-						<textarea id="conversion" placeholder="" readonly></textarea>
+						<textarea class="canzone_mono" id="conversion" placeholder="" readonly></textarea>
 					</div>
 				</div>
 				<div class="row">
