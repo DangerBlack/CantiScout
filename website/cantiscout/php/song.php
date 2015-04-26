@@ -24,12 +24,11 @@
 		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 		<script type="text/javascript"  src="../js/default.js"></script>
 		<script type="text/javascript" src="../js/chordpro.js"></script>
+		<script type="text/javascript" src="../js/mediaTools.js"></script>
 		 <script>
 			 $(document).ready(function(){
 				 init();
 				 loadUserSpace("");
-				 $("#songRaw").hide();
-				 $("#showText").hide();
 				 var song=$("#songRaw").text();
 				 js=JSON.parse(song);
 				 $("#songRaw").html('');
@@ -38,21 +37,9 @@
 				  $("#song").html("");
 				  $("#song").html('<h1>'+js[0].title+' <a href="../update.php?id='+js[0].id+'"><button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></a> <a href="../report.php?id='+js[0].id+'"><button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span></button></a></h1>');
 				  $("#song").append('<h2>'+js[0].author+'</h2>');
-				  $("#song").append('<textarea class="canzone_mono">'+output+'</textarea><br /><p class="small">Conversione della canzone da chordpro di Jonathan Perkin</p>');
-				  $("#songRaw").append('<h2></h2><textarea class="canzone_mono">'+js[0].body+'</textarea><br />');
-				  $("#showRaw").click(function(){
-					  $("#songRaw").show();
-					  $("#song").hide();
-					  $("#showRaw").hide();
-					  $("#showText").show();
-				  });
-				  $("#showText").click(function(){
-					  $("#songRaw").hide();
-					  $("#song").show();
-					  $("#showRaw").show();
-					  $("#showText").hide();
-				  });
+				  $("#song").append('<p class="canzone_mono">'+output.replace(/\n/g,"<br />")+'</p><br /><p class="small">Conversione della canzone da chordpro di Jonathan Perkin</p>');
 				  caricaListaTag(js[0].id,".hashtags","");
+				  mediaActivate(js[0].id,"#multimedia","");
 			});
 		 </script>
 		 <?php
@@ -112,16 +99,18 @@
 								echo "<div id=\"songRaw\">".json_encode(getSong($id))."</div>";
 							?>
 							<div id="song"></div>
-							<button id="showRaw">Sorgente</button>
-							<button id="showText">Convertita</button>
 						</div>
 						<div class="col-sm-5">
-							<img class="img-big-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/>
-							<ul class="img-list">
-								<li><img class="img-small-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/></li>
-								<li><img class="img-small-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/></li>
-								<li><img class="img-small-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/></li>
-							</ul>
+							<div id="multimedia">							
+								<img id="big-img" class="img-big-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/>
+								<ul class="img-list">
+									<li><img class="img-small-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/></li>
+									<li><img class="img-small-prev" src="http://www.udine8.it/wp-content/uploads/2014/04/logo-agesci-22-6-05.gif" alt="scout song"/></li>
+									<li><img class="img-small-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/></li>
+								</ul>
+							</div>
+							<br />
+							<h3>Hashtag</h3>
 							<ul class="hashtags">
 							</ul>
 						</div>

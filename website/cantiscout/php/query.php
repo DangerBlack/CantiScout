@@ -1,325 +1,307 @@
 <?php
-	function make_connession()
-	{
-		$dbhost='localhost'; 
-		$dbname='DBNAME';
-		$dbpassword='DBPASSWORD';
-		$connessione = mysql_connect($dbhost,$dbname,$dbpassword)or die("Connessione non riuscita: " . mysql_error());
-    	//print ("Connesso con successo");
-		mysql_select_db($dbname, $connessione) or die("Errore nella selezione del database");
-		return $connessione;
+    require  'medoo.min.php';
+	function connect(){
+		$database = new medoo([
+				// required
+				'database_type' => 'mysql',
+				'database_name' => 'DBNAME',
+				'server' => 'localhost',
+				'username' => 'DBUSER',
+				'password' => 'DBPASSWORD',
+				 
+				// optional
+				'port' => 3306,
+				'charset' => 'utf8',
+				// driver_option for connection, read more from http://www.php.net/manual/en/pdo.setattribute.php
+				'option' => [
+				PDO::ATTR_CASE => PDO::CASE_NATURAL
+			]
+		]);
+		return $database;
 	}
-	function make_query($connessione,$query_string){
-		$query = mysql_query($query_string,$connessione);
-		if ($query==FALSE) die("errore nella composizione della query ".$query_string);
-		mysql_close($connessione);
-		return $query;
+    //GESTIONE UTENTI LOGIN REGISTER ETC
+    function login($mail,$pswd){
+		$database=connect();
+		$result=$database->has("user",[
+			"AND" => [
+				"mail" => $mail,
+				"pswd" => $pswd
+			]
+		]);
+		return $result;
 	}
-	function safe($value){ 
-		return mysql_real_escape_string($value); 
-	}
-	function make_easy_connession($query_string){
-		make_query(make_connession(),$query_string);
-	}
-	function checkLogin($mail,$pswd)
-	{
-		if(($pswd!=null)&&($pswd==getPswd($mail))){
+    function isLogged(){		
+		$mail=$_COOKIE["mail"];
+		$pswd=$_COOKIE["pswd"];
+		if(login($mail,$pswd)){
 			return true;
 		}else{
 			return false;
-		}
+		}		
 	}
-	function isLogged(){ 
-		$user= $_COOKIE["mail"];
-		$pswd= $_COOKIE["pswd"];
-		return checkLogin($user,$pswd);
+	function getId(){
+		$mail=$_COOKIE["mail"];
+		return getIdFromMail($mail)[0]['id'];
 	}
-	function getPswd($mail) 
-	{
-		$connessione=make_connession();
-		$mail=safe($mail);
-		$query_string="SELECT pswd FROM user WHERE mail='".$mail."'";
-		$query=make_query($connessione,$query_string);
-		$row=mysql_fetch_array($query);
-		return $row['pswd'];
+    function getIdFromMail($mail){
+		$database=connect();
+		$datas=$database->select("user",[
+			"id"
+		],[
+			"mail[=]"=>$mail
+		]);
+		return $datas;
 	}
-	function getIdFromMail($mail){
-		$connessione=make_connession();
-		$mail=safe($mail);
-		$query_string="SELECT id FROM user WHERE mail='".$mail."'";
-		$query=make_query($connessione,$query_string);
-		$row=mysql_fetch_array($query);
-		return $row['id'];
+	function getUser($id){
+		$database=connect();
+		$res=$database->select("user",[
+			"mail",
+			"name",
+            "picture"
+		],[
+			"id[=]"=>$id
+		]);
+		return $res;
 	}
-	function getMailFromId($id){
-		$connessione=make_connession();
-		$id=safe($id);
-		$query_string="SELECT mail FROM user WHERE id='".$id."'";
-		$query=make_query($connessione,$query_string);
-		$row=mysql_fetch_array($query);
-		return $row['mail'];
+	function insertUser($name,$mail,$pswd){
+		$database=connect();
+		$res=$database->insert("user",[
+			"name"=>$name,
+			"mail"=>$mail,
+			"pswd"=>$pswd
+		]);
+		return $res;
 	}
-	function insertUser($mail,$pswd)
-	{
-		$connessione=make_connession();
-		$mail=safe($mail);
-		$pswd=safe($pswd);
-		$query_string="INSERT INTO user (mail,pswd) ". 
-		"VALUES ('".$mail
-			."','".$pswd
-			 ."')";
-		return make_query($connessione,$query_string);
-	}
+    
+    //GESTIONE CANZONI
 	function insertSong($title,$author,$body,$id_user)
 	{
-		$connessione=make_connession();
-		$title=safe(ucfirst($title));
-		$author=safe($author);
-		$body=safe($body);
-		$id_user=safe($id_user);
-		$query_string="INSERT INTO list (title,author,body,id_user) ". 
-		"VALUES ('".$title
-			."','".$author
-			 ."','".$body
-			 ."','".$id_user
-			 ."')";
-		return make_query($connessione,$query_string);
+        $database=connect();
+		$idSong=$database->insert("list",[
+			"title"=>$title,
+			"author"=>$author,
+			"body"=>$body,
+            "id_user"=>$id_user
+		]);
+        return $idSong;
 	}
 	function updateSong($id,$title,$author,$body,$id_user)
 	{
-		$connessione=make_connession();
-		$title=safe(ucfirst($title));
-		$author=safe($author);
-		$body=safe($body);
-		$id_user=safe($id_user);
-		$query_string="UPDATE list SET ". 
-		"title='".$title
-			."', author='".$author
-			 ."', body='".$body
-			 ."', id_user='".$id_user
-			 ."', time=NOW() WHERE id='".$id."'";
-		return make_query($connessione,$query_string);
+		$database=connect();
+		$idSong=$database->update("list",[
+			"title"=>$title,
+			"author"=>$author,
+			"body"=>$body,
+            "id_user"=>$id_user
+		],
+        [
+            "id[=]"=>$id
+        ]);
+        return $idSong;
 	}
+    //la togliamo questa
 	function insertLog($id_user,$id_song){
-		$connessione=make_connession();
-		$id_song=safe($id_song);
-		$ip=safe($_SERVER['REMOTE_ADDR']);
-		$ip_prox=safe($_SERVER['HTTP_X_FORWARDED_FOR']);
-		$query_string="INSERT INTO log (id_user,id_list,ip,ip_prox) ". 
-		"VALUES ('".$id_user
-			."','".$id_song
-			."','".$ip
-			 ."','".$ip_prox
-			 ."')";
-		return make_query($connessione,$query_string);
+        $database=connect();
+        $ip=$_SERVER['REMOTE_ADDR'];
+		$ip_prox=$_SERVER['HTTP_X_FORWARDED_FOR'];
+		$res=$database->insert("log",[
+			"id_user"=>$id_user,
+			"id_list"=>$id_list,
+			"ip"=>$ip,
+            "ip_prox"=>$ip_prox
+		]);
+        return $res;
 	}
+    //questa va fatta inclusa
 	function logHistory($id_song){
-		$song=getSong($id_song)[0];
-		$connessione=make_connession();
-		$title=safe(ucfirst($song->title));
-		$author=safe($song->author);
-		$body=safe($song->body);
-		$id_user=safe($song->id_user);
-		$time=safe($song->time);
-		$query_string="INSERT INTO history (id_list,title,author,body,id_user,time) ". 
-		"VALUES ('".$id_song
-			 ."','".$title
-			 ."','".$author
-			 ."','".$body
-			 ."','".$id_user
-			 ."','".$time
-			 ."')";
-		return make_query($connessione,$query_string);
+		$song=getSong($id_song)[0];//che cazzo fa ucfirst? 
+		$title=ucfirst($song->title);
+		$author=$song->author;
+		$body=$song->body;
+		$id_user=$song->id_user;
+		$time=$song->time;        
+        $database=connect(); //dovremmo già essere connessi al db
+		$idSong=$database->insert("history",[
+            "id_list"=>$id_song,
+			"title"=>$title,
+			"author"=>$author,
+			"body"=>$body,
+            "id_user"=>$id_user,
+            "time"=>$time
+		]);
+        return $idSong;
 	}
 	function insertTag($id_list,$tag)
 	{
-		$connessione=make_connession();
-		$id_list=safe($id_list);
-		$tag=safe($tag);
-		$query_string="INSERT INTO tag (id_list,tag) ". 
-		"VALUES ('".$id_list
-			."','".$tag
-			 ."')";
-		return make_query($connessione,$query_string);
+        $database=connect();
+		$res=$database->insert("tag",[
+			"id_list"=>$id_list,
+			"tag"=>$tag
+		]);
+        return $res;
 	}
 	function insertReport($id_song,$kind,$description,$id_user)
 	{
-		$connessione=make_connession();
-		$id_song=safe($id_song);
-		$kind=safe($kind);
-		$description=safe($description);
-		$id_user=safe($id_user);
-		$query_string="INSERT INTO report (id_list,kind,description,id_user) ". 
-		"VALUES ('".$id_song
-			."','".$kind
-			 ."','".$description
-			 ."','".$id_user
-			 ."')";
-		return make_query($connessione,$query_string);
+        $database=connect();
+		$res=$database->insert("report",[
+			"id_list"=>$id_list,
+			"kind"=>$kind,
+            "description"=>$description,
+            "id_user"=>$id_user
+		]);
+        return $res;
 	}
+    
+    //FUNZIONI CHE RESTITUISCONO DATI
 	function getMaxId(){
-		$connessione=make_connession();
-		$imei=safe($imei);
-		$query=make_query($connessione,"SELECT MAX(id) AS max FROM list");
-		$row=mysql_fetch_array($query);
-		return $row['max'];			
+        $database=connect();
+		$max=$database->max("list",[
+			"id(max)"
+		]);
+        return $max;		
 	}
 	function checkData($data){
 		if($data=="")
 			return true;
-		$connessione=make_connession();
-		$data=safe($data);
-		$query=make_query($connessione,"SELECT * FROM list WHERE time>'".$data."'");
-		$row=mysql_fetch_array($query);
-		if(mysql_num_rows($query)>0){
+        $database=connect();
+		$count=$database->count("list",[
+            "[>]time"=>$data
+        ]);
+		if($count>0){
 			return true;
 		}else
 			return false;
 		//return $row['max'];		
 	}
-	function getListOfSong(){
-		$connessione=make_connession();
-		$query=make_query($connessione,"SELECT id,title,author,body,time FROM list"); 		
-		return generaLista($query);	
+	function getListOfSong(){//Aggiungere l'utente che ha condiviso la canzone #SOCIAL
+        $database=connect();
+		$res=$database->select("list",[
+            "id",
+            "title",
+            "author",
+            "body",
+            "time"
+        ]);
+        return $res;
 	}
 	function getListOfSongTitle(){
-		$connessione=make_connession();
-		$query=make_query($connessione,"SELECT id,title FROM list ORDER BY title"); 		
-		return generaLista($query);	
+        $database=connect();
+		$res=$database->select("list",[
+            "id",
+            "title"
+        ],[
+            "ORDER" => "title ASC"
+        ]);
+        return $res;
 	}
 	function getListOfSongAfter($time){
 		if($time=="")
 			return getListOfSong();
-		$connessione=make_connession();
-		$time=safe($time);
-		$query=make_query($connessione,"SELECT id,title,author,body,time FROM list WHERE time>'".$time."'"); 		
-		return generaLista($query);	
+        $database=connect();
+		$res=$database->select("list",[
+            "id",
+            "title",
+            "author",
+            "body",
+            "time"
+        ],[
+            "[>]time"=>$time
+        ]);
+        return $res;	
 	}
 	function getListOfTag(){
-		$connessione=make_connession();
-		$query=make_query($connessione,"SELECT id,id_list,tag FROM tag");		
-		return generaListaTag($query);	
+        $database=connect();
+		$res=$database->select("tag",[
+            "id",
+            "id_list(id_song)",
+            "tag",
+        ]);
+        return $res;		
 	}
 	function getListOfTagAfter($time){
 		if($time=="")
 			return getListOfTag();
-		$connessione=make_connession();
-		$time=safe($time);
-		$query=make_query($connessione,"SELECT t.id,t.id_list,t.tag FROM tag AS t JOIN list AS l ON l.id=t.id_list WHERE l.time>'".$time."'");		
-		return generaListaTag($query);	
+        $database=connect();
+		$res=$database->select("tag",
+        [
+            "[>]list"=>["id_list"=>"id"]
+        ],[
+            "tag.id",
+            "tag.id_list(id_song)",
+            "tag.tag",
+        ],
+        [
+            "[>]list.time"=>$time
+        ]);
+        return $res;	
 	}
 	function getSong($id_song){
-		$connessione=make_connession();
-		$id_song=safe($id_song);
-		$query=make_query($connessione,"SELECT id,title,author,body,time,id_user FROM list WHERE id='".$id_song."'");		
-		return generaLista($query);	
+        $database=connect();
+		$res=$database->select("list",[
+            "id",
+            "title",
+            "author",
+            "body",
+            "time"
+        ],[
+            "[=]id"=>$id_song
+        ]);
+        return $res;
 	}
 	function getSongTitle($id_song){
-		$connessione=make_connession();
-		$id_song=safe($id_song);
-		$query=make_query($connessione,"SELECT title FROM list WHERE id='".$id_song."'");		
-		$row=mysql_fetch_array($query);
-		return $row['title'];	
+        $database=connect();
+		$res=$database->select("list",[
+            "title"
+        ],[
+            "[=]id"=>$id_song
+        ]);
+		return $res[0]['title'];	
 	}
 	function getListOfTagById($id_song){
-		$connessione=make_connession();
-		$id_song=safe($id_song);
-		$query=make_query($connessione,"SELECT id,id_list,tag FROM tag WHERE id_list='".$id_song."'");		
-		return generaListaTag($query);			
-	}
-	function generaLista($query){
-		/*class Update{
-			public $update="";
-		}*/
-		class listOfSong{
-			public $id="";
-			public $title="";
-			public $author="";
-			public $body="";
-			public $time="";
-			public $id_user="";
-		}
-		$u=array();
-		while($row=mysql_fetch_array($query))
-		{
-			$b=new listOfSong();
-			@$b->id=$row['id'];
-			@$b->title=$row['title'];
-			@$b->author=$row['author'];
-			@$b->body=$row['body'];
-			@$b->time=$row['time'];
-			@$b->id_user=$row['id_user'];
-			$u[]=$b;			
-		}
-		//$out=new Update();
-		//$out->update=$u;
-		return $u;	
-	}
-	function generaListaTag($query){
-		/*class Update{
-			public $update="";
-		}*/
-		class tag{
-			public $id="";
-			public $id_song="";
-			public $tag="";
-		}
-		$u=array();
-		while($row=mysql_fetch_array($query))
-		{
-			$b=new tag();
-			$b->id=$row['id'];
-			$b->id_song=$row['id_list'];
-			$b->tag=$row['tag'];
-			$u[]=$b;			
-		}
-		//$out=new Update();
-		//$out->update=$u;
-		return $u;	
-	}
-	
+        $database=connect();
+		$res=$database->select("tag",[
+            "id",
+            "id_list(id_song)",
+            "tag",
+        ],[
+            "[=]id_list"=>$id_song
+        ]);
+        return $res;		
+	}	
 	/**
 	 * Sezione dedicata alle query di statistiche
 	 * */
 	function getNumberOfSong(){
-		$connessione=make_connession();
-		$query=make_query($connessione,"SELECT COUNT(*) AS number FROM list");
-		$row=mysql_fetch_array($query);
-		return $row['number'];			
+        $database=connect();
+		$number=$database->count("list");
+        return $number;			
 	}
 	function getNumberOfUser(){
-		$connessione=make_connession();
-		$query=make_query($connessione,"SELECT COUNT(*) AS number FROM user");
-		$row=mysql_fetch_array($query);
-		return $row['number'];			
+        $database=connect();
+		$number=$database->count("user");
+        return $number;				
 	}
 	function getNumberOfTag(){
-		$connessione=make_connession();
-		$query=make_query($connessione,"SELECT COUNT(*) AS number FROM tag");
-		$row=mysql_fetch_array($query);
-		return $row['number'];			
+        $database=connect();
+		$number=$database->count("tag");
+        return $number;			
 	}
 	function getTagList(){
-		$connessione=make_connession();
-		$query=make_query($connessione,"SELECT tag,count(*) as freq FROM tag GROUP BY tag ORDER BY count(*) DESC");
-		return generaElencoTag($query);			
-	}
-	
-	function generaElencoTag($query){
-		class tag{
-			public $tag;
-			public $freq;
+        $database=connect();
+		$res=$database->select("tag",[
+            "tag"
+            ],[
+            "GROUP"=>'tag'
+            ]);
+        foreach($res as &$tag){
+			$tag['freq']=$database->count("tag",["tag"=>$tag['tag']]);
 		}
-		$u=array();
-		while($row=mysql_fetch_array($query))
-		{
-			$b=new tag();
-			$b->tag=$row['tag'];
-			$b->freq=$row['freq'];
-			$u[]=$b;			
-		}
-		//$out=new Update();
-		//$out->update=$u;
-		return $u;	
+		usort($res, function($a, $b) { //Sort the array using a user defined function
+			return $a['freq'] > $b['freq'] ? -1 : 1; //Compare the scores
+		});  
+        return $res;	
+		//$connessione=make_connession();
+		//$query=make_query($connessione,"SELECT tag,count(*) as freq FROM tag GROUP BY tag ORDER BY count(*) DESC");
+		//return generaElencoTag($query);			
 	}
 ?>

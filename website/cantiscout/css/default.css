@@ -142,13 +142,17 @@ button{
 .img-big-prev{
 	max-width:70%;
 	max-height:200px;
-	margin-left:20%;
+	//margin-left:20%;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
 	clear:both;
 }
 .img-list{
 	list-style-type: none;
 	padding: 0px;
     margin: 0px;
+    margin-top:25px;
     width:100%;
     clear:both;
     height:100px;
@@ -168,7 +172,10 @@ button{
 	list-style-type: none;
 	padding: 0px;
     margin: 0px;
-    margin-top:30px;
+}
+#multimedia{
+	margin-top:50px;
+	margin-bottom:30px;
 }
 #kind{
 	width:50%;
@@ -204,6 +211,7 @@ button{
 
 .canzone_mono{
     font-family: monospace;
+     white-space:pre;
 }
 #conversion{
     cursor:not-allowed;
