@@ -4,10 +4,10 @@
 		$database = new medoo([
 				// required
 				'database_type' => 'mysql',
-				'database_name' => 'DBNAME',
+				'database_name' => 'bit_cantiscout',//DB_NAME
 				'server' => 'localhost',
-				'username' => 'DBUSER',
-				'password' => 'DBPASSWORD',
+				'username' => 'bit_cantiscout',//DB_USERNAME
+				'password' => 'bit_cantiscout',//PASSWORD
 				 
 				// optional
 				'port' => 3306,

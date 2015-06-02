@@ -216,6 +216,13 @@ button{
 #conversion{
     cursor:not-allowed;
 }
+#main{
+    background: url(img/scoutbg.png);
+    background-repeat: no-repeat;
+    background-position: 95% 85%;
+    background-attachment: fixed;
+    background-size: 250px 250px;
+}
 @media only screen and (max-device-width: 480px){
 	#left
 	{

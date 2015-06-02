@@ -7,7 +7,7 @@
 		echo 200;
 	}
 	else
-	if(checkLogin($mail,$pswd)){
+	if(login($mail,$pswd)){
 		$expire=time()+60*60*24*30;
 		setcookie("mail", $mail, $expire);
 		setcookie("pswd", $pswd, $expire);
