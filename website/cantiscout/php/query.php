@@ -4,14 +4,14 @@
 		$database = new medoo([
 				// required
 				'database_type' => 'mysql',
-				'database_name' => 'bit_cantiscout',//DB_NAME
+				'database_name' => 'cantiscout',//DB_NAME
 				'server' => 'localhost',
-				'username' => 'bit_cantiscout',//DB_USERNAME
-				'password' => 'bit_cantiscout',//PASSWORD
+				'username' => 'cantiscout',//DB_USERNAME
+				'password' => 'cantiscout',//PASSWORD
 				 
 				// optional
 				'port' => 3306,
-				'charset' => 'utf8',
+				//'charset' => 'utf8',
 				// driver_option for connection, read more from http://www.php.net/manual/en/pdo.setattribute.php
 				'option' => [
 				PDO::ATTR_CASE => PDO::CASE_NATURAL
@@ -55,6 +55,7 @@
 	function getUser($id){
 		$database=connect();
 		$res=$database->select("user",[
+			"id",
 			"mail",
 			"name",
             "picture"
@@ -72,7 +73,53 @@
 		]);
 		return $res;
 	}
-    
+    function updateUserName($name){
+		$id=getId();
+		$database=connect();		
+		$id_res=$database->update("user",[
+			"name"=>$name
+		],
+        [
+            "id[=]"=>$id
+        ]);
+        return $id_res;
+	}
+	function updateUserPicture($picture){
+		$id=getId();
+		$database=connect();		
+		$id_res=$database->update("user",[
+			"picture"=>$picture
+		],
+        [
+            "id[=]"=>$id
+        ]);
+        return $id_res;
+	}
+	function updateUserPswd($oldPswd,$newPswd){
+		$id=getId();		
+		$database=connect();
+		$id_res=$database->update("user",[
+			"pswd"=>$pswd
+		],
+        [
+			"AND" => [
+				"id[=]"=>$id,
+				"pswd" => $oldPswd
+			]            
+        ]);
+        return $id_res;
+	}
+    function updateUserDesc($description){
+		$id=getId();		
+		$database=connect();
+		$id_res=$database->update("user",[
+			"description"=>$description
+		],
+        [
+            "id[=]"=>$id
+        ]);
+        return $id_res;
+	}
     //GESTIONE CANZONI
 	function insertSong($title,$author,$body,$id_user)
 	{

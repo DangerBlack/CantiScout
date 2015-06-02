@@ -22,7 +22,7 @@ function loadUserSpace(path){
 				js=JSON.parse(data);
 				var info=js[0];
 				$("#userSpace").html('<li class="dropdown">'+
-											'<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">'+info.name+' <img src="'+info.avatar+'" class="small-circle" /> <span class="caret"></span></a>'+
+											'<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">'+info.name+' <img src="'+info.picture+'" class="small-circle" /> <span class="caret"></span></a>'+
 											 '<ul class="dropdown-menu" role="menu">'+
 												'<li><a href="profile.php">Profilo</a></li>'+
 												'<li class="divider"></li>'+
