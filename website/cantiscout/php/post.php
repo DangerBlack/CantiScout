@@ -1,4 +1,4 @@
-<?
+<?php
 	include('query.php');
 	
 	$title=$_POST['title'];
@@ -9,8 +9,7 @@
 		$id_user=getIdFromMail($_COOKIE["mail"]);
 		$b=checkSong($body);
 		if($b){
-			insertSong($title,$author,$body,$id_user);
-			$id_song=getMaxId();
+			$id_song=insertSong($title,$author,$body,$id_user);
 			insertLog($id_user,$id_song);
 			$tag=explode(",",$taglist);
 			for ($i = 0; $i < count($tag); $i++) {
@@ -28,11 +27,13 @@
 		$b=true;
 		for ($i = 0; $i < count($l); $i++) {
 			if(!isBalancedNotNested($l[$i],'[',']')){
+				echo "NON E' bilanciata []: ".$l[$i]."<br />";
 				$b=false;
 			}else{
 				//echo "E' bilanciata []: ".$l[$i]."<br />";
 			}
 			if(!isBalancedNotNested($l[$i],'{','}')){
+				echo "NON E' bilanciata {}: ".$l[$i]."<br />";
 				$b=false;
 			}else{
 				//echo "E' bilanciata {}: ".$l[$i]."<br />";
@@ -41,6 +42,7 @@
 				if(preg_match('/.*\{.*\}.*/',$l[$i])<=0){
 					if(preg_match('/#.*/',$l[$i])<=0){
 						if(preg_match('/ */',$l[$i])<=0){
+							echo $l[$i];
 							$b=false;
 						}else{
 							//echo "E' spazio ".$l[$i]."<br />";

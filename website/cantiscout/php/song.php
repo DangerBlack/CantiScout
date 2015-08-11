@@ -27,7 +27,7 @@
 		<script type="text/javascript" src="../js/mediaTools.js"></script>
 		 <script>
 			 $(document).ready(function(){
-				 init();
+				 //init();
 				 loadUserSpace("");
 				 var song=$("#songRaw").text();
 				 js=JSON.parse(song);
@@ -102,11 +102,13 @@
 						</div>
 						<div class="col-sm-5">
 							<div id="multimedia">							
-								<img id="big-img" class="img-big-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/>
+								<!-- <img id="big-img" class="img-big-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/> -->
 								<ul class="img-list">
+									<!-- 
 									<li><img class="img-small-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/></li>
 									<li><img class="img-small-prev" src="http://www.udine8.it/wp-content/uploads/2014/04/logo-agesci-22-6-05.gif" alt="scout song"/></li>
 									<li><img class="img-small-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/></li>
+									-->
 								</ul>
 							</div>
 							<br />

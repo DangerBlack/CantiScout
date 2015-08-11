@@ -14,8 +14,9 @@ function loadMediaIdSong(id,where,path){
 			'{"id":"2","kind":"img","url":"http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg","desc":""},'+
 			'{"id":"6","kind":"mp3","url":"http://www.cantiscout.it/audio/Madonna%20degli%20scout.mp3","desc":"Madonna degli scout bambini"}'+
 		']';
+	data='[]';
 	swhere=where.substring(1,where.length);
-	$(where).html('<img id="big-img" class="img-big-prev" src="http://yaleherald.com/wp-content/uploads/2013/02/boyscout.jpg" alt="scout song"/>'+
+	$(where).html('<img id="big-img" class="img-big-prev" src="../css/img/note.png" alt="scout song"/>'+
 				  '<ul id="'+swhere+'img" class="img-list"></ul><ul id="'+swhere+'mp3" class="img-list"></ul>');
 	var js=JSON.parse(data);
 	for(var i=0;i<js.length;i++){

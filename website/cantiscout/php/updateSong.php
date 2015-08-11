@@ -1,4 +1,4 @@
-<?
+<?php
 	include('query.php');
 	
 	$id_song=$_POST['id_song'];

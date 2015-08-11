@@ -21,11 +21,11 @@ function initProfile(){
 	});
 	$(".avatar-edit").click(function(){
 		var avatar=$("#userAvatar img").attr("src");
-		$("#userAvatar").html('<label>URL: </label><input id="desc-area" type="text" value="'+avatar+'" />');
+		$("#userAvatar").html('<label>URL: </label><input id="avatar-area" class="profile" type="text" value="'+avatar+'" />');
 		$(".avatar-edit").hide();
 		$(".avatar-send").show();
 		$(".avatar-send").click(function(){
-			var avatar=$("#desc-area").val();
+			var avatar=$("#avatar-area").val();
 			$.post("php/setUserInfo.php",{"kind":2,"picture":avatar},function(data){
 				$("#userAvatar").html('<img src="'+avatar+'" />');
 				$(".avatar-edit").hide();
@@ -35,7 +35,7 @@ function initProfile(){
 	});
 	$(".username-edit").click(function(){
 		var username=$("#username").text();
-		$("#username").html('<label>URL: </label><input id="username-area" type="text" value="'+username+'" />');
+		$("#username").html('<label>Username: </label><input id="username-area" class="profile" type="text" value="'+username+'" />');
 		$(".username-edit").hide();
 		$(".username-send").show();
 		$(".username-send").click(function(){

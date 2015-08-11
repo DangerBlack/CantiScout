@@ -223,6 +223,9 @@ button{
     background-attachment: fixed;
     background-size: 250px 250px;
 }
+input.profile{
+	width:100%;
+}
 @media only screen and (max-device-width: 480px){
 	#left
 	{

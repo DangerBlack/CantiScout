@@ -103,8 +103,15 @@
 						go=false;
 						return true;
 					}
+					var body=$("#body").val();
+					if(body.indexOf("{title:")==-1){
+						body="{title:"+$("#title").val()+"}\n"+body;
+					}
+					if((body.indexOf("{author:")==-1)&&($("#author").val()!="")){
+						body="{author:"+$("#author").val()+"}\n"+body;
+					}
 					if(go)
-					$.post("php/post.php",{"title":$("#title").val(),"author":$("#author").val(),"body":$("#body").val(),"tag":tag},function(data){
+					$.post("php/post.php",{"title":$("#title").val(),"author":$("#author").val(),"body":body,"tag":tag},function(data){
 							if(data=="201"){
 								$("#title").val("");
 								$("#author").val("");

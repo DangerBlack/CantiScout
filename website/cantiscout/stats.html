@@ -40,8 +40,52 @@
  <script type="text/javascript" > 
  $(document).ready(function(){
 					init();
-					var worker = new Worker('wordcloud_worker.js');
+					var worker = new Worker('js/wordcloud_worker.js');
+					
+					$.get("php/get.php",function(data){
+						//console.log("messaggio: "+data);
+						var js=JSON.parse(data).songlist;
+						worker.postMessage(js);	
+					});
+					
+					worker.onmessage = function(evento){
+						console.log("messaggio2: "+evento.data);
+						//parole=evento.data.split(':');
+						parole=evento.data;
+						var fill = d3.scale.category20();
+
+						d3.layout.cloud().size([800, 500])
+						  .words(parole.map(function(d) {
+							return {text: d[0], size: 10 + d[1]};
+						  }))
+						  .padding(5)
+						  .rotate(function() { return ((Math.random() * 2) * 90); })
+						  .font("Impact")
+						  .fontSize(function(d) { return d.size; })
+						  .on("end", draw)
+						  .start();
+
+						function draw(words) {
+						d3.select("#word-all").append("svg")
+							.attr("width", 800)
+							.attr("height", 500)
+						  .append("g")
+							.attr("transform", "translate(400,250)")
+						  .selectAll("text")
+							.data(words)
+						  .enter().append("text")
+							.style("font-size", function(d) { return d.size + "px"; })
+							.style("font-family", "Impact")
+							.style("fill", function(d, i) { return fill(i); })
+							.attr("text-anchor", "middle")
+							.attr("transform", function(d) {
+							  return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+							})
+							.text(function(d) { return d.text; });
+						}
 						
+						
+					}
 
 					$("#nSong").load('php/getStats.php?stats=song',function(){
 						var color=new Array();					

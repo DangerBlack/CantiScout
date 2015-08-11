@@ -119,8 +119,7 @@
 				  </div>
 				  <div class="col-md-4">
 					  <h2>Descrizione</h2>
-					  <article id="userDescription">
-					  </article>
+					  <article id="userDescription"></article>
 					  <div>
 						<button class="description-edit btn btn-xs btn-info" type="button">Modifica</button>
 						<button class="description-send btn btn-xs btn-info" type="button">Invia</button>
@@ -128,9 +127,9 @@
 				  </div>
 				  <div class="col-md-4 pswd">
 					  <h2>Password</h2>
-					  <input type="password" id="oldPswd" />
-					  <input type="password" id="newPswd" />
-					  <input type="password" id="newPswd2" />
+					  <input class="profile" type="password" id="oldPswd" placeholder="old password" />
+					  <input class="profile" type="password" id="newPswd" placeholder="new password" />
+					  <input class="profile" type="password" id="newPswd2" placeholder="confirm" />
 					  <div>
 						<button class="pswd-send btn btn-xs btn-info" type="button">Invia</button>
 					  </div>

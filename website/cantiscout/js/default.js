@@ -13,9 +13,14 @@ function caricaListaTag(id,where, path){
 }
 function loadUserSpace(path){
 	path = typeof path === 'undefined' ? 'php/' : path;
+	back="";
+	if(path!="php/"){
+		console.log("entrato");
+		back="../";
+	}
 	$.get(path+"getUserInfo.php",function(data){
 		if(data=="404"){
-			$("#userSpace").html('<li><a href="login.html">Login</a></li>');
+			$("#userSpace").html('<li><a href="'+back+'login.html">Login</a></li>');
 		}
 		else{
 			try{
@@ -31,11 +36,11 @@ function loadUserSpace(path){
 									'</li>');
 				$("#logout").click(function(){
 					$.post(path+"logout.php",function(){
-						location.replace("login.html");
+						location.replace(back+"login.html");
 					});
 				});
 			}catch(e){
-				$("#userSpace").html('<li><a href="login.html">Login</a></li>');
+				$("#userSpace").html('<li><a href="'+back+'login.html">Login</a></li>');
 			}
 		}
 	});          

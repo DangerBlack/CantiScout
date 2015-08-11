@@ -4,10 +4,10 @@
 		$database = new medoo([
 				// required
 				'database_type' => 'mysql',
-				'database_name' => 'cantiscout',//DB_NAME
+				'database_name' => 'bit_cantiscout',//DB_NAME
 				'server' => 'localhost',
-				'username' => 'cantiscout',//DB_USERNAME
-				'password' => 'cantiscout',//PASSWORD
+				'username' => 'bit_cantiscout',//DB_USERNAME
+				'password' => 'bit_cantiscout',//PASSWORD
 				 
 				// optional
 				'port' => 3306,
@@ -200,7 +200,7 @@
 	}
     
     //FUNZIONI CHE RESTITUISCONO DATI
-	function getMaxId(){
+	function getMaxId(){//TODO FIXME return 0
         $database=connect();
 		$max=$database->max("list",[
 			"id(max)"
