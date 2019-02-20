@@ -134,7 +134,10 @@ class SongTextState extends State {
     "ì": 1.2,
     "é": 3.0,
     "ù": 3.0,
+    "ò": 3.0,
     ".": 1.0,
+    ",": 1.0,
+    "#": 2.0,
   };
   double sumSpace(String text){
     double sum = 0;
@@ -199,19 +202,31 @@ class SongTextState extends State {
   }
 
   List<Widget> _buildSongRow(String row) {
+    print("**: "+row.length.toString());
     List<Widget> resp = new List<Widget>();
     if (expComment.hasMatch(row)) {
+      print("Commenti");
       if (expCommentL.hasMatch(row)) {
+        print("Commenti con annotazione");
         Match m = expCommentL.firstMatch(row);
         if (m.groupCount > 1) {
           String head = m.group(1);
           String tail = m.group(2);
+          var fStyleEdit = fStyle;
+          var fWeightEdit = fWeight;
+          if(head=="author"){
+            fStyleEdit = FontStyle.italic;
+          }else{
+            fWeightEdit = FontWeight.bold;
+          }
+
           resp.add(Text(
             tail,
-            style: new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
+            style: new TextStyle(fontSize: fSize, fontWeight: fWeightEdit, fontStyle: fStyleEdit),
           ));
         }
       } else {
+        print("Commenti senza annotazione");
         if (expInlineChorus.hasMatch(row)) {
           Match m = expInlineChorus.firstMatch(row);
           if (m.groupCount > 1) {
@@ -233,6 +248,7 @@ class SongTextState extends State {
             ));
           }
         } else {
+          print("ritornello inlinea");
           Match m = expComment.firstMatch(row);
           if (m.groupCount >= 1) {
             String head = m.group(1);
@@ -241,7 +257,7 @@ class SongTextState extends State {
               resp.add(Text(
                 "",
                 style:
-                    new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
+                    new TextStyle(fontSize: fSize),
               ));
               fStyle = FontStyle.italic;
             }
@@ -250,7 +266,7 @@ class SongTextState extends State {
               resp.add(Text(
                 "",
                 style:
-                    new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
+                    new TextStyle(fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
               ));
               fStyle = FontStyle.normal;
             }
@@ -258,13 +274,16 @@ class SongTextState extends State {
         }
       }
     }else {
+      print("not commento");
       if (expChord.hasMatch(row)) {
+        print("accordo");
         resp.addAll(_buildSongChordRow(row));
       }else{
+        print("Altro ignoto");
         resp.add(Text(
-          "",
+          row,
           style:
-          new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
+          new TextStyle(fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
         ));
       }
     }
@@ -274,7 +293,7 @@ class SongTextState extends State {
   Widget _buildSong(BuildContext context) {
     List<Widget> w = new List<Widget>();
 
-    List<String> q = this.song.body.split("\r\n");
+    List<String> q = this.song.body.split("\n");
 
     /*q.forEach((e) => w.add(Text(
           e,

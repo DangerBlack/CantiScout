@@ -3,6 +3,7 @@ import '../model/Song.dart';
 import '../model/SongList.dart';
 import '../FirstRoute.dart';
 import '../view/SongText.dart';
+import '../controller/Updater.dart';
 
 
 class SongUl extends State {
@@ -10,8 +11,18 @@ class SongUl extends State {
   final _suggestions = <String>[];
   SongList l = new SongList();
 
+  updateList() async {
+    if(l.list.isEmpty) {
+      SongList lg = await Updater.updateSongs();
+      setState(() {
+        l=lg;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    updateList();
     return Scaffold(
       appBar: AppBar(
         title: Text("Elenco canzoni"),

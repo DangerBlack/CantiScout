@@ -4,7 +4,7 @@ class SongList{
   List<Song> list = new List<Song>();
 
   SongList(){
-    Song c = new Song(
+    /*Song c = new Song(
         id: 0,
         title: "Al fuoco di bivacco",
         author: "Ugo foscolo",
@@ -25,7 +25,7 @@ class SongList{
         time: "2018-01-05",
         body: "{cordpro}"
     );
-    list.add(c);
+    list.add(c);*/
   }
 
   Song get(int i){
