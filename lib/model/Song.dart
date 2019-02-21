@@ -41,4 +41,7 @@ class Song{
     "body": body,
   };
 
+  List toDb(){
+    return [this.id,this.title,this.author,this.time,this.body];
+  }
 }

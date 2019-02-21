@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'FirstRoute.dart';
 import 'view/SongUl.dart';
 import 'controller/Updater.dart';
+import 'view/Homepage.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Homepage(),//MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }

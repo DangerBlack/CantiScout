@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../model/Song.dart';
+import '../model/Chartset.dart';
+
 
 import '../model/SongList.dart';
 import '../FirstRoute.dart';
@@ -64,6 +66,11 @@ class SongTextState extends State {
 
     return rp.getMinIntrinsicWidth(18);
   }
+
+  printD(String s){
+    //print(s);
+  }
+  /*
   Map<String, double> charset = {
     "a": 2.5,
     "b": 2.0,
@@ -138,8 +145,8 @@ class SongTextState extends State {
     ".": 1.0,
     ",": 1.0,
     "#": 2.0,
-  };
-  double sumSpace(String text){
+  };*/
+  double sumSpace(String text,Map<String, double> charset){
     double sum = 0;
     text.split("").forEach((d){
       if(charset.containsKey(d)) {
@@ -153,16 +160,15 @@ class SongTextState extends State {
   }
 
   String space(String text, String chords,String chord, String prevChord){
-      int a = chords.length;
-      int b = text.length;
-      /*while(a<b*1.55){
-        a = chords.length;
-        chords+="  ";
-      }*/
-      double sum = sumSpace(text);
-      double def = sumSpace(prevChord);
+      double sum = sumSpace(text,Charset.robotoRegular);
+      double def = sumSpace(prevChord,Charset.robotoBold);
+      printD("Sum :"+sum.toString()+" def: "+def.toString());
+      printD(text);
+      printD(chord);
+      printD(prevChord);
       sum-=def;
-      int i=0;
+      printD("Occorrono: "+sum.toString()+" spazi");
+      int i=1;
       while(i<sum){
         chords+=" ";
         i++;
@@ -192,6 +198,7 @@ class SongTextState extends State {
     resp.add(Text(
       chord,
       style: new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold, fontStyle: fStyle),
+      //style: new TextStyle(fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
       overflow: TextOverflow.ellipsis ,
     ));
     resp.add(Text(
@@ -202,12 +209,12 @@ class SongTextState extends State {
   }
 
   List<Widget> _buildSongRow(String row) {
-    print("**: "+row.length.toString());
+    printD("**: "+row.length.toString());
     List<Widget> resp = new List<Widget>();
     if (expComment.hasMatch(row)) {
-      print("Commenti");
+      printD("Commenti");
       if (expCommentL.hasMatch(row)) {
-        print("Commenti con annotazione");
+        printD("Commenti con annotazione");
         Match m = expCommentL.firstMatch(row);
         if (m.groupCount > 1) {
           String head = m.group(1);
@@ -226,7 +233,7 @@ class SongTextState extends State {
           ));
         }
       } else {
-        print("Commenti senza annotazione");
+        printD("Commenti senza annotazione");
         if (expInlineChorus.hasMatch(row)) {
           Match m = expInlineChorus.firstMatch(row);
           if (m.groupCount > 1) {
@@ -248,7 +255,7 @@ class SongTextState extends State {
             ));
           }
         } else {
-          print("ritornello inlinea");
+          printD("ritornello inlinea");
           Match m = expComment.firstMatch(row);
           if (m.groupCount >= 1) {
             String head = m.group(1);
@@ -274,12 +281,12 @@ class SongTextState extends State {
         }
       }
     }else {
-      print("not commento");
+      printD("not commento");
       if (expChord.hasMatch(row)) {
-        print("accordo");
+        printD("accordo");
         resp.addAll(_buildSongChordRow(row));
       }else{
-        print("Altro ignoto");
+        printD("Altro ignoto");
         resp.add(Text(
           row,
           style:

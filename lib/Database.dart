@@ -32,7 +32,7 @@ class DBProvider {
         onCreate: (Database db, int version) async {
 
           await db.execute("CREATE TABLE Song ("
-            "_id INTEGER PRIMARY KEY,"
+            "id INTEGER PRIMARY KEY,"
             "title TEXT NOT NULL,"
             "author TEXT,"
             "time TIMESTAMP NOT NULL,"
@@ -40,12 +40,12 @@ class DBProvider {
             ")");
 
           await db.execute("CREATE TABLE favourite ("
-              "_id INTEGER PRIMARY KEY,"
+              "id INTEGER PRIMARY KEY,"
               "id_song INTEGER NOT NULL UNIQUE"
               ")");
 
           await db.execute("CREATE TABLE tag ("
-              "_id INTEGER PRIMARY KEY,"
+              "id INTEGER PRIMARY KEY,"
               "id_song INTEGER NOT NULL,"
               "tag TEXT NOT NULL"
               ")");
@@ -65,4 +65,45 @@ class DBProvider {
     return list;
   }
 
+  newSong(Song song) async {
+    final db = await database;
+    var raw = await db.rawInsert(
+        "INSERT Into Client (id,title,author,time,body)"
+            " VALUES (?,?,?,?)",
+        song.toDb());
+    return raw;
+  }
+
+  updateSong(Song song) async {
+    final db = await database;
+    var res = await db.update("Song", song.toMap(),
+        where: "id = ?", whereArgs: [song.id]);
+    return res;
+  }
+
+  getSong(int id) async {
+    final db = await database;
+    var res = await db.query("Song", where: "id = ?", whereArgs: [id]);
+    return res.isNotEmpty ? Song.fromMap(res.first) : null;
+  }
+
+  hasSong(int id) async {
+    final db = await database;
+    var res = await db.query("Song", where: "id = ?", whereArgs: [id]);
+    return res.isNotEmpty;
+  }
+
+  updateOrInsertSong(Song song) async{
+    if(hasSong(song.id)){
+      updateSong(song);
+    }else{
+      newSong(song);
+    }
+  }
+
+  getLastDate() async {
+    final db = await database;
+    var res = await db.query("SELECT MAX(time) AS max FROM song");
+    return res.isNotEmpty ? res.first['max'] : null;
+  }
 }
