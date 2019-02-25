@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 
 import 'SongUl.dart';
 import '../model/Chartset.dart';
+import '../controller/Updater.dart';
 
 
 import '../model/SongList.dart';
@@ -10,8 +11,17 @@ import '../FirstRoute.dart';
 
 class Homepage extends StatelessWidget {
 
+  updateList() async {
+    SongList lg = await Updater.updateSongs();
+    if(lg.list.isNotEmpty){
+      print("Aggiornata!");
+    }else{
+      print("Up to date");
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    updateList();
     return Scaffold(
         appBar: AppBar(
           title: Text('Canti Scout'),

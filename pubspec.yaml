@@ -22,6 +22,7 @@ dependencies:
   sqflite: any
   path_provider: any
   http: ^0.12.0+1
+  share: any
 
 dev_dependencies:
   flutter_test:

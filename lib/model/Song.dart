@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'Tag.dart';
 
 Song songFromJson(String str) {
   final jsonData = json.decode(str);
@@ -17,6 +18,8 @@ class Song{
   String time;
   String body;
 
+  List<Tag> tags = new List<Tag>();
+
   Song({
     this.id,
     this.title,
@@ -26,7 +29,7 @@ class Song{
   });
 
   factory Song.fromMap(Map<String, dynamic> json) => new Song(
-    id: int.parse(json["id"]),
+    id: int.parse(json["id"].toString()),
     title: json["title"],
     author: json["author"],
     time: json["time"],
@@ -43,5 +46,10 @@ class Song{
 
   List toDb(){
     return [this.id,this.title,this.author,this.time,this.body];
+  }
+
+  setTags(List<Tag> tags){
+    this.tags = tags;
+
   }
 }

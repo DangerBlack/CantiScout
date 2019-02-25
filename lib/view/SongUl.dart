@@ -4,9 +4,12 @@ import '../model/SongList.dart';
 import '../FirstRoute.dart';
 import '../view/SongText.dart';
 import '../controller/Updater.dart';
+import '../controller/CustomSearchDelegate.dart';
+import '../Database.dart';
 
 class SongUlStateful extends StatefulWidget {
   SongUlStateful({Key key, this.title}) : super(key: key);
+
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -23,61 +26,82 @@ class SongUlStateful extends StatefulWidget {
   SongUl createState() => SongUl();
 //_MyHomePageState createState() => _MyHomePageState();
 }
+
 class SongUl extends State {
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final _suggestions = <String>[];
   SongList l = new SongList();
+  SongUl():super(){
+    updateList();
+  }
 
   updateList() async {
+    //TODO: lista
     if(l.list.isEmpty) {
-      SongList lg = await Updater.updateSongs();
+      List<Song> lg = await DBProvider.db.getAllSongs();
       setState(() {
-        l=lg;
+        l.list = lg;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    updateList();
+    //updateList();
     return Scaffold(
       appBar: AppBar(
         title: Text("Elenco canzoni"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: CustomSearchDelegate(),
+              );
+            },
+          ),
+        ],
       ),
-      body:  _buildList(),
+      body: buildList(),
     );
   }
 
   Widget _buildSongRow(Song pair) {
     return ListTile(
-      leading: const Icon(Icons.music_note),
-      title: Text(
-        pair.title,
-        style: _biggerFont,
-      ),
-      onTap: (){
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SongText(song:pair)),
-        );
-      }
-    );
+        leading: const Icon(Icons.music_note),
+        title: Text(
+          pair.title,
+          style: _biggerFont,
+        ),
+        subtitle: Text(
+          pair.author,
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SongText(song: pair)),
+          );
+        });
   }
-  Widget _buildList() {
+
+  Widget buildList() {
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
-        itemCount: l.list.length*2,
+        itemCount: l.list.length * 2,
         itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) return Divider(); /*2*/
+          if (i.isOdd) return Divider();
+          /*2*/
           int index = i ~/ 2;
           if (index <= l.list.length) {
             var s = l.get(index);
             return _buildSongRow(s);
-          }else{
+          } else {
             //TODO: Statement unreachable!!!!
             return null;
           }
         });
   }
-
 }
+
+

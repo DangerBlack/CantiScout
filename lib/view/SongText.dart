@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:share/share.dart';
 
 import '../model/Song.dart';
+import '../model/Tag.dart';
 import '../model/Chartset.dart';
-
+import '../Database.dart';
+import '../controller/CustomSearchDelegate.dart';
 
 import '../model/SongList.dart';
 import '../FirstRoute.dart';
@@ -21,7 +24,7 @@ class SongText extends StatefulWidget {
   SongText({Key key, this.song}) : super(key: key);
 
   @override
-  SongTextState createState() => SongTextState(song: this.song);
+  SongTextState createState() => SongTextState(this.song);
 }
 
 class SongTextState extends State {
@@ -46,136 +49,101 @@ class SongTextState extends State {
   int numberOfDays = 31;
   double previousfSize;
 
-  SongTextState({this.song});
+  List<Widget> w = new List<Widget>();
+
+  loadTagList() async {
+    print("vuoto!");
+    List<Tag> tags = await DBProvider.db.getTagsBySongId(this.song.id);
+    tags.forEach((t) {
+      print("#" + t.tag);
+    });
+    setState(() {
+      this.song.tags = tags;
+      build(context);
+    });
+  }
+
+  SongTextState(song) {
+    print("rebuild");
+    this.song = song;
+    loadTagList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(this.song.title),
+        actions:[
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () {
+              Share.share('check out my website https://example.com');
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {
+
+            },
+          ),
+        ],
       ),
       body: _buildSong(context),
+      floatingActionButton: FloatingActionButton(
+        //onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.edit),
+      ),
     );
   }
 
   double _calcWidth(String text) {
     RenderParagraph rp = RenderParagraph(
-      TextSpan(style: new TextStyle(fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle), text: text),
+      TextSpan(
+          style: new TextStyle(
+              fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
+          text: text),
       textDirection: TextDirection.ltr,
     );
 
     return rp.getMinIntrinsicWidth(18);
   }
 
-  printD(String s){
+  printD(String s) {
     //print(s);
   }
-  /*
-  Map<String, double> charset = {
-    "a": 2.5,
-    "b": 2.0,
-    "c": 2.0,
-    "d": 2.0,
-    "e": 2.0,
-    "f": 1.2,
-    "g": 2.0,
-    "h": 2.0,
-    "i": 1.2,
-    "l": 1.0,
-    "j": 1.0,
-    "k": 2.0,
-    "m": 3.75,
-    "n": 2.0,
-    "o": 2.0,
-    "p": 1.9,
-    "q": 2.0,
-    "r": 1.5,
-    "s": 2.0,
-    "t": 1.5,
-    "u": 2.0,
-    "v": 2.0,
-    "w": 2.0,
-    "x": 2.0,
-    "y": 2.0,
-    "z": 2.0,
-    "A": 3.0,
-    "B": 3.0,
-    "C": 3.0,
-    "D": 3.0,
-    "E": 3.0,
-    "F": 3.0,
-    "G": 3.0,
-    "H": 1.8,
-    "I": 3.0,
-    "L": 3.0,
-    "J": 3.0,
-    "K": 3.0,
-    "M": 4.0,
-    "N": 3.0,
-    "O": 3.0,
-    "P": 3.0,
-    "Q": 3.0,
-    "R": 3.0,
-    "S": 3.0,
-    "T": 3.0,
-    "U": 3.0,
-    "V": 3.0,
-    "W": 3.0,
-    "X": 3.0,
-    "Y": 3.0,
-    "Z": 3.0,
-    " ": 1.0,
-    "'": 1.0,
-    "-": 2.0,
-    "1": 1.0,
-    "2": 2.0,
-    "3": 2.0,
-    "4": 3.0,
-    "5": 3.0,
-    "6": 3.0,
-    "7": 3.0,
-    "8": 3.0,
-    "9": 3.0,
-    "è": 3.0,
-    "à": 3.0,
-    "ì": 1.2,
-    "é": 3.0,
-    "ù": 3.0,
-    "ò": 3.0,
-    ".": 1.0,
-    ",": 1.0,
-    "#": 2.0,
-  };*/
-  double sumSpace(String text,Map<String, double> charset){
+
+  double sumSpace(String text, Map<String, double> charset) {
     double sum = 0;
-    text.split("").forEach((d){
-      if(charset.containsKey(d)) {
+    text.split("").forEach((d) {
+      if (charset.containsKey(d)) {
         sum += charset[d];
-      }else{
+      } else {
         sum += 1.0;
-        print("Correggo per: "+d);
+        print("Correggo per: " + d);
       }
     });
     return sum;
   }
 
-  String space(String text, String chords,String chord, String prevChord){
-      double sum = sumSpace(text,Charset.robotoRegular);
-      double def = sumSpace(prevChord,Charset.robotoBold);
-      printD("Sum :"+sum.toString()+" def: "+def.toString());
-      printD(text);
-      printD(chord);
-      printD(prevChord);
-      sum-=def;
-      printD("Occorrono: "+sum.toString()+" spazi");
-      int i=1;
-      while(i<sum){
-        chords+=" ";
-        i++;
-      }
+  String space(String text, String chords, String chord, String prevChord) {
+    double sum = sumSpace(text, Charset.robotoRegular);
+    double def = sumSpace(prevChord, Charset.robotoBold);
+    printD("Sum :" + sum.toString() + " def: " + def.toString());
+    printD(text);
+    printD(chord);
+    printD(prevChord);
+    sum -= def;
+    printD("Occorrono: " + sum.toString() + " spazi");
+    int i = 1;
+    while (i < sum) {
+      chords += " ";
+      i++;
+    }
 
-      chords+=chord;
-      return chords;
+    chords += chord;
+    return chords;
   }
 
   List<Widget> _buildSongChordRow(String row) {
@@ -189,27 +157,29 @@ class SongTextState extends State {
       String match = m.group(0);
       int p = text.indexOf(match);
       text = text.replaceFirst(match, "");
-      match = match.substring(1,match.length-1);
-      chord = space(text.substring(prevP,p),chord,match,prevChord);
+      match = match.substring(1, match.length - 1);
+      chord = space(text.substring(prevP, p), chord, match, prevChord);
       prevP = p;
       prevChord = match;
     }
 
     resp.add(Text(
       chord,
-      style: new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold, fontStyle: fStyle),
+      style: new TextStyle(
+          fontSize: fSize, fontWeight: FontWeight.bold, fontStyle: fStyle),
       //style: new TextStyle(fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
-      overflow: TextOverflow.ellipsis ,
+      overflow: TextOverflow.ellipsis,
     ));
     resp.add(Text(
       text,
-      style: new TextStyle(fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
+      style: new TextStyle(
+          fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
     ));
     return resp;
   }
 
   List<Widget> _buildSongRow(String row) {
-    printD("**: "+row.length.toString());
+    printD("**: " + row.length.toString());
     List<Widget> resp = new List<Widget>();
     if (expComment.hasMatch(row)) {
       printD("Commenti");
@@ -221,15 +191,18 @@ class SongTextState extends State {
           String tail = m.group(2);
           var fStyleEdit = fStyle;
           var fWeightEdit = fWeight;
-          if(head=="author"){
+          if (head == "author") {
             fStyleEdit = FontStyle.italic;
-          }else{
+          } else {
             fWeightEdit = FontWeight.bold;
           }
 
           resp.add(Text(
             tail,
-            style: new TextStyle(fontSize: fSize, fontWeight: fWeightEdit, fontStyle: fStyleEdit),
+            style: new TextStyle(
+                fontSize: fSize,
+                fontWeight: fWeightEdit,
+                fontStyle: fStyleEdit),
           ));
         }
       } else {
@@ -243,11 +216,18 @@ class SongTextState extends State {
               style:
                   new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
             ));
-            resp.add(Text(
-              body,
-              style:
-                  new TextStyle(fontSize: fSize, fontStyle: FontStyle.italic),
-            ));
+            if (expChord.hasMatch(body)) {
+              fStyle = FontStyle.italic;
+              printD("accordo");
+              resp.addAll(_buildSongChordRow(body));
+              fStyle = FontStyle.normal;
+            }else {
+              resp.add(Text(
+                body,
+                style:
+                new TextStyle(fontSize: fSize, fontStyle: FontStyle.italic),
+              ));
+            }
             resp.add(Text(
               "",
               style:
@@ -263,8 +243,7 @@ class SongTextState extends State {
               //TODO: impostare bold
               resp.add(Text(
                 "",
-                style:
-                    new TextStyle(fontSize: fSize),
+                style: new TextStyle(fontSize: fSize),
               ));
               fStyle = FontStyle.italic;
             }
@@ -272,25 +251,25 @@ class SongTextState extends State {
               //TODO: impostare bold
               resp.add(Text(
                 "",
-                style:
-                    new TextStyle(fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
+                style: new TextStyle(
+                    fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
               ));
               fStyle = FontStyle.normal;
             }
           }
         }
       }
-    }else {
+    } else {
       printD("not commento");
       if (expChord.hasMatch(row)) {
         printD("accordo");
         resp.addAll(_buildSongChordRow(row));
-      }else{
+      } else {
         printD("Altro ignoto");
         resp.add(Text(
           row,
-          style:
-          new TextStyle(fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
+          style: new TextStyle(
+              fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
         ));
       }
     }
@@ -298,7 +277,7 @@ class SongTextState extends State {
   }
 
   Widget _buildSong(BuildContext context) {
-    List<Widget> w = new List<Widget>();
+    w = new List<Widget>();
 
     List<String> q = this.song.body.split("\n");
 
@@ -308,6 +287,63 @@ class SongTextState extends State {
         )));*/
     q.forEach((e) => w.addAll(_buildSongRow(e)));
 
+
+    if (this.song.tags.isNotEmpty) {
+      w.add(Divider());
+      w.add(Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.0),
+        child: Text(
+          'Tags:',
+          style: new TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.normal),
+        ),
+      ));
+
+      List<Widget> _tags = new List<Widget>();
+      this.song.tags.forEach((t) {
+        _tags.add( RaisedButton(
+              child: Text(
+                "#" + t.tag,
+                style: new TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal),
+              ),
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: CustomSearchDelegate.builder(t.tag),
+                );
+              },
+            ),
+        );
+      });
+      w.add(
+        Wrap(
+          spacing: 8.0, // gap between adjacent chips
+          runSpacing: 4.0,
+          children: _tags,
+        ),
+      );
+    }
+
+    w.add(Divider());
+
+    w.add( RaisedButton.icon(
+      icon: Icon(Icons.playlist_add),
+      label: Text("Aggiungi alla playlist"),
+      onPressed: () {
+
+      },
+    ),
+    );
+
+    w.add(Padding(
+      padding: EdgeInsets.symmetric(vertical: 20.0),
+      child: const Text(''),
+    ));
     return new GestureDetector(
       onScaleStart: (scaleDetails) => setState(() => previousfSize = fSize),
       onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
@@ -316,7 +352,10 @@ class SongTextState extends State {
         });
       },
       child: ListView(
-          shrinkWrap: true, padding: const EdgeInsets.all(20.0), children: w),
+        shrinkWrap: true,
+        padding: const EdgeInsets.all(20.0),
+        children: w,
+      ),
     );
   }
 }

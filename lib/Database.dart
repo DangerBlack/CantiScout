@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart';
 
 
 import 'model/Song.dart';
+import 'model/Tag.dart';
 
 
 // Database guide
@@ -41,12 +42,12 @@ class DBProvider {
 
           await db.execute("CREATE TABLE favourite ("
               "id INTEGER PRIMARY KEY,"
-              "id_song INTEGER NOT NULL UNIQUE"
+              "idSong INTEGER NOT NULL UNIQUE"
               ")");
 
-          await db.execute("CREATE TABLE tag ("
+          await db.execute("CREATE TABLE Tag ("
               "id INTEGER PRIMARY KEY,"
-              "id_song INTEGER NOT NULL,"
+              "idSong INTEGER NOT NULL,"
               "tag TEXT NOT NULL"
               ")");
         });
@@ -58,19 +59,44 @@ class DBProvider {
     print("Loading Songs!");
     // var res = await db.rawQuery("SELECT * FROM Client WHERE blocked=1");
     //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
-    var res = await db.query("Song");
+    var res = await db.query("Song",orderBy: "title");
 
     List<Song> list =
     res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];
     return list;
   }
 
+  Future<List<Song>> getSongs(String search) async {
+    final db = await database;
+
+    print("Loading Songs Filtered!");
+    // var res = await db.rawQuery("SELECT * FROM Client WHERE blocked=1");
+    //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
+    search = "%"+search+"%";
+    //var res = await db.query("Song",  where: "title LIKE ? or author LIKE ? or body LIKE ?", whereArgs: [search,search,search]);
+    var res = await db.rawQuery("SELECT * FROM  Song as s join Tag as t on s.id = t.idSong where s.title LIKE ? or s.author LIKE ? or s.body LIKE ? or t.tag LIKE ? GROUP BY s.id", [search,search,search,search]);
+
+    List<Song> list =
+    res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];
+    return list;
+  }
+
+  Future<List<String>> getSongsTitle(String search) async {
+    List<String> res=new List<String>();
+    List<Song> list = await getSongs(search);
+    list.forEach((song){
+      res.add(song.title);
+    });
+    return res;
+  }
+
   newSong(Song song) async {
     final db = await database;
-    var raw = await db.rawInsert(
-        "INSERT Into Client (id,title,author,time,body)"
+    /*var raw = await db.rawInsert(
+        "INSERT Into Song (id,title,author,time,body)"
             " VALUES (?,?,?,?)",
-        song.toDb());
+        [song.id,song.title,song.author,song.time,song.body]);*/
+    var raw = await db.insert("Song",song.toMap());
     return raw;
   }
 
@@ -94,16 +120,36 @@ class DBProvider {
   }
 
   updateOrInsertSong(Song song) async{
-    if(hasSong(song.id)){
-      updateSong(song);
+    bool t = await hasSong(song.id);
+    if(t){
+      return await updateSong(song);
     }else{
-      newSong(song);
+      return await newSong(song);
     }
+  }
+
+  Future<List<Tag>> getTagsBySongId(int idSong) async {
+    final db = await database;
+    var res = await db.query("Tag", where: "idSong = ?", whereArgs: [idSong]);
+
+    List<Tag> list =
+    res.isNotEmpty ? res.map((c) => Tag.fromMap(c)).toList() : [];
+    return list;
   }
 
   getLastDate() async {
     final db = await database;
-    var res = await db.query("SELECT MAX(time) AS max FROM song");
+    var res = await db.rawQuery("SELECT  MAX(time) AS max FROM Song");
     return res.isNotEmpty ? res.first['max'] : null;
+  }
+
+  newTag(Tag tag) async {
+    final db = await database;
+    /*var raw = await db.rawInsert(
+        "INSERT Into Song (id,title,author,time,body)"
+            " VALUES (?,?,?,?)",
+        [song.id,song.title,song.author,song.time,song.body]);*/
+    var raw = await db.insert("Tag",tag.toMap());
+    return raw;
   }
 }
