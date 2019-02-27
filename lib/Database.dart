@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart';
 
 
 import 'model/Song.dart';
+import 'model/Playlist.dart';
 import 'model/Tag.dart';
 
 
@@ -40,9 +41,18 @@ class DBProvider {
             "body TEXT NOT NULL"
             ")");
 
-          await db.execute("CREATE TABLE favourite ("
+          await db.execute("CREATE TABLE Playlist ("
               "id INTEGER PRIMARY KEY,"
-              "idSong INTEGER NOT NULL UNIQUE"
+              "title INTEGER NOT NULL UNIQUE,"
+              "idUser INTEGER NOT NULL,"
+              "permission INTEGER NOT NULL,"
+              "time TIMESTAMP NOT NULL"
+              ")");
+
+          await db.execute("CREATE TABLE PlaylistSong ("
+              "id INTEGER PRIMARY KEY,"
+              "idPlaylist INTEGER NOT NULL,"
+              "idSong INTEGER NOT NULL"
               ")");
 
           await db.execute("CREATE TABLE Tag ("
@@ -151,5 +161,19 @@ class DBProvider {
         [song.id,song.title,song.author,song.time,song.body]);*/
     var raw = await db.insert("Tag",tag.toMap());
     return raw;
+  }
+
+
+  //Playlist
+
+  Future<List<Playlist>> getAllPlaylist() async {
+    final db = await database;
+
+    print("Loading Playlist!");
+    var res = await db.query("Playlist",orderBy: "title");
+
+    List<Playlist> list =
+    res.isNotEmpty ? res.map((c) => Playlist.fromMap(c)).toList() : [];
+    return list;
   }
 }

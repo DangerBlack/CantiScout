@@ -16,17 +16,31 @@ class SongUlSearchStateful extends StatefulWidget {
   // always marked "final".
 
   final String title;
-  final String search;
+  String search;
+  SongUlSearch state;
 
   @override
-  SongUlSearch createState() => SongUlSearch(search);
+  SongUlSearch createState() {
+    state = SongUlSearch(search);
+    return state;
+  }
+
+  updateList(String search) {
+    this.search = search;
+    if(state == null){
+      createState();
+    }else {
+      state.updateListS(search);
+    }
+  }
 //_MyHomePageState createState() => _MyHomePageState();
+
 }
 
-class SongUlSearch extends SongUl{
-  final String search;
+class SongUlSearch extends SongUl {
+  String search;
 
-  SongUlSearch(this.search): super(){
+  SongUlSearch(this.search) : super() {
     updateList();
   }
 
@@ -34,17 +48,27 @@ class SongUlSearch extends SongUl{
     updateList();
   }*/
 
+  updateListS(String search) async {
+    print("Aggiorno lista!");
+    List<Song> lg = await DBProvider.db.getSongs(search);
+    setState(() {
+      l.list = lg;
+    });
+  }
+
+  //TODO: Questo metodo va in errore perchè viene chiamata la setState nel costruttore!!!!
   updateList() async {
-    if(l.list.isEmpty) {
+    if (l.list.isEmpty) {
       List<Song> lg = await DBProvider.db.getSongs(search);
       setState(() {
         l.list = lg;
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     //updateList();
-    return  buildList();
+    return buildList();
   }
 }

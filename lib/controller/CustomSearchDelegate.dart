@@ -5,15 +5,22 @@ import '../Database.dart';
 //https://medium.com/flutterpub/implementing-search-in-flutter-17dc5aa72018
 
 class CustomSearchDelegate extends SearchDelegate {
+
+  SongUlSearchStateful songsState;
   //final SongUl songUl;
-  CustomSearchDelegate():super();
+  CustomSearchDelegate():super(){
+    print("Costruisco songState 1 ");
+    this.songsState = new SongUlSearchStateful(title:"titolo",search:"");
+  }
 
   String needle="";
 
   CustomSearchDelegate.builder(String text):super(){
+    print("Costruisco songState 2 ");
     print(text);
     query = text;
     needle = text;
+    this.songsState = new SongUlSearchStateful(title:"titolo",search:query);
   }
   
   @override
@@ -58,7 +65,10 @@ class CustomSearchDelegate extends SearchDelegate {
           )
         ],
       );*/
-      return SongUlSearchStateful(title:"titolo",search:query);
+      print("Richiedo songState ");
+      print(this.songsState);
+      this.songsState.updateList(query);
+      return this.songsState;
   }
 
   updateList(String search) async {
@@ -76,8 +86,8 @@ class CustomSearchDelegate extends SearchDelegate {
     // TODO: implement buildSuggestions
     //return new SongUlSearchStateful(title:"titolo",search:query);
 
-
-    return Column();
+    this.songsState.updateList(query);
+    return this.songsState;
   }
 
 }

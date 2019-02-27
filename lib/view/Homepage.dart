@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'SongUl.dart';
-import '../model/Chartset.dart';
+import 'SongUlStateless.dart';
+import 'PlaylistUl.dart';
+import '../model/Song.dart';
 import '../controller/Updater.dart';
+import '../Database.dart';
+
 
 
 import '../model/SongList.dart';
@@ -18,6 +22,15 @@ class Homepage extends StatelessWidget {
     }else{
       print("Up to date");
     }
+  }
+
+  routeSongs(BuildContext context) async{
+    List<Song> songs = await DBProvider.db.getAllSongs();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SongUlStateless(songs)),
+      //MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
+    );
   }
   @override
   Widget build(BuildContext context) {
@@ -39,10 +52,11 @@ class Homepage extends StatelessWidget {
                         title: Text('Canzoniere'),
                         subtitle: Text('Ascolta tutte le canzoni'),
                         onTap: (){
-                          Navigator.push(
+                          routeSongs(context);
+                          /*Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
-                          );
+                          );*/
                         }
                     ),
                   ],
@@ -52,10 +66,16 @@ class Homepage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    const ListTile(
+                    ListTile(
                       leading: Icon(Icons.album),
                       title: Text('Playlist'),
                       subtitle: Text('Tutte le playlist'),
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PlaylistUlStateful(title: 'Flutter Demo Home Page')),
+                          );
+                        }
                     ),
                   ],
                 ),

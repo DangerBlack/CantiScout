@@ -4,6 +4,7 @@ import 'package:share/share.dart';
 
 import '../model/Song.dart';
 import '../model/Tag.dart';
+import '../model/Constants.dart';
 import '../model/Chartset.dart';
 import '../Database.dart';
 import '../controller/CustomSearchDelegate.dart';
@@ -28,12 +29,13 @@ class SongText extends StatefulWidget {
 }
 
 class SongTextState extends State {
+
   final RegExp expChord = new RegExp(r"\[([^\]]*)\]");
   final RegExp expSharp = new RegExp(r"#.*");
   final RegExp expComment = new RegExp(r".*\{(.*)\}.*");
   final RegExp expCommentL = new RegExp(r".*\{(.*):(.*)\}.*");
   final RegExp expInlineChorus =
-      new RegExp(r".*\{(soc|start_of_chorus)\}(.*)\{(eoc|end_of_chorus)\}.*");
+  new RegExp(r".*\{(soc|start_of_chorus)\}(.*)\{(eoc|end_of_chorus)\}.*");
 
   final RegExp expTComment = new RegExp(r"c|comment");
   final RegExp expTitleComment = new RegExp(r"t|title");
@@ -74,11 +76,13 @@ class SongTextState extends State {
     return Scaffold(
       appBar: AppBar(
         title: Text(this.song.title),
-        actions:[
+        actions: [
           IconButton(
             icon: Icon(Icons.share),
             onPressed: () {
-              Share.share('check out my website https://example.com');
+              String url = Constants.urlPathSong + "?id=" +
+                  this.song.id.toString();
+              Share.share('Ecco il testo della canzone ' + url);
             },
           ),
           IconButton(
@@ -92,7 +96,7 @@ class SongTextState extends State {
       body: _buildSong(context),
       floatingActionButton: FloatingActionButton(
         //onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        tooltip: 'Edit',
         child: Icon(Icons.edit),
       ),
     );
@@ -214,14 +218,14 @@ class SongTextState extends State {
             resp.add(Text(
               "",
               style:
-                  new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
+              new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
             ));
             if (expChord.hasMatch(body)) {
               fStyle = FontStyle.italic;
               printD("accordo");
               resp.addAll(_buildSongChordRow(body));
               fStyle = FontStyle.normal;
-            }else {
+            } else {
               resp.add(Text(
                 body,
                 style:
@@ -231,7 +235,7 @@ class SongTextState extends State {
             resp.add(Text(
               "",
               style:
-                  new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
+              new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
             ));
           }
         } else {
@@ -303,21 +307,21 @@ class SongTextState extends State {
 
       List<Widget> _tags = new List<Widget>();
       this.song.tags.forEach((t) {
-        _tags.add( RaisedButton(
-              child: Text(
-                "#" + t.tag,
-                style: new TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.normal),
-              ),
-              onPressed: () {
-                showSearch(
-                  context: context,
-                  delegate: CustomSearchDelegate.builder(t.tag),
-                );
-              },
-            ),
+        _tags.add(RaisedButton(
+          child: Text(
+            "#" + t.tag,
+            style: new TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.normal),
+          ),
+          onPressed: () {
+            showSearch(
+              context: context,
+              delegate: CustomSearchDelegate.builder(t.tag),
+            );
+          },
+        ),
         );
       });
       w.add(
@@ -331,13 +335,23 @@ class SongTextState extends State {
 
     w.add(Divider());
 
-    w.add( RaisedButton.icon(
-      icon: Icon(Icons.playlist_add),
-      label: Text("Aggiungi alla playlist"),
-      onPressed: () {
+    w.add(
+      Ink(
+        decoration: ShapeDecoration(
+          color: Colors.green,
+          shape: CircleBorder(),
+        ),
+        child: IconButton(
+          color: Colors.white,
+          icon: Icon(Icons.playlist_add),
+          iconSize: 30.0,
+          tooltip: "Aggiungi alla playlist",
+          padding: EdgeInsets.all(15.0),
+          onPressed: () {
 
-      },
-    ),
+          },
+        ),
+      ),
     );
 
     w.add(Padding(
