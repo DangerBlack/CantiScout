@@ -24,7 +24,10 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: Homepage(),//MyHomePage(title: 'Flutter Demo Home Page'),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Homepage(), // MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -45,7 +48,7 @@ class MyHomePage extends StatefulWidget {
 
   @override
   SongUl createState() => SongUl();
-  //_MyHomePageState createState() => _MyHomePageState();
+//_MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -82,7 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body:  _buildSuggestions(),/*Center(
+      body: _buildSuggestions(),
+      /*Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -129,18 +133,20 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
   Widget _buildSuggestions() {
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) return Divider(); /*2*/
+          if (i.isOdd) return Divider();
+          /*2*/
 
           final index = i ~/ 2; /*3*/
           if (index >= _suggestions.length) {
-            _suggestions.addAll(["Canzoniere","Playlist","Statistiche","Altro..."]); /*4*/
+            _suggestions.addAll(
+                ["Canzoniere", "Playlist", "Statistiche", "Altro..."]); /*4*/
           }
           return _buildRow(_suggestions[index]);
         });
   }
-
 }

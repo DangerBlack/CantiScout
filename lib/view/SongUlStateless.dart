@@ -10,11 +10,13 @@ import '../Database.dart';
 
 class SongUlStateless extends StatelessWidget {
   final _biggerFont = const TextStyle(fontSize: 18.0);
+  String title = "Elenco canzoni";
   SongList l = new SongList();
-  SongUlStateless(List<Song> songs):super(){
+
+  SongUlStateless(List<Song> songs,String title):super(){
+    this.title = title;
     updateList(songs);
   }
-
   updateList(List<Song> songs){
     l.list = songs;
   }
@@ -24,7 +26,7 @@ class SongUlStateless extends StatelessWidget {
     //updateList();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Elenco canzoni"),
+        title: Text(title),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
@@ -43,7 +45,7 @@ class SongUlStateless extends StatelessWidget {
 
   Widget _buildSongRow(BuildContext context,Song pair) {
     return ListTile(
-        leading: const Icon(Icons.album),
+        leading: const Icon(Icons.music_note),
         title: Text(
           pair.title,
           style: _biggerFont,

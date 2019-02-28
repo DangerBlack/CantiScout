@@ -176,4 +176,35 @@ class DBProvider {
     res.isNotEmpty ? res.map((c) => Playlist.fromMap(c)).toList() : [];
     return list;
   }
+
+  newPlaylist(String title) async {
+    final db = await database;
+    var raw = await db.rawInsert(
+        "INSERT Into Playlist (title,idUser,permission,time)"
+            " VALUES (?,?,?,?)",
+        [title,0,0,new DateTime.now().millisecondsSinceEpoch]);
+    return raw;
+  }
+
+  Future<List<Song>> getAllPlaylistSongs(int idPlaylist) async {
+    final db = await database;
+
+    print("Loading Songs!");
+    // var res = await db.rawQuery("SELECT * FROM Client WHERE blocked=1");
+    //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
+    var res = await db.rawQuery("SELECT * FROM  Song as s join PlaylistSong as p on s.id = p.idSong WHERE p.idPlaylist = ? ORDER BY s.title ",[idPlaylist]);
+
+    List<Song> list =
+    res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];
+    return list;
+  }
+
+  newSongPlaylist(Playlist pl, Song song) async {
+    final db = await database;
+    var raw = await db.rawInsert(
+        "INSERT Into PlaylistSong (idPlaylist,idSong)"
+            " VALUES (?,?)",
+        [pl.id,song.id]);
+    return raw;
+  }
 }

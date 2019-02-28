@@ -8,9 +8,7 @@ import '../model/Constants.dart';
 import '../model/Chartset.dart';
 import '../Database.dart';
 import '../controller/CustomSearchDelegate.dart';
-
-import '../model/SongList.dart';
-import '../FirstRoute.dart';
+import '../view/ChoosePlaylist.dart';
 
 class SongText extends StatefulWidget {
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -348,7 +346,10 @@ class SongTextState extends State {
           tooltip: "Aggiungi alla playlist",
           padding: EdgeInsets.all(15.0),
           onPressed: () {
-
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChoosePlaylistStateful(title:"Titolo", song: this.song)),
+            );
           },
         ),
       ),

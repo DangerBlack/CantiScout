@@ -30,8 +30,8 @@ class Playlist{
       id: int.parse(json["id"].toString()),
       title: json["title"],
       idUser: int.parse(json["idUser"].toString()),
-      time: json["time"],
-      permission: json["permission"]
+      time: json["time"].toString(),
+      permission: json["permission"].toString(),
   );
 
   Map<String, dynamic> toMap() => {
