@@ -12,7 +12,6 @@ import '../Database.dart';
 class CreatePlaylistStatefull extends StatefulWidget {
   CreatePlaylistStatefull({Key key, this.title}) : super(key: key);
 
-
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -34,25 +33,25 @@ class CreatePlaylist extends State {
   final myController = TextEditingController();
   bool _validate = false;
 
-  routePlaylistSong(BuildContext context, String title, int id) async{
+  routePlaylistSong(BuildContext context, String title, int id) async {
     //TODO: Aprire playlist appena creata!
     List<Song> songs = await DBProvider.db.getAllPlaylistSongs(id);
     Navigator.pop(context);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SongUlStateless(songs,title)),
+      MaterialPageRoute(builder: (context) => SongUlStateless(songs, title)),
       //MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
     );
   }
 
   createPlaylist(BuildContext context) async {
     var text = myController.text;
-    if(text.isNotEmpty) {
+    if (text.isNotEmpty) {
       print(text);
       int t = await DBProvider.db.newPlaylist(text);
       routePlaylistSong(context, text, t);
       _validate = false;
-    }else{
+    } else {
       setState(() {
         _validate = true;
       });
@@ -71,59 +70,60 @@ class CreatePlaylist extends State {
     //updateList();
     return Scaffold(
       body: Center(
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-
-              Text(
-                  "Dai un nome alla tua playlist.",
-                  style: TextStyle( fontWeight: FontWeight.bold),
-              ),
-              Padding(
-                padding: EdgeInsets.all(40.0),
-                child: TextField(
-                  textAlign: TextAlign.center,
-                  controller: myController,
-                  decoration: InputDecoration(
-                    labelText: 'Plylist name',
-                    errorText: _validate ? 'Value Can\'t Be Empty' : null,
+        child: ListView(children: [
+          new Hero(
+            tag: 'hero',
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
+              child: CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius: 48.0,
+                  child: Icon(Icons.album), //Image.asset('assets/flutter-icon.png'),
                   ),
+            ),
+          ),
+          Text(
+            "Dai un nome alla tua playlist.",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Padding(
+            padding: EdgeInsets.all(40.0),
+            child: TextField(
+              textAlign: TextAlign.center,
+              controller: myController,
+              decoration: InputDecoration(
+                labelText: 'Plylist name',
+                errorText: _validate ? 'Value Can\'t Be Empty' : null,
+              ),
+            ),
+          ),
+          Row(children: [
+            Expanded(
+              child: FlatButton(
+                child: Text(
+                  "ANNULLA",
+                  style: TextStyle(color: Colors.grey),
                 ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              Row(
-                  children: [
-                    Expanded(
-                      child:
-                      FlatButton(
-                        child: Text(
-                          "ANNULLA",
-                          style: TextStyle( color: Colors.grey),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      child:
-                      FlatButton(
-                        child: Text(
-                          "CREA",
-                          style: TextStyle(),
-                        ),
-                        onPressed: () {
-                          createPlaylist(context);
-                        },
-                      ),
-                    ),
-                  ]
+            ),
+            Expanded(
+              child: FlatButton(
+                child: Text(
+                  "CREA",
+                  style: TextStyle(),
+                ),
+                onPressed: () {
+                  createPlaylist(context);
+                },
               ),
-            ]
-        ),
+            ),
+          ]),
+        ]),
       ),
     );
   }
-
 }
-
-
