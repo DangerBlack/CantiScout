@@ -154,7 +154,7 @@ class Settings extends State {
     settings.add(
       new ListTile(
         leading: Icon(
-          Icons.color_lens,
+          Icons.color_lens, //fiber_manual_record
           color: pickerColor,
         ),
         title: Text("Colore accordi"),

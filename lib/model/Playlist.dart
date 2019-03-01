@@ -17,6 +17,7 @@ class Playlist{
   int idUser;
   String permission;
   String time;
+  int songCount;
 
   Playlist({
     this.id,
@@ -24,6 +25,7 @@ class Playlist{
     this.idUser,
     this.permission,
     this.time,
+    this.songCount
   });
 
   factory Playlist.fromMap(Map<String, dynamic> json) => new Playlist(
@@ -32,6 +34,7 @@ class Playlist{
       idUser: int.parse(json["idUser"].toString()),
       time: json["time"].toString(),
       permission: json["permission"].toString(),
+      songCount: json["songCount"],
   );
 
   Map<String, dynamic> toMap() => {
@@ -40,5 +43,6 @@ class Playlist{
     "idUser": idUser,
     "time": time,
     "permission": permission,
+    "songCount": songCount,
   };
 }

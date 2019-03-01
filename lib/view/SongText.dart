@@ -9,6 +9,7 @@ import '../model/Chartset.dart';
 import '../Database.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../view/ChoosePlaylist.dart';
+import '../view/EditSongText.dart';
 
 class SongText extends StatefulWidget {
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -27,13 +28,12 @@ class SongText extends StatefulWidget {
 }
 
 class SongTextState extends State {
-
   final RegExp expChord = new RegExp(r"\[([^\]]*)\]");
   final RegExp expSharp = new RegExp(r"#.*");
   final RegExp expComment = new RegExp(r".*\{(.*)\}.*");
   final RegExp expCommentL = new RegExp(r".*\{(.*):(.*)\}.*");
   final RegExp expInlineChorus =
-  new RegExp(r".*\{(soc|start_of_chorus)\}(.*)\{(eoc|end_of_chorus)\}.*");
+      new RegExp(r".*\{(soc|start_of_chorus)\}(.*)\{(eoc|end_of_chorus)\}.*");
 
   final RegExp expTComment = new RegExp(r"c|comment");
   final RegExp expTitleComment = new RegExp(r"t|title");
@@ -78,22 +78,27 @@ class SongTextState extends State {
           IconButton(
             icon: Icon(Icons.share),
             onPressed: () {
-              String url = Constants.urlPathSong + "?id=" +
-                  this.song.id.toString();
+              String url =
+                  Constants.urlPathSong + "?id=" + this.song.id.toString();
               Share.share('Ecco il testo della canzone ' + url);
             },
           ),
           IconButton(
             icon: Icon(Icons.more_vert),
-            onPressed: () {
-
-            },
+            onPressed: () {},
           ),
         ],
       ),
       body: _buildSong(context),
       floatingActionButton: FloatingActionButton(
-        //onPressed: _incrementCounter,
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditSongText(song: this.song),
+            ),
+          );
+        },
         tooltip: 'Edit',
         child: Icon(Icons.edit),
       ),
@@ -216,7 +221,7 @@ class SongTextState extends State {
             resp.add(Text(
               "",
               style:
-              new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
+                  new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
             ));
             if (expChord.hasMatch(body)) {
               fStyle = FontStyle.italic;
@@ -227,13 +232,13 @@ class SongTextState extends State {
               resp.add(Text(
                 body,
                 style:
-                new TextStyle(fontSize: fSize, fontStyle: FontStyle.italic),
+                    new TextStyle(fontSize: fSize, fontStyle: FontStyle.italic),
               ));
             }
             resp.add(Text(
               "",
               style:
-              new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
+                  new TextStyle(fontSize: fSize, fontWeight: FontWeight.bold),
             ));
           }
         } else {
@@ -289,7 +294,6 @@ class SongTextState extends State {
         )));*/
     q.forEach((e) => w.addAll(_buildSongRow(e)));
 
-
     if (this.song.tags.isNotEmpty) {
       w.add(Divider());
       w.add(Padding(
@@ -298,28 +302,34 @@ class SongTextState extends State {
           'Tags:',
           style: new TextStyle(
               fontSize: 18.0,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.normal,
               fontStyle: FontStyle.normal),
         ),
       ));
 
       List<Widget> _tags = new List<Widget>();
       this.song.tags.forEach((t) {
-        _tags.add(RaisedButton(
-          child: Text(
-            "#" + t.tag,
-            style: new TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.normal),
+        _tags.add(
+          RaisedButton(
+            //elevation: 5.0,
+            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+            color: Theme.of(context).primaryColorLight,
+            child: Text(
+              "#" + t.tag,
+              style: new TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.normal,
+                  fontStyle: FontStyle.normal,
+                  //color: Colors.white
+              ),
+            ),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: CustomSearchDelegate.builder(t.tag),
+              );
+            },
           ),
-          onPressed: () {
-            showSearch(
-              context: context,
-              delegate: CustomSearchDelegate.builder(t.tag),
-            );
-          },
-        ),
         );
       });
       w.add(
@@ -334,24 +344,66 @@ class SongTextState extends State {
     w.add(Divider());
 
     w.add(
-      Ink(
-        decoration: ShapeDecoration(
-          color: Colors.green,
-          shape: CircleBorder(),
-        ),
-        child: IconButton(
-          color: Colors.white,
-          icon: Icon(Icons.playlist_add),
-          iconSize: 30.0,
-          tooltip: "Aggiungi alla playlist",
-          padding: EdgeInsets.all(15.0),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChoosePlaylistStateful(title:"Titolo", song: this.song)),
-            );
-          },
-        ),
+      Row(
+        children: [
+          Expanded(
+            child: Ink(
+              decoration: ShapeDecoration(
+                color: Colors.green,
+                shape: CircleBorder(),
+              ),
+              child: IconButton(
+                color: Colors.white,
+                icon: Icon(Icons.playlist_add),
+                iconSize: 30.0,
+                tooltip: "Aggiungi alla playlist",
+                padding: EdgeInsets.all(15.0),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChoosePlaylistStateful(
+                            title: "Titolo", song: this.song)),
+                  );
+                },
+              ),
+            ),
+          ),
+          Expanded(
+            child: Ink(
+              decoration: ShapeDecoration(
+                color: Theme.of(context).primaryColorDark,
+                shape: CircleBorder(),
+              ),
+              child: IconButton(
+                color: Colors.white,
+                icon: Icon(Icons.add_photo_alternate),
+                iconSize: 30.0,
+                tooltip: "Carica Media",
+                padding: EdgeInsets.all(15.0),
+                onPressed: () {
+                },
+              ),
+            ),
+          ),
+          Expanded(
+            child: Ink(
+              decoration: ShapeDecoration(
+                color: Theme.of(context).errorColor,
+                shape: CircleBorder(),
+              ),
+              child: IconButton(
+                color: Colors.white,
+                icon: Icon(Icons.report),
+                iconSize: 30.0,
+                tooltip: "Segnala un abuso",
+                padding: EdgeInsets.all(15.0),
+                onPressed: () {
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
 

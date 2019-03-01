@@ -83,6 +83,9 @@ class PlaylistUl extends State {
         pair.title,
         style: _biggerFont,
       ),
+      subtitle: Text(
+        pair.songCount.toString()+" bran"+(pair.songCount>1||pair.songCount==0 ?"i":"o"),
+      ),
       onTap: () {
         routePlaylistSong(context, pair);
       },

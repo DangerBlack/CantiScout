@@ -8,6 +8,7 @@ import 'SongUl.dart';
 import 'SongUlStateless.dart';
 import 'PlaylistUl.dart';
 import 'Settings.dart';
+import 'LoginSignUpPage.dart';
 import '../model/Song.dart';
 import '../model/DrawerItem.dart';
 import '../controller/Updater.dart';
@@ -18,15 +19,22 @@ import '../model/Constants.dart';
 import '../FirstRoute.dart';
 
 class Homepage extends StatelessWidget {
+
+  EdgeInsets _cardMargin = new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0);
+  EdgeInsets _listPadding = EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0);
+  double _tileHeight = 100.0;
+  double _cardElevation = 1.0;
+
+
   final drawerItems = [
     new DrawerItem("Sincronizza", Icons.sync, null),
     new DrawerItem("Account", Icons.account_circle, null),
     new Divider(),
-    new DrawerItem("Impostazioni", Icons.settings, (context){
+    new DrawerItem("Impostazioni", Icons.settings, (context) {
       Navigator.push(
         context,
         MaterialPageRoute(
-        builder: (context) => SettingsStateful(title:"Settings")),
+            builder: (context) => SettingsStateful(title: "Settings")),
       );
     }),
     new DrawerItem("Guida", Icons.help_outline, null),
@@ -57,9 +65,10 @@ class Homepage extends StatelessWidget {
       //MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
     );
   }
-  _onSelectItem(BuildContext context,int index){
+
+  _onSelectItem(BuildContext context, int index) {
     DrawerItem d = drawerItems[index];
-    if(d.action != null) {
+    if (d.action != null) {
       d.action(context);
     }
   }
@@ -76,7 +85,7 @@ class Homepage extends StatelessWidget {
           leading: new Icon(d.icon),
           title: new Text(d.title),
 //            selected: i == _selectedDrawerIndex,
-            onTap: () => _onSelectItem(context, i),
+          onTap: () => _onSelectItem(context, i),
         ));
       } else {
         drawerOptions.add(d);
@@ -91,9 +100,9 @@ class Homepage extends StatelessWidget {
                 accountName: new Text("John Doe"),
                 accountEmail: new Text("utente@utente.it"),
                 currentAccountPicture: new CircleAvatar(
-                  backgroundImage: NetworkImage(Constants.gravatarUrl+generateMd5("danger.recheng@hotmail.it")),
-                )
-            ),
+                  backgroundImage: NetworkImage(Constants.gravatarUrl +
+                      generateMd5("danger.recheng@hotmail.it")),
+                )),
             new Column(children: drawerOptions)
           ],
         ),
@@ -101,59 +110,81 @@ class Homepage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Canti Scout'),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
+      body: ListView(
         children: [
           Padding(
             padding: EdgeInsets.all(20.0),
           ),
           Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ListTile(
-                    leading: Icon(Icons.book),
-                    title: Text('Canzoniere'),
-                    subtitle: Text('Ascolta tutte le canzoni'),
-                    onTap: () {
-                      routeSongs(context);
-                      /*Navigator.push(
+            margin: _cardMargin,
+            elevation: _cardElevation,
+            child: Container(
+              height: _tileHeight,
+              child: ListTile(
+                  contentPadding: _listPadding,
+                  leading: Icon(Icons.book),
+                  title: Text('Canzoniere'),
+                  subtitle: Text('Ascolta tutte le canzoni'),
+                  onTap: () {
+                    routeSongs(context);
+                    /*Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
                           );*/
-                    }),
-              ],
+                  }),
             ),
           ),
           Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ListTile(
-                    leading: Icon(Icons.album),
-                    title: Text('Playlist'),
-                    subtitle: Text('Tutte le playlist'),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PlaylistUlStateful(
-                                title: 'Flutter Demo Home Page')),
-                      );
-                    }),
-              ],
+            margin: _cardMargin,
+            elevation: _cardElevation,
+            child: Container(
+              height: _tileHeight,
+              child: ListTile(
+                  contentPadding: _listPadding,
+                  leading: Icon(Icons.album),
+                  title: Text('Playlist'),
+                  subtitle: Text('Tutte le playlist'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PlaylistUlStateful(
+                              title: 'Flutter Demo Home Page')),
+                    );
+                  }),
             ),
           ),
           Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const ListTile(
-                  leading: Icon(Icons.lock),
-                  title: Text('Altro'),
-                  subtitle: Text('Altro...'),
-                ),
-              ],
+            margin: _cardMargin,
+            elevation: _cardElevation,
+            child: Container(
+              height: _tileHeight,
+              child: ListTile(
+                contentPadding: _listPadding,
+                leading: Icon(Icons.lock),
+                title: Text('Altro'),
+                subtitle: Text('Altro...'),
+              ),
+            ),
+          ),
+          Card(
+            margin: _cardMargin,
+            elevation: _cardElevation,
+            child: Container(
+              height: _tileHeight,
+              child: ListTile(
+                contentPadding: _listPadding,
+                leading: Icon(Icons.account_circle),
+                title: Text('Login'),
+                subtitle: Text(
+                    'Effettua il login per accedere a tutte le funzionalità'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginSignUpPage()),
+                  );
+                },
+              ),
             ),
           ),
         ],

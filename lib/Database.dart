@@ -170,8 +170,10 @@ class DBProvider {
     final db = await database;
 
     print("Loading Playlist!");
-    var res = await db.query("Playlist",orderBy: "title");
+    //var res = await db.query("Playlist",orderBy: "title");
+    var res = await db.rawQuery("select p.id,p.title,p.idUser,p.permission,p.time, count(pl.id) as songCount FROM Playlist as p left join PlaylistSong as pl ON p.id = pl.idPlaylist GROUP BY p.id ORDER BY p.title");
 
+    print(res);
     List<Playlist> list =
     res.isNotEmpty ? res.map((c) => Playlist.fromMap(c)).toList() : [];
     return list;

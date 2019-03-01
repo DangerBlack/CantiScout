@@ -26,6 +26,7 @@ dependencies:
   crypto: any
   flutter_colorpicker: any
   shared_preferences: any
+  connectivity: any
 
 dev_dependencies:
   flutter_test:
