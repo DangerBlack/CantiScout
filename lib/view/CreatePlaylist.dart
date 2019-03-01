@@ -114,7 +114,9 @@ class CreatePlaylist extends State {
               child: FlatButton(
                 child: Text(
                   "CREA",
-                  style: TextStyle(),
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
                 onPressed: () {
                   createPlaylist(context);

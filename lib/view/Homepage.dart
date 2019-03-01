@@ -19,12 +19,12 @@ import '../model/Constants.dart';
 import '../FirstRoute.dart';
 
 class Homepage extends StatelessWidget {
-
-  EdgeInsets _cardMargin = new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0);
-  EdgeInsets _listPadding = EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0);
+  EdgeInsets _cardMargin =
+      new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0);
+  EdgeInsets _listPadding =
+      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0);
   double _tileHeight = 100.0;
   double _cardElevation = 1.0;
-
 
   final drawerItems = [
     new DrawerItem("Sincronizza", Icons.sync, null),
@@ -38,6 +38,8 @@ class Homepage extends StatelessWidget {
       );
     }),
     new DrawerItem("Guida", Icons.help_outline, null),
+    new Divider(),
+    new DrawerItem("Dona", Icons.card_giftcard, null),
   ];
 
   generateMd5(String data) {
@@ -103,7 +105,9 @@ class Homepage extends StatelessWidget {
                   backgroundImage: NetworkImage(Constants.gravatarUrl +
                       generateMd5("danger.recheng@hotmail.it")),
                 )),
-            new Column(children: drawerOptions)
+            new Expanded(
+              child: ListView(children: drawerOptions),
+            ),
           ],
         ),
       ),
