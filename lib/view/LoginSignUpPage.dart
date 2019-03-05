@@ -48,7 +48,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
       try {
         if (_formMode == FormMode.LOGIN) {
           userId = await widget.auth.signIn(_email, _password);
-          print('Signed in: $userId');
+          userId ?? print('Signed in: $userId');
         } else {
           userId = await widget.auth.signUp(_email, _password);
           widget.auth.sendEmailVerification();
@@ -59,7 +59,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           _isLoading = false;
         });
 
-        if (userId.length > 0 && userId != null && _formMode == FormMode.LOGIN) {
+        if (userId != null && userId.length > 0 && _formMode == FormMode.LOGIN) {
           widget.onSignedIn();
         }
 

@@ -13,4 +13,14 @@ class Constants {
   static final String initialFontStyle = "Roboto";
   static final int initialColor = Colors.black.value;
 
+
+  //USER space
+
+  static final String sharedMail = "mail";
+  static final String sharedName = "name";
+  static final String sharedToken = "token";
+
+  static final String defaultMail = "unkown";
+  static final String defaultName = "Unkown";
+
 }

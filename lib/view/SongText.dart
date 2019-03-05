@@ -349,7 +349,7 @@ class SongTextState extends State {
           Expanded(
             child: Ink(
               decoration: ShapeDecoration(
-                color: Colors.green,
+                color: Theme.of(context).primaryColor,
                 shape: CircleBorder(),
               ),
               child: IconButton(

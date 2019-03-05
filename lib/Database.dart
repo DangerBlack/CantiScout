@@ -140,7 +140,7 @@ class DBProvider {
 
   Future<List<Tag>> getTagsBySongId(int idSong) async {
     final db = await database;
-    var res = await db.query("Tag", where: "idSong = ?", whereArgs: [idSong]);
+    var res = await db.query("Tag", where: "idSong = ? and (not tag is NULL) and (not tag = '')" , whereArgs: [idSong]);
 
     List<Tag> list =
     res.isNotEmpty ? res.map((c) => Tag.fromMap(c)).toList() : [];

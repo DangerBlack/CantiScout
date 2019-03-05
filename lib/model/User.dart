@@ -1,10 +1,21 @@
 
 class User{
-  String username;
+  String name;
   String mail;
-  String password;
+  String pswd;
 
-  User(this.username,this.mail,this.password);
+  bool logged = false;
 
+  User(this.mail,this.pswd);
 
+  factory User.noPassword(name,mail){
+    User tmp=new User(mail, "");
+    tmp.name = name;
+    return tmp;
+  }
+
+  Map<String, String> toMap() => {
+    "mail": mail,
+    "pswd": pswd,
+  };
 }
