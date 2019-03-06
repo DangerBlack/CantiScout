@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:share/share.dart';
+import 'package:screen/screen.dart';
 
 import '../model/Song.dart';
 import '../model/Tag.dart';
 import '../model/Constants.dart';
 import '../model/Chartset.dart';
+import '../model/Choice.dart';
 import '../Database.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../view/ChoosePlaylist.dart';
 import '../view/EditSongText.dart';
+import '../view/Settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SongText extends StatefulWidget {
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -28,10 +32,24 @@ class SongText extends StatefulWidget {
 }
 
 class SongTextState extends State {
+  List<Choice> choices = <Choice>[
+    Choice(
+        title: 'Settings',
+        icon: Icons.settings,
+        action: (context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SettingsStateful(title: "Settings")),
+          );
+        }),
+    Choice(title: 'Bicycle', icon: Icons.directions_bike, action: null),
+    Choice(title: 'Boat', icon: Icons.directions_boat, action: null),
+  ];
   final RegExp expChord = new RegExp(r"\[([^\]]*)\]");
   final RegExp expSharp = new RegExp(r"#.*");
   final RegExp expComment = new RegExp(r".*\{(.*)\}.*");
-  final RegExp expCommentL = new RegExp(r".*\{(.*):(.*)\}.*");
+  final RegExp expCommentL = new RegExp(r".*\{([a-zA-Z0-9_ ]*):(.*)\}.*");
   final RegExp expInlineChorus =
       new RegExp(r".*\{(soc|start_of_chorus)\}(.*)\{(eoc|end_of_chorus)\}.*");
 
@@ -42,9 +60,18 @@ class SongTextState extends State {
   final RegExp expChorusEnd = new RegExp(r"eoc|end_of_chorus");
 
   Song song;
-  double fSize = 18.0;
+  double fSize = Constants.initialFontSize;
   FontWeight fWeight = FontWeight.normal;
   FontStyle fStyle = FontStyle.normal;
+  bool _autoscroll = Constants.initialAutoscroll;
+  Color _noteColor = Color(Constants.initialColor);
+
+  //String _fontFamily = "Roboto";
+  //String _fontFamily = "Inconsolata";
+  String _fontFamily = Constants.initialFontStyle;
+
+  //String _fontFamily = "NotCourierSans";
+  //Choice _selectedChoice = choices[0];
 
   int numberOfDays = 31;
   double previousfSize;
@@ -69,8 +96,60 @@ class SongTextState extends State {
     loadTagList();
   }
 
+  _loadFontConfiguration() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (
+    ((fSize !=
+            (prefs.getDouble(Constants.sharedDefaultFontSize) ??
+                Constants.initialFontSize)) &&
+        previousfSize == null
+    ) ||
+        _autoscroll !=
+            (prefs.getBool(Constants.sharedAutoscroll) ??
+                Constants.initialAutoscroll) ||
+        _noteColor !=
+            Color((prefs.getInt(Constants.sharedFontColor) ??
+                Constants.initialColor)) ||
+        _fontFamily !=
+            (prefs.getString(Constants.sharedFontStyle) ??
+                Constants.initialFontStyle)) {
+      setState(() {
+        fSize = (prefs.getDouble(Constants.sharedDefaultFontSize) ??
+            Constants.initialFontSize);
+
+        _autoscroll = (prefs.getBool(Constants.sharedAutoscroll) ??
+            Constants.initialAutoscroll);
+
+        _noteColor = Color((prefs.getInt(Constants.sharedFontColor) ??
+            Constants.initialColor));
+
+        _fontFamily = (prefs.getString(Constants.sharedFontStyle) ??
+            Constants.initialFontStyle);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //_loadFontConfiguration();
+  }
+
+  void _select(Choice choice) {
+    // Causes the app to rebuild with the new _selectedChoice.
+    setState(() {
+      //_selectedChoice = choice;
+      if (choice.action != null) {
+        choice.action(context);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _loadFontConfiguration();
+    Screen.keepOn(true);
     return Scaffold(
       appBar: AppBar(
         title: Text(this.song.title),
@@ -83,19 +162,28 @@ class SongTextState extends State {
               Share.share('Ecco il testo della canzone ' + url);
             },
           ),
-          IconButton(
-            icon: Icon(Icons.more_vert),
-            onPressed: () {},
+          PopupMenuButton<Choice>(
+            onSelected: _select,
+            itemBuilder: (BuildContext context) {
+              return choices.map((Choice choice) {
+                return PopupMenuItem<Choice>(
+                    value: choice,
+                    child: ListTile(
+                      leading: Icon(choice.icon),
+                      title: Text(choice.title),
+                    ));
+              }).toList();
+            },
           ),
         ],
       ),
       body: _buildSong(context),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => EditSongText(song: this.song),
+              builder: (context) => EditSongText(song: this.song),
             ),
           );
         },
@@ -118,7 +206,7 @@ class SongTextState extends State {
   }
 
   printD(String s) {
-    //print(s);
+    print(s);
   }
 
   double sumSpace(String text, Map<String, double> charset) {
@@ -135,8 +223,9 @@ class SongTextState extends State {
   }
 
   String space(String text, String chords, String chord, String prevChord) {
-    double sum = sumSpace(text, Charset.robotoRegular);
-    double def = sumSpace(prevChord, Charset.robotoBold);
+    printD("Lavoro con il font: "+_fontFamily);
+    double sum = sumSpace(text, Charset.getFont(_fontFamily));
+    double def = sumSpace(prevChord, Charset.getFontBold(_fontFamily));
     printD("Sum :" + sum.toString() + " def: " + def.toString());
     printD(text);
     printD(chord);
@@ -173,14 +262,21 @@ class SongTextState extends State {
     resp.add(Text(
       chord,
       style: new TextStyle(
-          fontSize: fSize, fontWeight: FontWeight.bold, fontStyle: fStyle),
+          fontSize: fSize,
+          fontWeight: FontWeight.bold,
+          fontStyle: fStyle,
+          color: _noteColor,
+          fontFamily: _fontFamily),
       //style: new TextStyle(fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
       overflow: TextOverflow.ellipsis,
     ));
     resp.add(Text(
       text,
       style: new TextStyle(
-          fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
+          fontSize: fSize,
+          fontWeight: fWeight,
+          fontStyle: fStyle,
+          fontFamily: _fontFamily),
     ));
     return resp;
   }
@@ -209,7 +305,8 @@ class SongTextState extends State {
             style: new TextStyle(
                 fontSize: fSize,
                 fontWeight: fWeightEdit,
-                fontStyle: fStyleEdit),
+                fontStyle: fStyleEdit,
+                fontFamily: _fontFamily),
           ));
         }
       } else {
@@ -231,8 +328,10 @@ class SongTextState extends State {
             } else {
               resp.add(Text(
                 body,
-                style:
-                    new TextStyle(fontSize: fSize, fontStyle: FontStyle.italic),
+                style: new TextStyle(
+                    fontSize: fSize,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: _fontFamily),
               ));
             }
             resp.add(Text(
@@ -276,7 +375,10 @@ class SongTextState extends State {
         resp.add(Text(
           row,
           style: new TextStyle(
-              fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
+              fontSize: fSize,
+              fontWeight: fWeight,
+              fontStyle: fStyle,
+              fontFamily: _fontFamily),
         ));
       }
     }
@@ -312,15 +414,16 @@ class SongTextState extends State {
         _tags.add(
           RaisedButton(
             //elevation: 5.0,
-            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
             color: Theme.of(context).primaryColorLight,
             child: Text(
               "#" + t.tag,
               style: new TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.normal,
-                  fontStyle: FontStyle.normal,
-                  //color: Colors.white
+                fontSize: 18.0,
+                fontWeight: FontWeight.normal,
+                fontStyle: FontStyle.normal,
+                //color: Colors.white
               ),
             ),
             onPressed: () {
@@ -381,8 +484,7 @@ class SongTextState extends State {
                 iconSize: 30.0,
                 tooltip: "Carica Media",
                 padding: EdgeInsets.all(15.0),
-                onPressed: () {
-                },
+                onPressed: () {},
               ),
             ),
           ),
@@ -398,8 +500,7 @@ class SongTextState extends State {
                 iconSize: 30.0,
                 tooltip: "Segnala un abuso",
                 padding: EdgeInsets.all(15.0),
-                onPressed: () {
-                },
+                onPressed: () {},
               ),
             ),
           ),

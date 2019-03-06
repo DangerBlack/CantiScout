@@ -150,4 +150,121 @@ class Charset {
     ",": 1.0,
     "#": 2.33,
   };
+
+  static final Map<String, double> monospaceRegular = {
+    "a": 1.0,
+    "b": 1.0,
+    "c": 1.0,
+    "d": 1.0,
+    "e": 1.0,
+    "f": 1.0,
+    "g": 1.0,
+    "h": 1.0,
+    "i": 1.0,
+    "l": 1.0,
+    "j": 1.0,
+    "k": 1.0,
+    "m": 1.0,
+    "n": 1.0,
+    "o": 1.0,
+    "p": 1.0,
+    "q": 1.0,
+    "r": 1.0,
+    "s": 1.0,
+    "t": 1.0,
+    "u": 1.0,
+    "v": 1.0,
+    "w": 1.0,
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0,
+    "A": 1.0,
+    "B": 1.0,
+    "C": 1.0,
+    "D": 1.0,
+    "E": 1.0,
+    "F": 1.0,
+    "G": 1.0,
+    "H": 1.0,
+    "I": 1.0,
+    "L": 1.0,
+    "J": 1.0,
+    "K": 1.0,
+    "M": 1.0,
+    "N": 1.0,
+    "O": 1.0,
+    "P": 1.0,
+    "Q": 1.0,
+    "R": 1.0,
+    "S": 1.0,
+    "T": 1.0,
+    "U": 1.0,
+    "V": 1.0,
+    "W": 1.0,
+    "X": 1.0,
+    "Y": 1.0,
+    "Z": 1.0,
+    " ": 1.0,
+    "'": 1.0,
+    "-": 1.0,
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 1.0,
+    "è": 1.0,
+    "à": 1.0,
+    "ì": 1.0,
+    "é": 1.0,
+    "ù": 1.0,
+    "ò": 1.0,
+    ".": 1.0,
+    ",": 1.0,
+    "#": 1.0,
+  };
+
+
+  static final Map<String, Map<String, double>> font = {
+    "roboto": robotoRegular,
+    "robotoBold": robotoBold,
+    "inconsolata": monospaceRegular,
+    "inconsolataBold": monospaceRegular,
+    "monofur": monospaceRegular,
+    "monofurBold": monospaceRegular,
+    "notcouriersans": monospaceRegular,
+    "notcouriersansBold": monospaceRegular,
+  };
+
+  static Map<String, double> getFont(String name){
+    name = name.toLowerCase();
+    if(font.containsKey(name)) {
+      return font[name];
+    }else{
+      return robotoRegular;
+    }
+  }
+
+  static Map<String, double> getFontBold(String name){
+    name = name.toLowerCase()+"Bold";
+    if(font.containsKey(name)) {
+      return font[name];
+    }else{
+      return robotoBold;
+    }
+  }
+
+  static getFonts(){
+    List<String> f = List<String>();
+
+    for( String k in font.keys ){
+      if(!k.contains("Bold")){
+        f.add(k[0].toUpperCase()+k.substring(1));
+      }
+    }
+    return f;
+  }
 }

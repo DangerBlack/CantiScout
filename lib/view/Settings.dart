@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../model/Chartset.dart';
 
 import '../model/Constants.dart';
 
@@ -55,6 +56,9 @@ class Settings extends State {
 
       pickerColor = Color((prefs.getInt(Constants.sharedFontColor) ??
           Constants.initialColor));
+
+      dropdownValue = (prefs.getString(Constants.sharedFontStyle) ??
+          Constants.initialFontStyle);
     });
 
   }
@@ -69,6 +73,9 @@ class Settings extends State {
     }
     if (value is Color) {
       await prefs.setInt(key, value.value);
+    }
+    if (value is String) {
+      await prefs.setString(key, value);
     }
   }
 
@@ -99,6 +106,21 @@ class Settings extends State {
         ],
       ),
     );
+  }
+
+  _buildFontList(){
+    List<DropdownMenuItem<String>> l = new List<DropdownMenuItem<String>>();
+    List f =Charset.getFonts();
+    print(f);
+    f.forEach((value)=>
+      {
+      l.add(DropdownMenuItem<String>(
+        value: value,
+        child: Text(value, style: new TextStyle(fontFamily: value)
+        ),
+      ))}
+    );
+    return l;
   }
 
   @override
@@ -138,15 +160,10 @@ class Settings extends State {
           onChanged: (String newValue) {
             setState(() {
               dropdownValue = newValue;
+              updatePreferences(Constants.sharedFontStyle, newValue);
             });
           },
-          items: <String>['Roboto', 'Monotipe', 'Arial', 'Times']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
+          items: _buildFontList()
         ),
       ),
     );

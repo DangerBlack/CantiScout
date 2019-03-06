@@ -194,6 +194,8 @@ class DBProvider {
     print("Loading Songs!");
     // var res = await db.rawQuery("SELECT * FROM Client WHERE blocked=1");
     //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
+
+    //Siamo sicuri che l'ordine per titolo sia una buona idea, se sto organizzando i canti per la messa l'ordine è fondamentale!!!
     var res = await db.rawQuery("SELECT * FROM  Song as s join PlaylistSong as p on s.id = p.idSong WHERE p.idPlaylist = ? ORDER BY s.title ",[idPlaylist]);
 
     List<Song> list =
