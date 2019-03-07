@@ -60,6 +60,16 @@ flutter:
         - asset: fonts/NotCourierSans.otf
         - asset: fonts/NotCourierSans-Bold.otf
           weight: 700
+    - family: CaveatBrush
+      fonts:
+        - asset: fonts/CaveatBrush-Regular.ttf
+        - asset: fonts/CaveatBrush-Regular.ttf
+          weight: 700
+    - family: Neucha
+      fonts:
+        - asset: fonts/Neucha.ttf
+        - asset: fonts/Neucha.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:

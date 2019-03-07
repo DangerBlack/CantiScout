@@ -233,11 +233,15 @@ class SongTextState extends State {
     sum -= def;
     printD("Occorrono: " + sum.toString() + " spazi");
     int i = 1;
-    while (i < sum) {
+    while (i < sum.round()) {
       chords += " ";
       i++;
     }
 
+    //Add padding on chords if they are too close each other
+    if((chords!=null)&&(chords.length>0)&&(chords[chords.length-1]!=" ")){
+      chords += " ";
+    }
     chords += chord;
     return chords;
   }
