@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+
+
+
 class Constants {
   static final String urlPathSong = "http://www.512b.it/cantiscout/php/song.php";
+  static final String urlPathSongList = "https://512b.it/cantiscout/php/get.php?max=";
+  static final String tokenApi = 'https://512b.it/cantiscout/api/';
+
+  static final String token = 'token';
+  static final String tokenMewSong = 'updateSong';
+  static final String tokenPlaylist = 'playlist/';
+
+
   static final String gravatarUrl = "https://www.gravatar.com/avatar/";
 
   static final String sharedDefaultFontSize = "defaultFontSize";

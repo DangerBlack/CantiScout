@@ -4,7 +4,7 @@ import '../Database.dart';
 import '../model/Song.dart';
 
 class SongUlSearchStateful extends StatefulWidget {
-  SongUlSearchStateful({Key key, this.title, this.search}) : super(key: key);
+  SongUlSearchStateful({Key key, this.title, this.search, this.state}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -16,34 +16,36 @@ class SongUlSearchStateful extends StatefulWidget {
   // always marked "final".
 
   final String title;
-  String search;
-  SongUlSearch state;
+  final String search;
+  final SongUlSearch state;
+
+  /*@override
+  SongUlSearch createState() {
+    //state = SongUlSearch(search);
+    return
+  }*/
+
 
   @override
-  SongUlSearch createState() {
-    state = SongUlSearch(search);
-    return state;
-  }
+  SongUlSearch createState() => state;
 
-  updateList(String search) {
-    this.search = search;
-    if(state == null){
-      createState();
-    }else {
-      state.updateListS(search);
-    }
-  }
-//_MyHomePageState createState() => _MyHomePageState();
+
 
 }
 
 class SongUlSearch extends SongUl {
-  String search;
+  String _search;
 
-  SongUlSearch(this.search) : super() {
-    updateList();
+  SongUlSearch(this._search) : super() {
+    leadingIcon = Icons.music_note;
+    //updateList();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    updateList();
+  }
   /*SongUlSearch.fromSearch(this.search):super(){
     updateList();
   }*/
@@ -51,15 +53,17 @@ class SongUlSearch extends SongUl {
   updateListS(String search) async {
     print("Aggiorno lista!");
     List<Song> lg = await DBProvider.db.getSongs(search);
-    setState(() {
-      l.list = lg;
-    });
+    if(l != null && mounted) {
+      setState(() {
+        l.list = lg;
+      });
+    }
   }
 
   //TODO: Questo metodo va in errore perchè viene chiamata la setState nel costruttore!!!!
   updateList() async {
     if (l.list.isEmpty) {
-      List<Song> lg = await DBProvider.db.getSongs(search);
+      List<Song> lg = await DBProvider.db.getSongs(_search);
       setState(() {
         l.list = lg;
       });
@@ -70,5 +74,19 @@ class SongUlSearch extends SongUl {
   Widget build(BuildContext context) {
     //updateList();
     return buildList();
+  }
+
+  get search    => _search;
+  set search(v) {
+    _search = v;
+    updateListS(_search);
+    print("observed_field changed");
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    super.l = null;
   }
 }

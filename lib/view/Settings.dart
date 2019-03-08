@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/Chartset.dart';
@@ -16,7 +15,6 @@ class SettingsStateful extends StatefulWidget {
 }
 
 class Settings extends State {
-  final _biggerFont = const TextStyle(fontSize: 18.0);
   final _titleFontStyle =
       const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold);
   List<Widget> settings = new List<Widget>();
@@ -86,7 +84,7 @@ class Settings extends State {
   showColorPicker() {
     showDialog(
       context: context,
-      child: AlertDialog(
+      builder: (_) => AlertDialog(
         title: const Text('Pick a color!'),
         content: SingleChildScrollView(
           child: BlockPicker(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../model/Playlist.dart';
 import '../model/Song.dart';
+import '../model/User.dart';
 
 import 'PlaylistUl.dart';
 import '../Database.dart';
@@ -17,7 +18,7 @@ class ChoosePlaylistStateful extends StatefulWidget {
 class ChoosePlaylist extends PlaylistUl {
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final Song song;
-  ChoosePlaylist({this.song}) : super();
+  ChoosePlaylist({this.song}) : super(new User("nope","nope"));
   addSong(BuildContext context,Playlist pl) async{
     print(pl.title);
     print(pl.id);

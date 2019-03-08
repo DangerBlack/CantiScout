@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:convert/convert.dart';
-import 'package:crypto/crypto.dart' as crypto;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-
-import 'SongUl.dart';
 import 'SongUlStateless.dart';
 import 'PlaylistUl.dart';
 import 'Settings.dart';
 import 'LoginSignUpPage.dart';
+import 'Account.dart';
 import '../model/Song.dart';
 import '../model/DrawerItem.dart';
 import '../controller/Updater.dart';
+import '../controller/Utils.dart';
 import '../Database.dart';
 
 import '../model/SongList.dart';
@@ -20,7 +17,7 @@ import '../model/Constants.dart';
 import '../model/User.dart';
 
 import '../controller/Authentication.dart';
-import '../FirstRoute.dart';
+
 
 class Homepage extends StatefulWidget {
   Homepage({Key key, this.title}) : super(key: key);
@@ -51,27 +48,34 @@ class HomepageState extends State {
   double _tileHeight = 100.0;
   double _cardElevation = 1.0;
 
-  final drawerItems = [
-    new DrawerItem("Sincronizza", Icons.sync, null),
-    new DrawerItem("Account", Icons.account_circle, null),
-    new Divider(),
-    new DrawerItem("Impostazioni", Icons.settings, (context) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SettingsStateful(title: "Settings")),
-      );
-    }),
-    new DrawerItem("Guida", Icons.help_outline, null),
-    new Divider(),
-    new DrawerItem("Dona", Icons.card_giftcard, null),
-  ];
+  var drawerItems = [];
 
-  generateMd5(String data) {
-    var content = new Utf8Encoder().convert(data);
-    var md5 = crypto.md5;
-    var digest = md5.convert(content);
-    return hex.encode(digest.bytes);
+  _buildDrawList(){
+    drawerItems = [
+      new DrawerItem("Sincronizza", Icons.sync, null),
+      new DrawerItem("Account", Icons.account_circle, (context) async {
+        /*SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(Constants.sharedMail, Constants.defaultMail);
+      prefs.setString(Constants.sharedName, Constants.defaultName);
+      prefs.setString(Constants.sharedToken, "");*/
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AccountStateful(title: "Settings",user: user,)),
+        );
+      }),
+      new Divider(),
+      new DrawerItem("Impostazioni", Icons.settings, (context) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SettingsStateful(title: "Settings")),
+        );
+      }),
+      new DrawerItem("Guida", Icons.help_outline, null),
+      new Divider(),
+      new DrawerItem("Dona", Icons.card_giftcard, null),
+    ];
   }
 
   updateList() async {
@@ -88,7 +92,7 @@ class HomepageState extends State {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => SongUlStateless(songs, "Elenco canzoni")),
+          builder: (context) => SongUlStateless(songs, "Elenco canzoni", user = user)),
       //MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
     );
   }
@@ -111,11 +115,14 @@ class HomepageState extends State {
     String name =
         (prefs.getString(Constants.sharedName) ?? Constants.defaultName);
     User userT = User.noPassword(name, mail);
-    userT.logged = true;
+    if(mail != Constants.defaultMail) {
+      userT.logged = true;
+    }
     setState(() {
       user = userT;
       build(context);
     });
+    _buildDrawList();
     return user;
   }
 
@@ -167,7 +174,10 @@ class HomepageState extends State {
                 context,
                 MaterialPageRoute(
                     builder: (context) => PlaylistUlStateful(
-                        title: 'Flutter Demo Home Page')),
+                        title: 'Flutter Demo Home Page',
+                        user: user,
+                    )
+                ),
               );
             }),
       ),
@@ -250,7 +260,7 @@ class HomepageState extends State {
                 accountEmail: new Text(user.mail ?? Constants.defaultMail),
                 currentAccountPicture: new CircleAvatar(
                   backgroundImage: NetworkImage(
-                      Constants.gravatarUrl + generateMd5(user.mail)),
+                      Constants.gravatarUrl + Utils.generateMd5(user.mail)),
                 )),
             new Expanded(
               child: ListView(children: drawerOptions),

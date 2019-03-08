@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'FirstRoute.dart';
 import 'view/SongUl.dart';
-import 'controller/Updater.dart';
 import 'view/Homepage.dart';
-import 'model/Constants.dart';
-import 'model/User.dart';
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  MaterialColor primaryColorShades = MaterialColor(
+  final MaterialColor primaryColorShades = MaterialColor(
     Colors.lightGreen[700].value,
     <int, Color>{
       50: Colors.lightGreen[50],
@@ -25,7 +20,7 @@ class MyApp extends StatelessWidget {
       900: Color.fromARGB(255, 37, 93, 0),
     },
   );
-  MaterialColor primaryColorShades2 = MaterialColor(
+  final MaterialColor primaryColorShades2 = MaterialColor(
     Colors.green[900].value,
     <int, Color>{
       50: Colors.green[50],
@@ -40,7 +35,7 @@ class MyApp extends StatelessWidget {
       900: Color.fromARGB(255, 0, 51, 0),
     },
   );
-  MaterialColor primaryColorShades3 = MaterialColor(
+  final MaterialColor primaryColorShades3 = MaterialColor(
     Colors.green[500].value,
     <int, Color>{
       50: Colors.green[50],
@@ -106,7 +101,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final _suggestions = <String>[];
-  int _counter = 0;
 
   void _incrementCounter() {
     Navigator.push(
@@ -119,7 +113,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
     });
   }
 

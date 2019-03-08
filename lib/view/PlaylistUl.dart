@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'SongUl.dart';
 import '../Database.dart';
 import '../model/Song.dart';
 import '../model/Playlist.dart';
+import '../model/User.dart';
 import 'Createplaylist.dart';
 import 'SongULStateless.dart';
+import 'SongUlPlaylistStateless.dart';
 
 class PlaylistUlStateful extends StatefulWidget {
-  PlaylistUlStateful({Key key, this.title}) : super(key: key);
+  final User user;
+  PlaylistUlStateful({Key key, this.title, this.user}) : super(key: key);
   final String title;
 
   @override
-  PlaylistUl createState() => PlaylistUl();
+  PlaylistUl createState() => PlaylistUl(user);
 }
 
 class PlaylistUl extends State {
+  User user;
+
   final _biggerFont = const TextStyle(fontSize: 18.0);
   List<Playlist> l = new List<Playlist>();
 
@@ -24,11 +28,12 @@ class PlaylistUl extends State {
     List<Song> songs = await DBProvider.db.getAllPlaylistSongs(pl.id);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SongUlStateless(songs, pl.title)),
+      MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(songs, pl.title, user)),
     );
   }
 
-  PlaylistUl() : super() {
+  PlaylistUl(User user) : super() {
+    this.user = user;
     updateList();
   }
 
@@ -69,7 +74,7 @@ class PlaylistUl extends State {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      CreatePlaylistStatefull(title: 'Flutter Demo Home Page')),
+                      CreatePlaylistStatefull(title: 'Flutter Demo Home Page', user: user)),
               //MaterialPageRoute(builder: (context) => Creat(title: 'Flutter Demo Home Page')),
             );
           }),

@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import '../model/Song.dart';
 import '../model/SongList.dart';
-import '../FirstRoute.dart';
+import '../model/User.dart';
 import '../view/SongText.dart';
-import '../controller/Updater.dart';
+import '../view/CreateSong.dart';
 import '../controller/CustomSearchDelegate.dart';
-import '../Database.dart';
 
 
 class SongUlStateless extends StatelessWidget {
   final _biggerFont = const TextStyle(fontSize: 18.0);
-  String title = "Elenco canzoni";
-  SongList l = new SongList();
+  final User user;
+  final String title;// = "Elenco canzoni";
+  final SongList l = new SongList();
 
-  SongUlStateless(List<Song> songs,String title):super(){
-    this.title = title;
-    updateList(songs);
+  SongUlStateless(List<Song> songs,this.title, this.user):super(){
+    //this.title = title;
+    //this.user = user;
+    this.l.list = songs;
+    //updateList(songs);
   }
   updateList(List<Song> songs){
-    l.list = songs;
+    this.l.list = songs;
   }
 
   @override
@@ -40,6 +42,18 @@ class SongUlStateless extends StatelessWidget {
         ],
       ),
       body: buildList(context),
+      floatingActionButton: user.logged?FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateSongStatefull(title: "Create song"),
+            ),
+          );
+        },
+        tooltip: 'Edit',
+        child: Icon(Icons.add),
+      ):null,
     );
   }
 

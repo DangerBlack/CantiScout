@@ -1,26 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:share/share.dart';
-
 import '../model/Song.dart';
 import '../model/Tag.dart';
-import '../model/Constants.dart';
-import '../model/Chartset.dart';
 import '../Database.dart';
-import '../controller/CustomSearchDelegate.dart';
-import '../view/ChoosePlaylist.dart';
+import '../controller/Updater.dart';
 
 class EditSongText extends StatefulWidget {
-  final _biggerFont = const TextStyle(fontSize: 18.0);
-  Song song;
-  int numberOfDays = 31;
-  int previousNumOfDays;
-
-/*  SongText({
-    this.song
-  });*/
-
+  final Song song;
   EditSongText({Key key, this.song}) : super(key: key);
 
   @override
@@ -28,8 +15,8 @@ class EditSongText extends StatefulWidget {
 }
 
 class EditSongTextState extends State {
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final myController = TextEditingController();
 
   /*final RegExp expChord = new RegExp(r"\[([^\]]*)\]");
   final RegExp expSharp = new RegExp(r"#.*");
@@ -69,10 +56,11 @@ class EditSongTextState extends State {
     });
   }
 
-  checkNetwork() async{
+  checkNetwork() async {
     var result = await (Connectivity().checkConnectivity());
     print(result);
-    if( (result == ConnectivityResult.wifi)||(result == ConnectivityResult.mobile) ){
+    if ((result == ConnectivityResult.wifi) ||
+        (result == ConnectivityResult.mobile)) {
       setState(() {
         _offline = false;
       });
@@ -82,25 +70,11 @@ class EditSongTextState extends State {
         _offline = true;
       });
     }
-
   }
+
   @override
   initState() {
-    /*subscription = Connectivity().onConnectivityChanged.listen((
-        ConnectivityResult result) {
-      // Got a new connectivity status!
-      print(result);
-      if (result == ConnectivityResult.mobile) {
-        setState(() {
-          _offline = false;
-        });
-      }
-      if (result == ConnectivityResult.none) {
-        setState(() {
-          _offline = true;
-        });
-      }
-    });*/
+    myController.text = song.body ?? "";
     checkNetwork();
 
     super.initState();
@@ -112,15 +86,21 @@ class EditSongTextState extends State {
     //loadTagList();
   }
 
-  _uploadSong(){
-    _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: new Text('Error: Errorissimo brutto'),
-          duration: new Duration(seconds: 10),
-        )
-    );
+  _uploadSong(BuildContext context) async {
+    String text = myController.text;
+    song.body = text;
+    int res = await Updater.updateSong(song);
+    if (res < 0) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        backgroundColor: Colors.red,
+        content: new Text('Error: Errorissimo brutto'),
+        duration: new Duration(seconds: 10),
+      ));
+    } else {
+      Navigator.of(context).pop();
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,10 +110,11 @@ class EditSongTextState extends State {
       ),
       body: _buildSong(context),
       floatingActionButton: FloatingActionButton(
-        onPressed: _offline ? null : () => _uploadSong,
+        onPressed: _offline ? null : () => _uploadSong(context),
         tooltip: _offline ? "Unable to Save" : "Save",
         child: Icon(Icons.save),
-        backgroundColor: _offline ? Colors.grey : Theme.of(context).primaryColor,
+        backgroundColor:
+            _offline ? Colors.grey : Theme.of(context).primaryColor,
       ),
     );
   }
@@ -143,19 +124,22 @@ class EditSongTextState extends State {
   }
 
   Widget _buildSong(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(10.0),
-      child: TextFormField(
-        decoration: InputDecoration(labelText: 'Edit the song: ' + song.title),
-        initialValue: song.body ?? "",
-        maxLines: 500,
-      ),
-    );
+    return ListView(children: [
+      Padding(
+        padding: EdgeInsets.all(10.0),
+        child: TextField(
+          decoration:
+              InputDecoration(labelText: 'Edit the song: ' + song.title),
+          maxLines: 500,
+          controller: myController,
+        ),
+      )
+    ]);
   }
-
 
 // Be sure to cancel subscription after you are done
   dispose() {
+    myController.dispose();
     super.dispose();
   }
 }

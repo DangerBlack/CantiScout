@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import '../view/SongUlSearch.dart';
-import '../view/SongUl.dart';
-import '../Database.dart';
 //https://medium.com/flutterpub/implementing-search-in-flutter-17dc5aa72018
 
 class CustomSearchDelegate extends SearchDelegate {
 
-  SongUlSearchStateful songsState;
-  //final SongUl songUl;
+  SongUlSearch songsState;
   CustomSearchDelegate():super(){
     print("Costruisco songState 1 ");
-    this.songsState = new SongUlSearchStateful(title:"titolo",search:"");
+    this.songsState = new SongUlSearch(query);
   }
 
   String needle="";
@@ -20,7 +17,7 @@ class CustomSearchDelegate extends SearchDelegate {
     print(text);
     query = text;
     needle = text;
-    this.songsState = new SongUlSearchStateful(title:"titolo",search:query);
+    this.songsState = new SongUlSearch(query);
   }
   
   @override
@@ -30,8 +27,8 @@ class CustomSearchDelegate extends SearchDelegate {
       IconButton(
         icon: Icon(Icons.clear),
         onPressed: () {
-          query = "";
-          needle="";
+            query = "";
+            needle="";
         },
       ),
     ];
@@ -66,28 +63,28 @@ class CustomSearchDelegate extends SearchDelegate {
         ],
       );*/
       print("Richiedo songState ");
-      print(this.songsState);
-      this.songsState.updateList(query);
-      return this.songsState;
+      //this.songsState.updateList(query);
+      if(this.songsState == null || !this.songsState.mounted){
+        this.songsState = new SongUlSearch(query);
+      }
+      return new SongUlSearchStateful(title:"titolo",search:query, state: songsState);
   }
 
-  updateList(String search) async {
-    List<Widget> w=new List<Widget>();
-    List<String> titles =  await DBProvider.db.getSongsTitle(search);
-    titles.forEach((s){
-      w.add(Text(s));
-    });
-    return Column(
-      children: w,
-    );
-  }
+
   @override
   Widget buildSuggestions(BuildContext context) {
     // TODO: implement buildSuggestions
     //return new SongUlSearchStateful(title:"titolo",search:query);
 
-    this.songsState.updateList(query);
-    return this.songsState;
+    //this.songsState.updateList(query);
+
+    print("cambia la query ["+query+"]");
+    if(this.songsState == null || !this.songsState.mounted){
+      this.songsState = new SongUlSearch(query);
+    }else {
+      this.songsState.updateListS(query);
+    }
+    return new SongUlSearchStateful(title:"titolo 2",search:query, state: songsState);//this.songsState;
   }
 
 }

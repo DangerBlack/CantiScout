@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import '../model/Constants.dart';
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart' as crypto;
+
+import '../model/Constants.dart';
+
 
 class Utils {
   static updatePreferences(String key, var value) async {
@@ -24,4 +29,10 @@ class Utils {
     double fontSize = (prefs.getDouble(key) ?? Constants.initialFontSize);
   }
 
+  static generateMd5(String data) {
+    var content = new Utf8Encoder().convert(data);
+    var md5 = crypto.md5;
+    var digest = md5.convert(content);
+    return hex.encode(digest.bytes);
+  }
 }

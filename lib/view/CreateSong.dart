@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import '../model/Song.dart';
-import '../model/User.dart';
-import '../view/SongULStateless.dart';
-import '../view/SongUlPlaylistStateless.dart';
-import '../Database.dart';
+import '../view/EditSongText.dart';
 
-class CreatePlaylistStatefull extends StatefulWidget {
-  final User user;
-  CreatePlaylistStatefull({Key key, this.title, this.user}) : super(key: key);
+class CreateSongStatefull extends StatefulWidget {
+  CreateSongStatefull({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -21,25 +17,25 @@ class CreatePlaylistStatefull extends StatefulWidget {
   final String title;
 
   @override
-  CreatePlaylist createState() => CreatePlaylist(user);
+  CreateSong createState() => CreateSong();
 //_MyHomePageState createState() => _MyHomePageState();
 }
 
-class CreatePlaylist extends State {
-  User user;
+class CreateSong extends State {
   final myController = TextEditingController();
   bool _validate = false;
 
-  CreatePlaylist(this.user):super();
-
-  routePlaylistSong(BuildContext context, String title, int id) async {
+  routePlaylistSong(BuildContext context, String title) async {
     //TODO: Aprire playlist appena creata!
-    List<Song> songs = await DBProvider.db.getAllPlaylistSongs(id);
+    Song song = new Song();
+    song.title = title;
+    song.body = "{title: "+title+"}\n";
+    song.body += "\n";
+    song.body += "\n";
     Navigator.pop(context);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(songs, title, user)),
-      //MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
+      MaterialPageRoute(builder: (context) => EditSongText(song: song) ),
     );
   }
 
@@ -47,8 +43,7 @@ class CreatePlaylist extends State {
     var text = myController.text;
     if (text.isNotEmpty) {
       print(text);
-      int t = await DBProvider.db.newPlaylist(text);
-      routePlaylistSong(context, text, t);
+      routePlaylistSong(context, text);
       _validate = false;
     } else {
       setState(() {
@@ -75,14 +70,14 @@ class CreatePlaylist extends State {
             child: Padding(
               padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
               child: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  radius: 48.0,
-                  child: Icon(Icons.album), //Image.asset('assets/flutter-icon.png'),
-                  ),
+                backgroundColor: Colors.transparent,
+                radius: 48.0,
+                child: Icon(Icons.album), //Image.asset('assets/flutter-icon.png'),
+              ),
             ),
           ),
           Text(
-            "Dai un nome alla tua playlist.",
+            "Quale è il titolo",
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -92,7 +87,7 @@ class CreatePlaylist extends State {
               textAlign: TextAlign.center,
               controller: myController,
               decoration: InputDecoration(
-                labelText: 'Plylist name',
+                labelText: 'Title',
                 errorText: _validate ? 'Value Can\'t Be Empty' : null,
               ),
             ),

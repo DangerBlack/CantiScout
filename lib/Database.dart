@@ -84,7 +84,7 @@ class DBProvider {
     //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
     search = "%"+search+"%";
     //var res = await db.query("Song",  where: "title LIKE ? or author LIKE ? or body LIKE ?", whereArgs: [search,search,search]);
-    var res = await db.rawQuery("SELECT * FROM  Song as s join Tag as t on s.id = t.idSong where s.title LIKE ? or s.author LIKE ? or s.body LIKE ? or t.tag LIKE ? GROUP BY s.id", [search,search,search,search]);
+    var res = await db.rawQuery("SELECT s.id,s.title,s.author,s.time,s.body FROM  Song as s join Tag as t on s.id = t.idSong where s.title LIKE ? or s.author LIKE ? or s.body LIKE ? or t.tag LIKE ? GROUP BY s.id", [search,search,search,search]);
 
     List<Song> list =
     res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];
@@ -196,7 +196,7 @@ class DBProvider {
     //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
 
     //Siamo sicuri che l'ordine per titolo sia una buona idea, se sto organizzando i canti per la messa l'ordine è fondamentale!!!
-    var res = await db.rawQuery("SELECT * FROM  Song as s join PlaylistSong as p on s.id = p.idSong WHERE p.idPlaylist = ? ORDER BY s.title ",[idPlaylist]);
+    var res = await db.rawQuery("SELECT * FROM  Song as s join PlaylistSong as p on s.id = p.idSong WHERE p.idPlaylist = ? ORDER BY p.id ",[idPlaylist]);
 
     List<Song> list =
     res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];

@@ -16,14 +16,7 @@ import '../view/Settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SongText extends StatefulWidget {
-  final _biggerFont = const TextStyle(fontSize: 18.0);
-  Song song;
-  int numberOfDays = 31;
-  int previousNumOfDays;
-
-/*  SongText({
-    this.song
-  });*/
+  final Song song;
 
   SongText({Key key, this.song}) : super(key: key);
 
@@ -65,6 +58,7 @@ class SongTextState extends State {
   FontStyle fStyle = FontStyle.normal;
   bool _autoscroll = Constants.initialAutoscroll;
   Color _noteColor = Color(Constants.initialColor);
+  bool _logged = false;
 
   //String _fontFamily = "Roboto";
   //String _fontFamily = "Inconsolata";
@@ -99,6 +93,9 @@ class SongTextState extends State {
   _loadFontConfiguration() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    String mail =
+    (prefs.getString(Constants.sharedMail) ?? Constants.defaultMail);
+
     if (
     ((fSize !=
             (prefs.getDouble(Constants.sharedDefaultFontSize) ??
@@ -126,6 +123,12 @@ class SongTextState extends State {
 
         _fontFamily = (prefs.getString(Constants.sharedFontStyle) ??
             Constants.initialFontStyle);
+
+        if(mail != Constants.defaultMail) {
+          _logged = true;
+        }else{
+          _logged = false;
+        }
       });
     }
   }
@@ -133,7 +136,7 @@ class SongTextState extends State {
   @override
   void initState() {
     super.initState();
-    //_loadFontConfiguration();
+    _loadFontConfiguration();
   }
 
   void _select(Choice choice) {
@@ -179,7 +182,7 @@ class SongTextState extends State {
       ),
       body: _buildSong(context),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: !_logged ? null : () {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -187,12 +190,15 @@ class SongTextState extends State {
             ),
           );
         },
-        tooltip: 'Edit',
+        tooltip: !_logged ? "Login needed" : 'Edit',
         child: Icon(Icons.edit),
+        backgroundColor:
+        !_logged ? Colors.grey : Theme.of(context).primaryColor,
       ),
     );
   }
 
+  /*
   double _calcWidth(String text) {
     RenderParagraph rp = RenderParagraph(
       TextSpan(
@@ -203,7 +209,7 @@ class SongTextState extends State {
     );
 
     return rp.getMinIntrinsicWidth(18);
-  }
+  }*/
 
   printD(String s) {
     print(s);

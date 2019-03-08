@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 //import 'package:sqflite/sqflite.dart';
 import '../Database.dart';
 import '../model/SongList.dart';
 import '../model/Song.dart';
 import '../model/Tag.dart';
+import '../model/Constants.dart';
 
 class Updater {
   /// Update the database retrieving from website the list of the new song.
@@ -18,8 +21,7 @@ class Updater {
     print("Time max:" + max);
     max = Uri.encodeFull(max);
     try {
-      final response =
-          await http.get('https://512b.it/cantiscout/php/get.php?max=' + max);
+      final response = await http.get(Constants.urlPathSongList + max);
 
       if (response.statusCode == 200) {
         // If server returns an OK response, parse the JSON
@@ -52,10 +54,47 @@ class Updater {
         // If that response was not OK, throw an error.
         //throw Exception('Failed to load songs');
         print("Failed to load songs");
+        return SongList();
       }
     } catch (E) {
       //throw Exception('Failed to load songs');
       print("Failed to load songs");
+      return SongList();
+    }
+  }
+
+  static Future<int> updateSong(Song song) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString(Constants.sharedToken);
+
+    if (token != null) {
+      try {
+        Map<String, dynamic> s = song.toMap();
+        s["token"] = token;
+        final response = await http.post(
+            Constants.tokenApi + Constants.tokenMewSong,
+            body: json.encode(s));
+
+        print(response.request.url);
+        if (response.statusCode == 201) {
+          // If server returns an OK response, parse the JSON
+          print(response.body);
+          return 1;
+        } else {
+          print(response.body);
+          // If that response was not OK, throw an error.
+          //throw Exception('Failed to load songs');
+          print("Failed to upload songs ["+response.statusCode.toString()+"]");
+          return -2;
+        }
+      } catch (E) {
+        //throw Exception('Failed to load songs');
+        print("Failed to upload songs");
+        return -3;
+      }
+    }else{
+      print("No available token");
+      return -4;
     }
   }
 }

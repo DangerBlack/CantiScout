@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../model/Song.dart';
 import '../model/SongList.dart';
-import '../FirstRoute.dart';
+import '../model/User.dart';
 import '../view/SongText.dart';
-import '../controller/Updater.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../Database.dart';
 
 class SongUlStateful extends StatefulWidget {
-  SongUlStateful({Key key, this.title}) : super(key: key);
+  final User user;
+  SongUlStateful({Key key, this.title, this.user}) : super(key: key);
 
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -28,9 +28,14 @@ class SongUlStateful extends StatefulWidget {
 }
 
 class SongUl extends State {
+  IconData leadingIcon = Icons.album;
   final _biggerFont = const TextStyle(fontSize: 18.0);
   SongList l = new SongList();
-  SongUl():super(){
+  SongUl():super();
+
+  @override
+  void initState() {
+    super.initState();
     updateList();
   }
 
@@ -38,9 +43,11 @@ class SongUl extends State {
     //TODO: lista
     if(l.list.isEmpty) {
       List<Song> lg = await DBProvider.db.getAllSongs();
-      setState(() {
-        l.list = lg;
-      });
+      if(mounted) {
+        setState(() {
+          l.list = lg;
+        });
+      }
     }
   }
 
@@ -68,7 +75,7 @@ class SongUl extends State {
 
   Widget _buildSongRow(Song pair) {
     return ListTile(
-        leading: const Icon(Icons.album),
+        leading: Icon(leadingIcon),
         title: Text(
           pair.title,
           style: _biggerFont,
