@@ -30,6 +30,7 @@ dependencies:
   screen: any
   lzma: any
   uni_links: any
+  flutter_xlider: any
 
 dev_dependencies:
   flutter_test:

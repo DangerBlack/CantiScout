@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:share/share.dart';
 import 'package:screen/screen.dart';
+import 'package:flutter_xlider/flutter_xlider.dart';
 
 import '../model/Song.dart';
 import '../model/Tag.dart';
@@ -94,14 +95,12 @@ class SongTextState extends State {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String mail =
-    (prefs.getString(Constants.sharedMail) ?? Constants.defaultMail);
+        (prefs.getString(Constants.sharedMail) ?? Constants.defaultMail);
 
-    if (
-    ((fSize !=
-            (prefs.getDouble(Constants.sharedDefaultFontSize) ??
-                Constants.initialFontSize)) &&
-        previousfSize == null
-    ) ||
+    if (((fSize !=
+                (prefs.getDouble(Constants.sharedDefaultFontSize) ??
+                    Constants.initialFontSize)) &&
+            previousfSize == null) ||
         _autoscroll !=
             (prefs.getBool(Constants.sharedAutoscroll) ??
                 Constants.initialAutoscroll) ||
@@ -124,9 +123,9 @@ class SongTextState extends State {
         _fontFamily = (prefs.getString(Constants.sharedFontStyle) ??
             Constants.initialFontStyle);
 
-        if(mail != Constants.defaultMail) {
+        if (mail != Constants.defaultMail) {
           _logged = true;
-        }else{
+        } else {
           _logged = false;
         }
       });
@@ -148,6 +147,8 @@ class SongTextState extends State {
       }
     });
   }
+
+  double _speed = 8.0;
 
   @override
   Widget build(BuildContext context) {
@@ -181,20 +182,81 @@ class SongTextState extends State {
         ],
       ),
       body: _buildSong(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: !_logged ? null : () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditSongText(song: this.song),
-            ),
-          );
-        },
+      floatingActionButton: Container(
+          height: 300,
+          child: Column(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                  child: FlutterSlider(
+                      trackBar: FlutterSliderTrackBar(
+                        activeTrackBarColor: Theme.of(context).primaryColorLight,
+                        activeTrackBarHeight: 5,
+                        leftInactiveTrackBarColor: Colors.grey.shade200,
+                      ),
+                      values: [_speed],
+                      min: 0,
+                      max: 10,
+                      rtl: true,
+                      axis: Axis.vertical,
+                      handler: FlutterSliderHandler(
+                        child: Material(
+                          type: MaterialType.circle,
+                          color: Theme.of(context).primaryColor,
+                          elevation: 3,
+                          child: Padding(
+                            padding: EdgeInsets.all(5),
+                            child: Icon(
+                              Icons.text_rotation_none,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      onDragging: (handlerIndex, lowerValue, upperValue) => {
+                            setState(() {
+                              _speed = lowerValue;
+                            })
+                          }),
+                ),
+              ),
+              FloatingActionButton(
+                onPressed: !_logged
+                    ? null
+                    : () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditSongText(song: this.song),
+                    ),
+                  );
+                },
+                tooltip: !_logged ? "Login needed" : 'Edit',
+                child: Icon(Icons.edit),
+                backgroundColor:
+                !_logged ? Colors.grey : Theme.of(context).primaryColor,
+              ),
+            ],
+          )),
+
+      /*FloatingActionButton(
+        onPressed: !_logged
+            ? null
+            : () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditSongText(song: this.song),
+                  ),
+                );
+              },
         tooltip: !_logged ? "Login needed" : 'Edit',
         child: Icon(Icons.edit),
         backgroundColor:
-        !_logged ? Colors.grey : Theme.of(context).primaryColor,
-      ),
+            !_logged ? Colors.grey : Theme.of(context).primaryColor,
+      ),*/
     );
   }
 
@@ -229,7 +291,7 @@ class SongTextState extends State {
   }
 
   String space(String text, String chords, String chord, String prevChord) {
-    printD("Lavoro con il font: "+_fontFamily);
+    printD("Lavoro con il font: " + _fontFamily);
     double sum = sumSpace(text, Charset.getFont(_fontFamily));
     double def = sumSpace(prevChord, Charset.getFontBold(_fontFamily));
     printD("Sum :" + sum.toString() + " def: " + def.toString());
@@ -245,7 +307,9 @@ class SongTextState extends State {
     }
 
     //Add padding on chords if they are too close each other
-    if((chords!=null)&&(chords.length>0)&&(chords[chords.length-1]!=" ")){
+    if ((chords != null) &&
+        (chords.length > 0) &&
+        (chords[chords.length - 1] != " ")) {
       chords += " ";
     }
     chords += chord;
@@ -522,6 +586,7 @@ class SongTextState extends State {
       padding: EdgeInsets.symmetric(vertical: 20.0),
       child: const Text(''),
     ));
+
     return new GestureDetector(
       onScaleStart: (scaleDetails) => setState(() => previousfSize = fSize),
       onScaleUpdate: (ScaleUpdateDetails scaleDetails) {

@@ -63,10 +63,7 @@ class CustomSearchDelegate extends SearchDelegate {
         ],
       );*/
       print("Richiedo songState ");
-      //this.songsState.updateList(query);
-      if(this.songsState == null || !this.songsState.mounted){
-        this.songsState = new SongUlSearch(query);
-      }
+      this.songsState = new SongUlSearch(query);
       return new SongUlSearchStateful(title:"titolo",search:query, state: songsState);
   }
 
