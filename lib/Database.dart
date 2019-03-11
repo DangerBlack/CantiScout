@@ -211,4 +211,13 @@ class DBProvider {
         [pl.id,song.id]);
     return raw;
   }
+
+  newSongPlaylistRaw(int plID, int songID) async {
+    final db = await database;
+    var raw = await db.rawInsert(
+        "INSERT Into PlaylistSong (idPlaylist,idSong)"
+            " VALUES (?,?)",
+        [plID,songID]);
+    return raw;
+  }
 }

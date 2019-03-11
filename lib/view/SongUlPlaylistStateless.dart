@@ -27,7 +27,7 @@ class SongUlPlaylistStateless extends SongUlStateless {
 
     print(g);
     print(hex.encode(g));
-    s+=user.name+"-"+hex.encode(g);
+    s+=Uri.encodeFull(this.title)+"-"+hex.encode(g);
     s = Constants.tokenApi+Constants.tokenPlaylist+s;
     return s;
   }

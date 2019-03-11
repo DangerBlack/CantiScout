@@ -29,6 +29,7 @@ dependencies:
   connectivity: any
   screen: any
   lzma: any
+  uni_links: any
 
 dev_dependencies:
   flutter_test:

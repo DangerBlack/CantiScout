@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'SongUlStateless.dart';
 import 'PlaylistUl.dart';
 import 'Settings.dart';
@@ -17,6 +18,7 @@ import '../model/Constants.dart';
 import '../model/User.dart';
 
 import '../controller/Authentication.dart';
+import '../controller/Routing.dart';
 
 
 class Homepage extends StatefulWidget {
@@ -122,6 +124,7 @@ class HomepageState extends State {
       user = userT;
       build(context);
     });
+    Routing.checkRoutingLinks(context,user);
     _buildDrawList();
     return user;
   }
@@ -130,6 +133,7 @@ class HomepageState extends State {
   void initState() {
     super.initState();
     _loadUser();
+
   }
 
   List<Widget> _buildCards(BuildContext context){
