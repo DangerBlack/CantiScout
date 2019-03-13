@@ -269,7 +269,6 @@ class Settings extends State {
             ),
           ),
         ),
-        displayTestTouchZone: true,
         onDragging: (handlerIndex, lowerValue, upperValue) {
           setState(() {
             print("Setto autoscroll " + lowerValue.toString());

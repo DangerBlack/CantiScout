@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
+import 'package:convert/convert.dart';
 import 'package:lzma/lzma.dart';
 import '../model/Song.dart';
+import '../model/Playlist.dart';
 import '../model/Constants.dart';
 import '../view/SongUlStateless.dart';
-import 'package:convert/convert.dart';
+import '../view/SongText.dart';
+import '../Database.dart';
 
 import '../controller/CustomSearchDelegate.dart';
 
 
 class SongUlPlaylistStateless extends SongUlStateless {
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+  Playlist playlist;
 
-  SongUlPlaylistStateless(List<Song> songs,title, user):super(songs,title,user){
+
+  SongUlPlaylistStateless(List<Song> songs,title, user, int plId):super(songs,title,user){
     //this.title = title;
     //this.user = user;
     this.l.list = songs;
+    this.playlist = new Playlist();
+    this.playlist.id = plId;
+    this.playlist.title = title;
     //updateList(songs);
   }
 
@@ -55,6 +64,80 @@ class SongUlPlaylistStateless extends SongUlStateless {
         ],
       ),
       body: buildList(context),
+    );
+  }
+
+  @override
+  Widget buildSongRow(BuildContext context,Song pair,int index) {
+    return ListTile(
+      leading: const Icon(Icons.music_note),
+      title: Text(
+        pair.title,
+        style: _biggerFont,
+      ),
+      subtitle: Text(
+        pair.author,
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SongText(song: pair)),
+        );
+      },
+      onLongPress: (){
+        print("wow2!");
+        _neverSatisfied(context,pair,index);
+      },
+    );
+  }
+
+  Future<void> _neverSatisfied(BuildContext context,Song song, int index) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Rimuovere?'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Vuoi rimuovere "'+song.title+'" dalla playlist:'),
+                Text(title),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                  'ANNULLA',
+                  style: TextStyle(color:Colors.grey),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                l.list.removeAt(index);
+                _deleteSong(context,song);
+
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  _deleteSong(BuildContext context, Song song) async {
+    print("PL ID: "+playlist.id.toString());
+    print("SONG ID: "+song.id.toString());
+    await DBProvider.db.removeSongPlaylistRaw(playlist.id,song.id);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(l.list, title, user, playlist.id)),
     );
   }
 

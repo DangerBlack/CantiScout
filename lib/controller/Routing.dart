@@ -47,7 +47,7 @@ class Routing{
       List<Song> ls = await DBProvider.db.getAllPlaylistSongs(idPl);
       Navigator.push(
       context,
-        MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(ls,title,user)),
+        MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(ls,title,user,idPl)),
       );
     }
   }

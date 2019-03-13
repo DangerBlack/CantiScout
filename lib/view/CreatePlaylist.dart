@@ -38,7 +38,7 @@ class CreatePlaylist extends State {
     Navigator.pop(context);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(songs, title, user)),
+      MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(songs, title, user, id)),
       //MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
     );
   }

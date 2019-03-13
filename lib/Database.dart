@@ -196,7 +196,7 @@ class DBProvider {
     //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
 
     //Siamo sicuri che l'ordine per titolo sia una buona idea, se sto organizzando i canti per la messa l'ordine è fondamentale!!!
-    var res = await db.rawQuery("SELECT * FROM  Song as s join PlaylistSong as p on s.id = p.idSong WHERE p.idPlaylist = ? ORDER BY p.id ",[idPlaylist]);
+    var res = await db.rawQuery("SELECT s.id,s.title,s.author,s.time,s.body FROM  Song as s join PlaylistSong as p on s.id = p.idSong WHERE p.idPlaylist = ? ORDER BY p.id ",[idPlaylist]);
 
     List<Song> list =
     res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];
@@ -218,6 +218,24 @@ class DBProvider {
         "INSERT Into PlaylistSong (idPlaylist,idSong)"
             " VALUES (?,?)",
         [plID,songID]);
+    return raw;
+  }
+
+  removeSongPlaylistRaw(int plID, int songID) async {
+    final db = await database;
+    var raw = await db.rawDelete(
+        "DELETE FROM PlaylistSong WHERE idPlaylist = ? and idSong = ?",[plID,songID]);
+    print("deleted? "+raw.toString());
+    return raw;
+  }
+  removePlaylistRaw(int plID) async {
+    final db = await database;
+    var raw0 = await db.rawDelete(
+        "DELETE FROM Playlist WHERE id = ?",[plID]);
+    var raw = await db.rawDelete(
+        "DELETE FROM PlaylistSong WHERE idPlaylist = ?",[plID]);
+    print("deleted pl ? "+raw0.toString());
+    print("deleted song ? "+raw.toString());
     return raw;
   }
 }

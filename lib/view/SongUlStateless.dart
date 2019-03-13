@@ -57,7 +57,7 @@ class SongUlStateless extends StatelessWidget {
     );
   }
 
-  Widget _buildSongRow(BuildContext context,Song pair) {
+  Widget buildSongRow(BuildContext context,Song pair, int index) {
     return ListTile(
         leading: const Icon(Icons.music_note),
         title: Text(
@@ -72,7 +72,11 @@ class SongUlStateless extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => SongText(song: pair)),
           );
-        });
+        },
+        onLongPress: (){
+          print("wow!");
+        },
+    );
   }
 
   Widget buildList(BuildContext context) {
@@ -85,7 +89,7 @@ class SongUlStateless extends StatelessWidget {
           int index = i ~/ 2;
           if (index <= l.list.length) {
             var s = l.get(index);
-            return _buildSongRow(context,s);
+            return buildSongRow(context,s,index);
           } else {
             //TODO: Statement unreachable!!!!
             return null;

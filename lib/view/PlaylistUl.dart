@@ -28,7 +28,7 @@ class PlaylistUl extends State {
     List<Song> songs = await DBProvider.db.getAllPlaylistSongs(pl.id);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(songs, pl.title, user)),
+      MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(songs, pl.title, user, pl.id)),
     );
   }
 
@@ -95,7 +95,7 @@ class PlaylistUl extends State {
         routePlaylistSong(context, pair);
       },
       onLongPress: () {
-
+        _neverSatisfied(context,pair);
       },
     );
   }
@@ -122,5 +122,53 @@ class PlaylistUl extends State {
             }
           });
     }
+  }
+
+
+  Future<void> _neverSatisfied(BuildContext context,Playlist pl) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Rimuovere?'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Vuoi rimuovere la playlist:'),
+                Text(pl.title),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'ANNULLA',
+                style: TextStyle(color:Colors.grey),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deletePlaylist(context,pl);
+
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  _deletePlaylist(BuildContext context, Playlist pl) async {
+    print("PL ID: "+pl.id.toString());
+    await DBProvider.db.removePlaylistRaw(pl.id);
+    List<Playlist> lg = await DBProvider.db.getAllPlaylist();
+    setState(() {
+      l = lg;
+    });
   }
 }
