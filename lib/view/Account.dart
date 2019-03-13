@@ -4,13 +4,16 @@ import '../model/Song.dart';
 import '../model/User.dart';
 import '../model/Constants.dart';
 import '../controller/Utils.dart';
+import '../controller/Updater.dart';
 import '../view/SongULStateless.dart';
 import '../Database.dart';
 
 class AccountStateful extends StatefulWidget {
   final User user;
+  final VoidCallback onLogoutCallback;
 
-  AccountStateful({Key key, this.title, this.user}) : super(key: key);
+  AccountStateful({Key key, this.title, this.user, this.onLogoutCallback})
+      : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -24,7 +27,7 @@ class AccountStateful extends StatefulWidget {
   final String title;
 
   @override
-  Account createState() => Account(user);
+  Account createState() => Account(user, onLogoutCallback);
 //_MyHomePageState createState() => _MyHomePageState();
 }
 
@@ -35,8 +38,9 @@ class Account extends State {
   final passwordController2 = TextEditingController();
   final passwordController3 = TextEditingController();
   bool _validate = false;
+  final VoidCallback onLogoutCallback;
 
-  Account(this.user) : super();
+  Account(this.user, this.onLogoutCallback) : super();
 
   routePlaylistSong(BuildContext context, String title, int id) async {
     //TODO: Aprire playlist appena creata!
@@ -50,13 +54,27 @@ class Account extends State {
     );
   }
 
-  createPlaylist(BuildContext context) async {
-    var text = myController.text;
-    if (text.isNotEmpty) {
-      print(text);
-      int t = await DBProvider.db.newPlaylist(text);
-      routePlaylistSong(context, text, t);
-      _validate = false;
+  changePassword(BuildContext context) async {
+    var oldPswd = passwordController1.text;
+    var newPswd = passwordController2.text;
+    var newPswd2 = passwordController3.text;
+    if (oldPswd.isNotEmpty && newPswd.isNotEmpty && newPswd2.isNotEmpty) {
+      if (newPswd == newPswd2 && oldPswd!=newPswd) {
+        int s = await Updater.updatePswd(oldPswd, newPswd);
+        if(s>0){
+          passwordController1.text = "";
+          passwordController2.text = "";
+          passwordController3.text = "";
+          _showSuccessDialog();
+        }
+        setState(() {
+          _validate = false;
+        });
+      } else {
+        setState(() {
+          _validate = false;
+        });
+      }
     } else {
       setState(() {
         _validate = true;
@@ -64,12 +82,39 @@ class Account extends State {
     }
   }
 
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Password Changed"),
+          content: new Text("The password is changed correctly!"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Dismiss"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   _deleteAccount(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    int s = await Updater.expireToken();
+    if (s > 0) {
+      print("ok");
+    } else {
+      print("fail");
+    }
     prefs.setString(Constants.sharedMail, Constants.defaultMail);
     prefs.setString(Constants.sharedName, Constants.defaultName);
     prefs.setString(Constants.sharedToken, "");
-    Navigator.pop(context);
+    onLogoutCallback();
   }
 
   @override
@@ -161,7 +206,7 @@ class Account extends State {
                   ),
                 ),
                 onPressed: () {
-                  createPlaylist(context);
+                  changePassword(context);
                 },
               ),
             ),

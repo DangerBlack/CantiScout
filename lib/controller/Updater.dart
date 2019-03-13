@@ -97,4 +97,74 @@ class Updater {
       return -4;
     }
   }
+
+  static Future<int> expireToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString(Constants.sharedToken);
+
+    if (token != null) {
+      try {
+        Map<String, dynamic> s = new Map<String, dynamic>();
+        s["token"] = token;
+        final response = await http.post(
+            Constants.tokenApi + Constants.tokenExpire,
+            body: json.encode(s));
+
+        print(response.request.url);
+        if (response.statusCode == 204) {
+          // If server returns an OK response, parse the JSON
+          print(response.body);
+          return 1;
+        } else {
+          print(response.body);
+          print("Failed to expire token ["+response.statusCode.toString()+"]");
+          return -2;
+        }
+      } catch (E) {
+        //throw Exception('Failed to load songs');
+        print("Failed to expire token");
+        return -3;
+      }
+    }else{
+      print("No available token");
+      return -4;
+    }
+  }
+
+
+  static Future<int> updatePswd(String oldPswd,String newPswd) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString(Constants.sharedToken);
+
+    if (token != null) {
+      try {
+        Map<String, dynamic> s = new Map<String, dynamic>();
+        s["token"] = token;
+        s["oldPswd"] = oldPswd;
+        s["newPswd"] = newPswd;
+        print(s);
+        final response = await http.post(
+            Constants.tokenApi + Constants.updatePassword,
+            body: json.encode(s));
+
+        print(response.request.url);
+        if (response.statusCode == 201) {
+          // If server returns an OK response, parse the JSON
+          print(response.body);
+          return 1;
+        } else {
+          print(response.body);
+          print("Failed to change password token ["+response.statusCode.toString()+"]");
+          return -2;
+        }
+      } catch (E) {
+        //throw Exception('Failed to load songs');
+        print("Failed to expire token");
+        return -3;
+      }
+    }else{
+      print("No available token");
+      return -4;
+    }
+  }
 }

@@ -16,6 +16,7 @@ class User{
 
   Map<String, String> toMap() => {
     "mail": mail,
+    "name": name,
     "pswd": pswd,
   };
 }

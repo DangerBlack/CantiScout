@@ -20,7 +20,6 @@ import '../model/User.dart';
 import '../controller/Authentication.dart';
 import '../controller/Routing.dart';
 
-
 class Homepage extends StatefulWidget {
   Homepage({Key key, this.title}) : super(key: key);
 
@@ -53,20 +52,24 @@ class HomepageState extends State {
 
   var drawerItems = [];
 
-  _buildDrawList(){
+  _buildDrawList() {
     drawerItems = [
       new DrawerItem("Sincronizza", Icons.sync, null),
-      new DrawerItem("Account", Icons.account_circle, (context) async {
-        /*SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(Constants.sharedMail, Constants.defaultMail);
-      prefs.setString(Constants.sharedName, Constants.defaultName);
-      prefs.setString(Constants.sharedToken, "");*/
+      user.logged ? new DrawerItem("Account", Icons.account_circle, (context) async {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => AccountStateful(title: "Settings",user: user,)),
+              builder: (context) => AccountStateful(
+                    title: "Account",
+                    user: user,
+                    onLogoutCallback: () =>
+                    {
+                    Navigator.pop(context),
+                    _loadUser()
+                    },
+                  )),
         );
-      }),
+      }):new Padding(padding: EdgeInsets.all(0),),
       new Divider(),
       new DrawerItem("Impostazioni", Icons.settings, (context) {
         Navigator.push(
@@ -93,13 +96,14 @@ class HomepageState extends State {
   }
 
   routeSongs(BuildContext context) async {
-    if(songs==null){
+    if (songs == null) {
       songs = await DBProvider.db.getAllSongs();
     }
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => SongUlStateless(songs, "Elenco canzoni", user = user)),
+          builder: (context) =>
+              SongUlStateless(songs, "Elenco canzoni", user = user)),
       //MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
     );
   }
@@ -122,14 +126,14 @@ class HomepageState extends State {
     String name =
         (prefs.getString(Constants.sharedName) ?? Constants.defaultName);
     User userT = User.noPassword(name, mail);
-    if(mail != Constants.defaultMail) {
+    if (mail != Constants.defaultMail) {
       userT.logged = true;
     }
     setState(() {
       user = userT;
       build(context);
     });
-    Routing.checkRoutingLinks(context,user);
+    Routing.checkRoutingLinks(context, user);
     _buildDrawList();
     return user;
   }
@@ -138,36 +142,33 @@ class HomepageState extends State {
   void initState() {
     super.initState();
     _loadUser();
-
   }
 
-  List<Widget> _buildCards(BuildContext context){
+  List<Widget> _buildCards(BuildContext context) {
     List<Widget> l = new List<Widget>();
 
     l.add(Padding(
       padding: EdgeInsets.all(20.0),
     ));
-    l.add(
-        Card(
-          margin: _cardMargin,
-          elevation: _cardElevation,
-          child: Container(
-            height: _tileHeight,
-            child: ListTile(
-                contentPadding: _listPadding,
-                leading: Icon(Icons.book),
-                title: Text('Canzoniere'),
-                subtitle: Text('Ascolta tutte le canzoni'),
-                onTap: () {
-                  routeSongs(context);
-                  /*Navigator.push(
+    l.add(Card(
+      margin: _cardMargin,
+      elevation: _cardElevation,
+      child: Container(
+        height: _tileHeight,
+        child: ListTile(
+            contentPadding: _listPadding,
+            leading: Icon(Icons.book),
+            title: Text('Canzoniere'),
+            subtitle: Text('Ascolta tutte le canzoni'),
+            onTap: () {
+              routeSongs(context);
+              /*Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
                           );*/
-                }),
-          ),
-        )
-    );
+            }),
+      ),
+    ));
     l.add(Card(
       margin: _cardMargin,
       elevation: _cardElevation,
@@ -183,10 +184,9 @@ class HomepageState extends State {
                 context,
                 MaterialPageRoute(
                     builder: (context) => PlaylistUlStateful(
-                        title: 'Flutter Demo Home Page',
-                        user: user,
-                    )
-                ),
+                          title: 'Flutter Demo Home Page',
+                          user: user,
+                        )),
               );
             }),
       ),
@@ -206,7 +206,7 @@ class HomepageState extends State {
       ),
     ));
 
-    if(!user.logged) {
+    if (!user.logged) {
       l.add(Card(
         margin: _cardMargin,
         elevation: _cardElevation,
@@ -216,20 +216,16 @@ class HomepageState extends State {
             contentPadding: _listPadding,
             leading: Icon(Icons.account_circle),
             title: Text('Login'),
-            subtitle: Text(
-                'Effettua il login per accedere a tutte le funzionalità'),
+            subtitle:
+                Text('Effettua il login per accedere a tutte le funzionalità'),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        LoginSignUpPage(
-                            auth: new Auth(),
-                            onSignedIn: () =>
-                            {
-                            Navigator.pop(context),
-                            _loadUser()
-                            })),
+                    builder: (context) => LoginSignUpPage(
+                        auth: new Auth(),
+                        onSignedIn: () =>
+                            {Navigator.pop(context), _loadUser()})),
               );
             },
           ),
@@ -243,6 +239,7 @@ class HomepageState extends State {
   @override
   Widget build(BuildContext context) {
     updateList();
+    _buildDrawList();
 
     var drawerOptions = <Widget>[];
     for (var i = 0; i < drawerItems.length; i++) {
@@ -258,7 +255,6 @@ class HomepageState extends State {
         drawerOptions.add(d);
       }
     }
-
 
     return Scaffold(
       drawer: new Drawer(

@@ -9,7 +9,7 @@ import '../model/Constants.dart';
 abstract class BaseAuth {
   Future<String> signIn(String email, String password);
 
-  Future<String> signUp(String email, String password);
+  Future<String> signUp(String email, String username, String password);
 
   Future<User> getCurrentUser();
 
@@ -22,13 +22,12 @@ abstract class BaseAuth {
 
 class Auth implements BaseAuth {
 
-  static final tokenApi = 'https://512b.it/cantiscout/api/';
 
   Future<String> signIn(String email, String password) async {
     print("working");
     User user = new User(email,password);
     print(user.toMap());
-    final response = await http.post(tokenApi+"token", body: json.encode(user.toMap()));
+    final response = await http.post(Constants.tokenApi+Constants.token, body: json.encode(user.toMap()));
     print("sent");
     if (response.statusCode == 200) {
       print("yeah");
@@ -48,8 +47,22 @@ class Auth implements BaseAuth {
 
   }
 
-  Future<String> signUp(String email, String password) async {
-    User user = new User("luca@luca.it","afiafianfwnf");
+  Future<String> signUp(String email, String username, String password) async {
+    User user = new User(email,password);
+    user.name = username;
+    print(user.toMap());
+    final response = await http.post(Constants.tokenApi+Constants.register, body: json.encode(user.toMap()));
+    print("sent");
+    if (response.statusCode == 201) {
+      print("yeah");
+      print(response.body);
+      return await signIn(email,password);
+    }else{
+      print(response.body);
+      print("Unautorized!");
+      return null;
+    }
+
     return user.name;
   }
 

@@ -8,6 +8,9 @@ class Constants {
   static final String tokenApi = 'https://www.512b.it/cantiscout/api/';
 
   static final String token = 'token';
+  static final String register = 'register';
+  static final String updatePassword = 'updatePassword';
+  static final String tokenExpire = 'token/expire';
   static final String tokenMewSong = 'updateSong';
   static final String tokenPlaylist = 'playlist/';
 

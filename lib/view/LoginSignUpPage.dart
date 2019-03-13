@@ -19,6 +19,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
   final _formKey = new GlobalKey<FormState>();
 
   String _email;
+  String _username;
   String _password;
   String _errorMessage;
 
@@ -50,7 +51,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           userId = await widget.auth.signIn(_email, _password);
           userId ?? print('Signed in: $userId');
         } else {
-          userId = await widget.auth.signUp(_email, _password);
+          userId = await widget.auth.signUp(_email, _username, _password);
           widget.auth.sendEmailVerification();
           _showVerifyEmailSentDialog();
           print('Signed up user: $userId');
@@ -129,13 +130,14 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
         // return object of type Dialog
         return AlertDialog(
           title: new Text("Verify your account"),
-          content: new Text("Link to verify account has been sent to your email"),
+          content: new Text("Confirmation of login has been sent to your email"),
           actions: <Widget>[
             new FlatButton(
               child: new Text("Dismiss"),
               onPressed: () {
                 _changeFormToLogin();
                 Navigator.of(context).pop();
+                widget.onSignedIn();
               },
             ),
           ],
@@ -154,6 +156,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
             children: <Widget>[
               _showLogo(),
               _showEmailInput(),
+              _showUsernameInput(),
               _showPasswordInput(),
               _showPrimaryButton(),
               _showSecondaryButton(),
@@ -192,6 +195,35 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
         ),
       ),
     );
+  }
+
+
+  Widget _showUsernameInput() {
+    if(_formMode == FormMode.LOGIN){
+      return Padding(
+          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+          );
+    }else {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+        child: new TextFormField(
+          maxLines: 1,
+          keyboardType: TextInputType.text,
+          autofocus: false,
+          decoration: new InputDecoration(
+              hintText: 'Username',
+              icon: new Icon(
+                Icons.account_circle,
+                color: Colors.grey,
+              )),
+          validator: (value) =>
+          value.isEmpty
+              ? 'Username can\'t be empty'
+              : null,
+          onSaved: (value) => _username = value,
+        ),
+      );
+    }
   }
 
   Widget _showEmailInput() {
