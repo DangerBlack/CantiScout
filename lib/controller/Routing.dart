@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:convert/convert.dart';
@@ -11,7 +9,6 @@ import '../view/SongText.dart';
 import '../view/SongUlPlaylistStateless.dart';
 import '../model/User.dart';
 import '../model/Song.dart';
-import '../model/Playlist.dart';
 import '../Database.dart';
 
 
@@ -37,6 +34,8 @@ class Routing{
       title = Uri.decodeFull(title);
       String plHash = pl.split("-")[1];
       List<int> list = hex.decode(plHash);
+
+      //TODO verificare che non esista playlist con stesso nome!!!
       int idPl = await DBProvider.db.newPlaylist(title);
       print("Playlist: ");
       print(idPl);

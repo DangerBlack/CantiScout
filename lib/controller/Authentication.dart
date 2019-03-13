@@ -62,8 +62,6 @@ class Auth implements BaseAuth {
       print("Unautorized!");
       return null;
     }
-
-    return user.name;
   }
 
   Future<User> getCurrentUser() async {

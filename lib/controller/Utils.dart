@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart' as crypto;
 
-import '../model/Constants.dart';
 
 
 class Utils {
@@ -25,8 +24,6 @@ class Utils {
   }
 
   getPreferences(key, _callBack) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    double fontSize = (prefs.getDouble(key) ?? Constants.initialFontSize);
   }
 
   static generateMd5(String data) {

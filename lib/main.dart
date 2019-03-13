@@ -1,14 +1,8 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'FirstRoute.dart';
 import 'view/SongUl.dart';
 import 'view/Homepage.dart';
-import 'view/SongText.dart';
-import 'model/Song.dart';
-import 'Database.dart';
 
-import 'package:uni_links/uni_links.dart';
-import 'package:flutter/services.dart' show PlatformException;
 
 void main() => runApp(MyApp());
 
