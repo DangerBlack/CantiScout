@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+//import 'package:flutter_xlider/flutter_xlider.dart';
+import '../view/xsliderfixed.dart';
 import '../model/Chartset.dart';
 
 import '../model/Constants.dart';
@@ -26,11 +29,15 @@ class Settings extends State {
   bool _validate = false;
   bool _autoscroll = false;
   String dropdownValue = 'Roboto';
+  double _speed;
 
   TextEditingController _controller;
 
+  FlutterSlider gg;
+
   Settings() : super() {
-    _controller = new TextEditingController(text: Constants.initialFontSize.toString());
+    _controller =
+        new TextEditingController(text: Constants.initialFontSize.toString());
     _controller.addListener(() {
       if (_controller.text.isNotEmpty) {
         try {
@@ -39,7 +46,6 @@ class Settings extends State {
         } on FormatException {}
       }
     });
-    setPreferences();
   }
 
   setPreferences() async {
@@ -47,18 +53,22 @@ class Settings extends State {
     double fontSize = (prefs.getDouble(Constants.sharedDefaultFontSize) ??
         Constants.initialFontSize);
     setState(() {
+      _speed = (prefs.getDouble(Constants.sharedAutoscrollSpeed) ??
+          Constants.initialAutoscrollSpeed);
+
       _controller.text = fontSize.toString();
 
       _autoscroll = (prefs.getBool(Constants.sharedAutoscroll) ??
           Constants.initialAutoscroll);
 
-      pickerColor = Color((prefs.getInt(Constants.sharedFontColor) ??
-          Constants.initialColor));
+      pickerColor = Color(
+          (prefs.getInt(Constants.sharedFontColor) ?? Constants.initialColor));
 
       dropdownValue = (prefs.getString(Constants.sharedFontStyle) ??
           Constants.initialFontStyle);
-    });
 
+      print("Speed: " + _speed.toString());
+    });
   }
 
   updatePreferences(String key, var value) async {
@@ -85,40 +95,44 @@ class Settings extends State {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Pick a color!'),
-        content: SingleChildScrollView(
-          child: BlockPicker(
-            pickerColor: currentColor,
-            onColorChanged: changeColor,
+            title: const Text('Pick a color!'),
+            content: SingleChildScrollView(
+              child: BlockPicker(
+                pickerColor: currentColor,
+                onColorChanged: changeColor,
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Got it'),
+                onPressed: () {
+                  setState(() => currentColor = pickerColor);
+                  updatePreferences(Constants.sharedFontColor, currentColor);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Got it'),
-            onPressed: () {
-              setState(() => currentColor = pickerColor);
-              updatePreferences(Constants.sharedFontColor,currentColor);
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
     );
   }
 
-  _buildFontList(){
+  _buildFontList() {
     List<DropdownMenuItem<String>> l = new List<DropdownMenuItem<String>>();
-    List f =Charset.getFonts();
+    List f = Charset.getFonts();
     print(f);
-    f.forEach((value)=>
-      {
-      l.add(DropdownMenuItem<String>(
-        value: value,
-        child: Text(value, style: new TextStyle(fontFamily: value)
-        ),
-      ))}
-    );
+    f.forEach((value) => {
+          l.add(DropdownMenuItem<String>(
+            value: value,
+            child: Text(value, style: new TextStyle(fontFamily: value)),
+          ))
+        });
     return l;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setPreferences();
   }
 
   @override
@@ -153,16 +167,15 @@ class Settings extends State {
           style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
         ),
         subtitle: DropdownButton<String>(
-          hint: Text("Choose Font"),
-          value: dropdownValue,
-          onChanged: (String newValue) {
-            setState(() {
-              dropdownValue = newValue;
-              updatePreferences(Constants.sharedFontStyle, newValue);
-            });
-          },
-          items: _buildFontList()
-        ),
+            hint: Text("Choose Font"),
+            value: dropdownValue,
+            onChanged: (String newValue) {
+              setState(() {
+                dropdownValue = newValue;
+                updatePreferences(Constants.sharedFontStyle, newValue);
+              });
+            },
+            items: _buildFontList()),
       ),
     );
 
@@ -199,8 +212,80 @@ class Settings extends State {
           _autoscroll = value;
         });
       },
-      secondary: const Icon(Icons.text_rotation_none),
+      secondary: Icon(Constants.autoscrollIcon), //text_rotation_none
     ));
+
+    print("Velocita: " + _speed.toString());
+
+    /*settings.add(
+      new ListTile(
+        title: new Text(
+          "Velocità autoscroll",
+          textAlign: TextAlign.left,
+          style: _titleFontStyle,
+        ),
+      ),
+    );*/
+
+    /*
+    settings.add(
+      Slider(
+        min: 0.0,
+        divisions: Constants.maxScrollSpeed.toInt(),
+        max: Constants.maxScrollSpeed,
+        onChanged: (newRating) {
+          setState((){
+            _speed = newRating;
+            updatePreferences(Constants.sharedAutoscrollSpeed, _speed);
+          });
+        },
+        value: _speed,
+      ),
+    );*/
+
+    if (_speed != null) {
+      gg = new FlutterSlider(
+        trackBar: FlutterSliderTrackBar(
+          activeTrackBarColor: Theme.of(context).primaryColorLight,
+          activeTrackBarHeight: 5,
+          leftInactiveTrackBarColor: Colors.grey.shade200,
+        ),
+        values: <double>[_speed],
+        min: 0,
+        max: Constants.maxScrollSpeed,
+        handler: FlutterSliderHandler(
+          child: Material(
+            type: MaterialType.circle,
+            color: Theme.of(context).primaryColor,
+            elevation: 3,
+            child: Padding(
+              padding: EdgeInsets.all(5),
+              child: Icon(
+                Constants.autoscrollIcon,
+                //Icons.play_arrow,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          ),
+        ),
+        displayTestTouchZone: true,
+        onDragging: (handlerIndex, lowerValue, upperValue) {
+          setState(() {
+            print("Setto autoscroll " + lowerValue.toString());
+            if (lowerValue < 0.0) {
+              lowerValue = 0.0;
+            }
+            _speed = lowerValue;
+            updatePreferences(Constants.sharedAutoscrollSpeed, lowerValue);
+          });
+        },
+      );
+      settings.add(Padding(
+        padding: EdgeInsets.all(10),
+        child: gg,
+      ));
+    }
 
     //updateList();
     return Scaffold(
@@ -209,6 +294,7 @@ class Settings extends State {
       ),
       body: new Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: settings,
       ),
     );
@@ -218,6 +304,7 @@ class Settings extends State {
   void dispose() {
     // Clean up the controller when the Widget is removed from the Widget tree
     _controller.dispose();
+
     super.dispose();
   }
 }

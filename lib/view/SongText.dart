@@ -60,6 +60,7 @@ class SongTextState extends State {
   bool _autoscroll = Constants.initialAutoscroll;
   Color _noteColor = Color(Constants.initialColor);
   bool _logged = false;
+  double _speed = 5.0;
 
   //String _fontFamily = "Roboto";
   //String _fontFamily = "Inconsolata";
@@ -70,6 +71,9 @@ class SongTextState extends State {
 
   int numberOfDays = 31;
   double previousfSize;
+  ScrollController _controller;
+  int _songLength = 0;
+
 
   List<Widget> w = new List<Widget>();
 
@@ -109,7 +113,8 @@ class SongTextState extends State {
                 Constants.initialColor)) ||
         _fontFamily !=
             (prefs.getString(Constants.sharedFontStyle) ??
-                Constants.initialFontStyle)) {
+                Constants.initialFontStyle)
+    ) {
       setState(() {
         fSize = (prefs.getDouble(Constants.sharedDefaultFontSize) ??
             Constants.initialFontSize);
@@ -123,18 +128,37 @@ class SongTextState extends State {
         _fontFamily = (prefs.getString(Constants.sharedFontStyle) ??
             Constants.initialFontStyle);
 
+        _speed = (prefs.getDouble(Constants.sharedAutoscrollSpeed) ??
+            Constants.initialAutoscrollSpeed);
+
         if (mail != Constants.defaultMail) {
           _logged = true;
         } else {
           _logged = false;
         }
+
+        _runScroller();
       });
     }
   }
 
+  _runScroller(){
+    if(_autoscroll && _speed>0) {
+      _controller.animateTo(_songLength * fSize,
+          curve: Curves.linear,
+          duration: Duration(
+              milliseconds: ((Constants.maxScrollSpeed - _speed) * Constants.scrollMultiplier * _songLength * fSize).floor()));
+    }else{
+      _controller.animateTo(_controller.offset,
+          curve: Curves.linear,
+          duration: Duration(
+              milliseconds: 1));
+    }
+  }
   @override
   void initState() {
     super.initState();
+    _controller = ScrollController();
     _loadFontConfiguration();
   }
 
@@ -148,8 +172,24 @@ class SongTextState extends State {
     });
   }
 
-  double _speed = 8.0;
-
+  _buildFloatButton(BuildContext context){
+    return FloatingActionButton(
+      onPressed: !_logged
+          ? null
+          : () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditSongText(song: this.song),
+          ),
+        );
+      },
+      tooltip: !_logged ? "Login needed" : 'Edit',
+      child: Icon(Icons.edit),
+      backgroundColor:
+      !_logged ? Colors.grey : Theme.of(context).primaryColor,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     _loadFontConfiguration();
@@ -182,11 +222,11 @@ class SongTextState extends State {
         ],
       ),
       body: _buildSong(context),
-      floatingActionButton: Container(
+      floatingActionButton: _autoscroll ? Container(
           height: 300,
           child: Column(
             children: [
-              Expanded(
+               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 20.0),
                   child: FlutterSlider(
@@ -197,7 +237,7 @@ class SongTextState extends State {
                       ),
                       values: [_speed],
                       min: 0,
-                      max: 10,
+                      max: Constants.maxScrollSpeed,
                       rtl: true,
                       axis: Axis.vertical,
                       handler: FlutterSliderHandler(
@@ -208,7 +248,8 @@ class SongTextState extends State {
                           child: Padding(
                             padding: EdgeInsets.all(5),
                             child: Icon(
-                              Icons.text_rotation_none,
+                              Constants.autoscrollIcon,
+                              //Icons.play_arrow,
                               color: Colors.white,
                               size: 20,
                             ),
@@ -218,45 +259,15 @@ class SongTextState extends State {
                       onDragging: (handlerIndex, lowerValue, upperValue) => {
                             setState(() {
                               _speed = lowerValue;
+                              print("VELOCITA: "+_speed.toString());
+                              _runScroller();
                             })
                           }),
                 ),
               ),
-              FloatingActionButton(
-                onPressed: !_logged
-                    ? null
-                    : () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditSongText(song: this.song),
-                    ),
-                  );
-                },
-                tooltip: !_logged ? "Login needed" : 'Edit',
-                child: Icon(Icons.edit),
-                backgroundColor:
-                !_logged ? Colors.grey : Theme.of(context).primaryColor,
-              ),
+              _buildFloatButton(context),
             ],
-          )),
-
-      /*FloatingActionButton(
-        onPressed: !_logged
-            ? null
-            : () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditSongText(song: this.song),
-                  ),
-                );
-              },
-        tooltip: !_logged ? "Login needed" : 'Edit',
-        child: Icon(Icons.edit),
-        backgroundColor:
-            !_logged ? Colors.grey : Theme.of(context).primaryColor,
-      ),*/
+          )):_buildFloatButton(context),
     );
   }
 
@@ -470,6 +481,7 @@ class SongTextState extends State {
         )));*/
     q.forEach((e) => w.addAll(_buildSongRow(e)));
 
+    _songLength = w.length;
     if (this.song.tags.isNotEmpty) {
       w.add(Divider());
       w.add(Padding(
@@ -587,6 +599,8 @@ class SongTextState extends State {
       child: const Text(''),
     ));
 
+
+
     return new GestureDetector(
       onScaleStart: (scaleDetails) => setState(() => previousfSize = fSize),
       onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
@@ -595,10 +609,17 @@ class SongTextState extends State {
         });
       },
       child: ListView(
+        controller: _controller,
         shrinkWrap: true,
         padding: const EdgeInsets.all(20.0),
         children: w,
       ),
     );
+  }
+
+  @override
+  dispose(){
+    super.dispose();
+    _controller.dispose();
   }
 }

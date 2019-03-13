@@ -49,6 +49,7 @@ class HomepageState extends State {
       EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0);
   double _tileHeight = 100.0;
   double _cardElevation = 1.0;
+  List<Song> songs;
 
   var drawerItems = [];
 
@@ -81,16 +82,20 @@ class HomepageState extends State {
   }
 
   updateList() async {
+    songs = await DBProvider.db.getAllSongs();
     SongList lg = await Updater.updateSongs();
     if (lg.list.isNotEmpty) {
       print("Aggiornata!");
+      songs = await DBProvider.db.getAllSongs();
     } else {
       print("Up to date");
     }
   }
 
   routeSongs(BuildContext context) async {
-    List<Song> songs = await DBProvider.db.getAllSongs();
+    if(songs==null){
+      songs = await DBProvider.db.getAllSongs();
+    }
     Navigator.push(
       context,
       MaterialPageRoute(
