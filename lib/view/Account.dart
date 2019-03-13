@@ -157,6 +157,7 @@ class Account extends State {
             child: TextField(
               textAlign: TextAlign.center,
               controller: passwordController1,
+              obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Old password',
                 errorText: _validate ? 'Value Can\'t Be Empty' : null,
@@ -168,6 +169,7 @@ class Account extends State {
             child: TextField(
               textAlign: TextAlign.center,
               controller: passwordController2,
+              obscureText: true,
               decoration: InputDecoration(
                 labelText: 'New password',
                 errorText: _validate ? 'Value Can\'t Be Empty' : null,
@@ -179,6 +181,7 @@ class Account extends State {
             child: TextField(
               textAlign: TextAlign.center,
               controller: passwordController3,
+              obscureText: true,
               decoration: InputDecoration(
                 labelText: 'New password (confirm)',
                 errorText: _validate ? 'Value Can\'t Be Empty' : null,

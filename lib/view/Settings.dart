@@ -169,6 +169,7 @@ class Settings extends State {
         subtitle: DropdownButton<String>(
             hint: Text("Choose Font"),
             value: dropdownValue,
+            isExpanded: true,
             onChanged: (String newValue) {
               setState(() {
                 dropdownValue = newValue;

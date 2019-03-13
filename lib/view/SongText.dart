@@ -74,8 +74,10 @@ class SongTextState extends State {
   ScrollController _controller;
   int _songLength = 0;
 
-
   List<Widget> w = new List<Widget>();
+
+  String reportValue = "copiright";
+  TextEditingController _controllerReportDesc;
 
   loadTagList() async {
     print("vuoto!");
@@ -113,8 +115,7 @@ class SongTextState extends State {
                 Constants.initialColor)) ||
         _fontFamily !=
             (prefs.getString(Constants.sharedFontStyle) ??
-                Constants.initialFontStyle)
-    ) {
+                Constants.initialFontStyle)) {
       setState(() {
         fSize = (prefs.getDouble(Constants.sharedDefaultFontSize) ??
             Constants.initialFontSize);
@@ -142,23 +143,27 @@ class SongTextState extends State {
     }
   }
 
-  _runScroller(){
-    if(_autoscroll && _speed>0) {
+  _runScroller() {
+    if (_autoscroll && _speed > 0) {
       _controller.animateTo(_songLength * fSize,
           curve: Curves.linear,
           duration: Duration(
-              milliseconds: ((Constants.maxScrollSpeed - _speed) * Constants.scrollMultiplier * _songLength * fSize).floor()));
-    }else{
+              milliseconds: ((Constants.maxScrollSpeed - _speed) *
+                      Constants.scrollMultiplier *
+                      _songLength *
+                      fSize)
+                  .floor()));
+    } else {
       _controller.animateTo(_controller.offset,
-          curve: Curves.linear,
-          duration: Duration(
-              milliseconds: 1));
+          curve: Curves.linear, duration: Duration(milliseconds: 1));
     }
   }
+
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
+    _controllerReportDesc = new TextEditingController(text: "");
     _loadFontConfiguration();
   }
 
@@ -172,24 +177,24 @@ class SongTextState extends State {
     });
   }
 
-  _buildFloatButton(BuildContext context){
+  _buildFloatButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: !_logged
           ? null
           : () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EditSongText(song: this.song),
-          ),
-        );
-      },
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditSongText(song: this.song),
+                ),
+              );
+            },
       tooltip: !_logged ? "Login needed" : 'Edit',
       child: Icon(Icons.edit),
-      backgroundColor:
-      !_logged ? Colors.grey : Theme.of(context).primaryColor,
+      backgroundColor: !_logged ? Colors.grey : Theme.of(context).primaryColor,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     _loadFontConfiguration();
@@ -222,52 +227,56 @@ class SongTextState extends State {
         ],
       ),
       body: _buildSong(context),
-      floatingActionButton: _autoscroll ? Container(
-          height: 300,
-          child: Column(
-            children: [
-               Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: FlutterSlider(
-                      trackBar: FlutterSliderTrackBar(
-                        activeTrackBarColor: Theme.of(context).primaryColorLight,
-                        activeTrackBarHeight: 5,
-                        leftInactiveTrackBarColor: Colors.grey.shade200,
-                      ),
-                      values: [_speed],
-                      min: 0,
-                      max: Constants.maxScrollSpeed,
-                      rtl: true,
-                      axis: Axis.vertical,
-                      handler: FlutterSliderHandler(
-                        child: Material(
-                          type: MaterialType.circle,
-                          color: Theme.of(context).primaryColor,
-                          elevation: 3,
-                          child: Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Icon(
-                              Constants.autoscrollIcon,
-                              //Icons.play_arrow,
-                              color: Colors.white,
-                              size: 20,
+      floatingActionButton: _autoscroll
+          ? Container(
+              height: 300,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20.0),
+                      child: FlutterSlider(
+                          trackBar: FlutterSliderTrackBar(
+                            activeTrackBarColor:
+                                Theme.of(context).primaryColorLight,
+                            activeTrackBarHeight: 5,
+                            leftInactiveTrackBarColor: Colors.grey.shade200,
+                          ),
+                          values: [_speed],
+                          min: 0,
+                          max: Constants.maxScrollSpeed,
+                          rtl: true,
+                          axis: Axis.vertical,
+                          handler: FlutterSliderHandler(
+                            child: Material(
+                              type: MaterialType.circle,
+                              color: Theme.of(context).primaryColor,
+                              elevation: 3,
+                              child: Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Icon(
+                                  Constants.autoscrollIcon,
+                                  //Icons.play_arrow,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      onDragging: (handlerIndex, lowerValue, upperValue) => {
-                            setState(() {
-                              _speed = lowerValue;
-                              print("VELOCITA: "+_speed.toString());
-                              _runScroller();
-                            })
-                          }),
-                ),
-              ),
-              _buildFloatButton(context),
-            ],
-          )):_buildFloatButton(context),
+                          onDragging: (handlerIndex, lowerValue, upperValue) =>
+                              {
+                                setState(() {
+                                  _speed = lowerValue;
+                                  print("VELOCITA: " + _speed.toString());
+                                  _runScroller();
+                                })
+                              }),
+                    ),
+                  ),
+                  _buildFloatButton(context),
+                ],
+              ))
+          : _buildFloatButton(context),
     );
   }
 
@@ -586,7 +595,9 @@ class SongTextState extends State {
                 iconSize: 30.0,
                 tooltip: "Segnala un abuso",
                 padding: EdgeInsets.all(15.0),
-                onPressed: () {},
+                onPressed: () {
+                  _showReportDialog(context);
+                },
               ),
             ),
           ),
@@ -598,8 +609,6 @@ class SongTextState extends State {
       padding: EdgeInsets.symmetric(vertical: 20.0),
       child: const Text(''),
     ));
-
-
 
     return new GestureDetector(
       onScaleStart: (scaleDetails) => setState(() => previousfSize = fSize),
@@ -618,8 +627,96 @@ class SongTextState extends State {
   }
 
   @override
-  dispose(){
+  dispose() {
     super.dispose();
     _controller.dispose();
+    _controllerReportDesc.dispose();
+  }
+
+  _buildReportOptionsList() {
+    List<DropdownMenuItem<String>> l = new List<DropdownMenuItem<String>>();
+    List f = <String>[
+      "copiright",
+      "contenuti espliciti o offensivi",
+      "note errate",
+      "testo errato",
+      "altro"
+    ];
+    f.forEach((value) => {
+          l.add(DropdownMenuItem<String>(
+            value: value,
+            child: Text(value, style: new TextStyle(fontFamily: value)),
+          ))
+        });
+    return l;
+  }
+
+  void _showReportDialog(BuildContext contextOld) {
+    showDialog(
+      context: contextOld,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return StatefulBuilder(
+          builder: (ctx, setState) {
+            return AlertDialog(
+              title: new Text("Vuoi segnalare questa canzone?"),
+              content: Container(
+                height: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        hint: Text("Ragione della segnalazione"),
+                        onChanged: (String newValue) {
+                          print(newValue);
+                          reportValue = newValue;
+                          setState(() {
+                            reportValue;
+                            print(reportValue);
+                          });
+                        },
+                        value: reportValue,
+                        items: _buildReportOptionsList(),
+                      ),
+                    ),
+                    new ListTile(
+                      title: TextField(
+                        maxLines: 4,
+                        textAlign: TextAlign.left,
+                        controller: _controllerReportDesc,
+                        decoration: InputDecoration(
+                          labelText: 'Descrizione:',
+                        ),
+                      ),
+                    ),
+                  ],
+                  //new Text("Selezione la ragione adeguata:"),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text(
+                    "ANNULLA",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                new FlatButton(
+                  child: new Text("INVIA"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }
