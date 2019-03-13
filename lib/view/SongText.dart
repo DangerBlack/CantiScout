@@ -11,6 +11,7 @@ import '../model/Chartset.dart';
 import '../model/Choice.dart';
 import '../Database.dart';
 import '../controller/CustomSearchDelegate.dart';
+import '../controller/Updater.dart';
 import '../view/ChoosePlaylist.dart';
 import '../view/EditSongText.dart';
 import '../view/Settings.dart';
@@ -635,13 +636,7 @@ class SongTextState extends State {
 
   _buildReportOptionsList() {
     List<DropdownMenuItem<String>> l = new List<DropdownMenuItem<String>>();
-    List f = <String>[
-      "copiright",
-      "contenuti espliciti o offensivi",
-      "note errate",
-      "testo errato",
-      "altro"
-    ];
+    List f = Constants.reportOption;
     f.forEach((value) => {
           l.add(DropdownMenuItem<String>(
             value: value,
@@ -709,6 +704,8 @@ class SongTextState extends State {
                 new FlatButton(
                   child: new Text("INVIA"),
                   onPressed: () {
+                    reportSong();
+
                     Navigator.of(context).pop();
                   },
                 ),
@@ -718,5 +715,9 @@ class SongTextState extends State {
         );
       },
     );
+  }
+
+  reportSong() async{
+    await Updater.reportSong(song, Constants.reportOption.indexOf(reportValue), _controllerReportDesc.text);
   }
 }

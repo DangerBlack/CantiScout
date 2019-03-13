@@ -10,9 +10,13 @@ class Constants {
   static final String token = 'token';
   static final String register = 'register';
   static final String updatePassword = 'updatePassword';
+  static final String report = 'report';
   static final String tokenExpire = 'token/expire';
   static final String tokenMewSong = 'updateSong';
   static final String tokenPlaylist = 'playlist/';
+
+  static final String  lastDateCheck = 'lastDateCheck';
+  static final Duration  waitBetweenCheck = new Duration(days:1);
 
 
   static final String gravatarUrl = "https://www.gravatar.com/avatar/";
@@ -42,5 +46,14 @@ class Constants {
 
   static final String defaultMail = "unkown";
   static final String defaultName = "Unkown";
+
+
+  static final List<String> reportOption = <String>[
+    "copiright",
+    "contenuti espliciti o offensivi",
+    "note errate",
+    "testo errato",
+    "altro"
+  ];
 
 }

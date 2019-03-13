@@ -14,51 +14,66 @@ class Updater {
   /// Update the database retrieving from website the list of the new song.
   /// Returns The song list retrieved from the remote address.
   static Future<SongList> updateSongs() async {
-    String max = await DBProvider.db.getLastDate();
-    if (max == null) {
-      max = "";
-    }
-    print("Time max:" + max);
-    max = Uri.encodeFull(max);
-    try {
-      final response = await http.get(Constants.urlPathSongList + max);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String lastCheck = (prefs.getString(Constants.lastDateCheck) ?? DateTime(1900).toIso8601String());
+    print(lastCheck);
+    DateTime lastCheckDate = DateTime.parse(lastCheck);
+    if(DateTime.now().difference(lastCheckDate)>=Constants.waitBetweenCheck) {
+      print("Check for update");
+      String max = await DBProvider.db.getLastDate();
+      if (max == null) {
+        max = "";
+      }
+      print("Time max:" + max);
+      max = Uri.encodeFull(max);
+      try {
+        final response = await http.get(Constants.urlPathSongList + max);
 
-      if (response.statusCode == 200) {
-        // If server returns an OK response, parse the JSON
-        print(response.body);
-        if (response.body != "204") {
-          final jsonData = json.decode(response.body);
-          print(jsonData['songlist'][0]['title']);
+        if (response.statusCode == 200) {
+          // If server returns an OK response, parse the JSON
+          print(response.body);
+          if (response.body != "204") {
+            final jsonData = json.decode(response.body);
+            print(jsonData['songlist'][0]['title']);
 
-          var myThing = (json.decode(response.body)['songlist'] as List)
-              .map((e) => new Song.fromMap(e))
-              .toList();
-          print(myThing[0].title);
-          SongList songs = new SongList();
-          songs.list = myThing;
-          songs.list.forEach((s) {
-            DBProvider.db.updateOrInsertSong(s);
-          });
+            var myThing = (json.decode(response.body)['songlist'] as List)
+                .map((e) => new Song.fromMap(e))
+                .toList();
+            print(myThing[0].title);
+            SongList songs = new SongList();
+            songs.list = myThing;
+            songs.list.forEach((s) {
+              DBProvider.db.updateOrInsertSong(s);
+            });
 
-          var tags = (json.decode(response.body)['taglist'] as List)
-              .map((e) => new Tag.fromRemoteMap(e))
-              .toList();
+            var tags = (json.decode(response.body)['taglist'] as List)
+                .map((e) => new Tag.fromRemoteMap(e))
+                .toList();
 
-          tags.forEach((t) {
-            DBProvider.db.newTag(t);
-          });
-          return songs;
+            tags.forEach((t) {
+              DBProvider.db.newTag(t);
+            });
+            print("Aggiorno pref");
+            prefs.setString(Constants.lastDateCheck,DateTime.now().toIso8601String());
+            return songs;
+          }else{
+            print("Aggiorno pref");
+            prefs.setString(Constants.lastDateCheck,DateTime.now().toIso8601String());
+          }
+          return SongList();
+        } else {
+          // If that response was not OK, throw an error.
+          //throw Exception('Failed to load songs');
+          print("Failed to load songs");
+          return SongList();
         }
-        return SongList();
-      } else {
-        // If that response was not OK, throw an error.
+      } catch (E) {
         //throw Exception('Failed to load songs');
         print("Failed to load songs");
         return SongList();
       }
-    } catch (E) {
-      //throw Exception('Failed to load songs');
-      print("Failed to load songs");
+    }else{
+      print("Not Checked!");
       return SongList();
     }
   }
@@ -145,6 +160,44 @@ class Updater {
         print(s);
         final response = await http.post(
             Constants.tokenApi + Constants.updatePassword,
+            body: json.encode(s));
+
+        print(response.request.url);
+        if (response.statusCode == 201) {
+          // If server returns an OK response, parse the JSON
+          print(response.body);
+          return 1;
+        } else {
+          print(response.body);
+          print("Failed to change password token ["+response.statusCode.toString()+"]");
+          return -2;
+        }
+      } catch (E) {
+        //throw Exception('Failed to load songs');
+        print("Failed to expire token");
+        return -3;
+      }
+    }else{
+      print("No available token");
+      return -4;
+    }
+  }
+
+
+  static Future<int> reportSong(Song song, int kind, String description) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString(Constants.sharedToken);
+
+    if (token != null) {
+      try {
+        Map<String, dynamic> s = new Map<String, dynamic>();
+        s["token"] = token;
+        s["idSong"] = song.id;
+        s["description"] = description;
+        s["kind"] = kind;
+        print(s);
+        final response = await http.post(
+            Constants.tokenApi + Constants.report,
             body: json.encode(s));
 
         print(response.request.url);
