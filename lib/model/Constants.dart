@@ -12,7 +12,8 @@ class Constants {
   static final String updatePassword = 'updatePassword';
   static final String report = 'report';
   static final String tokenExpire = 'token/expire';
-  static final String tokenMewSong = 'updateSong';
+  static final String tokenUpdateSong = 'updateSong';
+  static final String tokenNewSong = 'insertSong';
   static final String tokenPlaylist = 'playlist/';
 
   static final String  lastDateCheck = 'lastDateCheck';
@@ -53,6 +54,15 @@ class Constants {
     "contenuti espliciti o offensivi",
     "note errate",
     "testo errato",
+    "altro"
+  ];
+
+
+  static final List<String> optTag = <String>[
+    "chiesa,messa,liturgia,preghiera",
+    "lc,lupetti,coccinelle,branco,cerchio",
+    "eg,esploratori,guide,reparto",
+    "rs,rover,scolte,clan",
     "altro"
   ];
 

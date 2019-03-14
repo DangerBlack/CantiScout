@@ -51,7 +51,7 @@ class SongUlStateless extends StatelessWidget {
             ),
           );
         },
-        tooltip: 'Edit',
+        tooltip: 'Aggiungi',
         child: Icon(Icons.add),
       ):null,
     );

@@ -84,7 +84,7 @@ class HomepageState extends State {
     ];
   }
 
-  updateList() async {
+  updateListRemote() async {
     songs = await DBProvider.db.getAllSongs();
     SongList lg = await Updater.updateSongs();
     if (lg.list.isNotEmpty) {
@@ -93,6 +93,9 @@ class HomepageState extends State {
     } else {
       print("Up to date");
     }
+  }
+  updateList() async {
+    songs = await DBProvider.db.getAllSongs();
   }
 
   routeSongs(BuildContext context) async {
@@ -142,6 +145,7 @@ class HomepageState extends State {
   void initState() {
     super.initState();
     _loadUser();
+    updateListRemote();
   }
 
   List<Widget> _buildCards(BuildContext context) {

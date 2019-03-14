@@ -29,13 +29,13 @@ class CreateSong extends State {
     //TODO: Aprire playlist appena creata!
     Song song = new Song();
     song.title = title;
-    song.body = "{title: "+title+"}\n";
+    song.body = "{title: " + title + "}\n";
     song.body += "\n";
     song.body += "\n";
     Navigator.pop(context);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EditSongText(song: song) ),
+      MaterialPageRoute(builder: (context) => EditSongText(song: song, opt:_opt)),
     );
   }
 
@@ -59,6 +59,8 @@ class CreateSong extends State {
     super.dispose();
   }
 
+  List<bool> _opt = <bool>[false, false, false, false, false];
+
   @override
   Widget build(BuildContext context) {
     //updateList();
@@ -72,7 +74,8 @@ class CreateSong extends State {
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
                 radius: 48.0,
-                child: Icon(Icons.album), //Image.asset('assets/flutter-icon.png'),
+                child:
+                    Icon(Icons.album), //Image.asset('assets/flutter-icon.png'),
               ),
             ),
           ),
@@ -91,6 +94,76 @@ class CreateSong extends State {
                 errorText: _validate ? 'Value Can\'t Be Empty' : null,
               ),
             ),
+          ),
+          Text(
+            "Segli l'ambito",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 40.0, bottom:40.0,left:40.0, right:40.0),
+            child: Row(children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    Text("Chiesa"),
+                    Checkbox(
+                        value: _opt[0],
+                        onChanged: (value) => setState(() {
+                              _opt[0] = value;
+                            })),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Text("L/C"),
+                    Checkbox(
+                        value: _opt[1],
+                        onChanged: (value) => setState(() {
+                              _opt[1] = value;
+                            })),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Text("E/G"),
+                    Checkbox(
+                        value: _opt[2],
+                        onChanged: (value) => setState(() {
+                              _opt[2] = value;
+                            })),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Text("R/S"),
+                    Checkbox(
+                        value: _opt[3],
+                        onChanged: (value) => setState(() {
+                              _opt[3] = value;
+                            })),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Text("altro"),
+                    Checkbox(
+                        value: _opt[4],
+                        onChanged: (value) => setState(() {
+                              _opt[4] = value;
+                            })),
+                  ],
+                ),
+              ),
+            ]),
           ),
           Row(children: [
             Expanded(

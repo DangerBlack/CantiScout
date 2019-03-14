@@ -188,6 +188,14 @@ class DBProvider {
     return raw;
   }
 
+  Future<List<Playlist>> hasPlaylist(String title) async {
+    final db = await database;
+    var res = await db.query("Playlist", where: "title = ?", whereArgs: [title]);
+    List<Playlist> list =
+    res.isNotEmpty ? res.map((c) => Playlist.fromMap(c)).toList() : [];
+    return list;
+  }
+
   Future<List<Song>> getAllPlaylistSongs(int idPlaylist) async {
     final db = await database;
 

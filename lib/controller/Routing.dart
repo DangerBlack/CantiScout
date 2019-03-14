@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:canti_scout/model/Playlist.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
@@ -36,12 +37,17 @@ class Routing{
       List<int> list = hex.decode(plHash);
 
       //TODO verificare che non esista playlist con stesso nome!!!
-      int idPl = await DBProvider.db.newPlaylist(title);
-      print("Playlist: ");
-      print(idPl);
-      for(int id in list){
-        await DBProvider.db.newSongPlaylistRaw(idPl,id);
-
+      List<Playlist> playlists = await DBProvider.db.hasPlaylist(title);
+      int idPl;
+      if(playlists.isEmpty){
+        idPl = await DBProvider.db.newPlaylist(title);
+        print("Playlist: ");
+        print(idPl);
+        for(int id in list){
+          await DBProvider.db.newSongPlaylistRaw(idPl,id);
+        }
+      }else{
+        idPl = playlists[0].id;
       }
       List<Song> ls = await DBProvider.db.getAllPlaylistSongs(idPl);
       Navigator.push(

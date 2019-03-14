@@ -8,10 +8,11 @@ import '../controller/Updater.dart';
 
 class EditSongText extends StatefulWidget {
   final Song song;
-  EditSongText({Key key, this.song}) : super(key: key);
+  final List<bool> opt;
+  EditSongText({Key key, this.song, this.opt}) : super(key: key);
 
   @override
-  EditSongTextState createState() => EditSongTextState(this.song);
+  EditSongTextState createState() => EditSongTextState(this.song, this.opt);
 }
 
 class EditSongTextState extends State {
@@ -32,6 +33,7 @@ class EditSongTextState extends State {
   final RegExp expChorusEnd = new RegExp(r"eoc|end_of_chorus");
   */
   Song song;
+  List<bool> opt;
 
   //double fSize = 18.0;
   //FontWeight fWeight = FontWeight.normal;
@@ -80,16 +82,17 @@ class EditSongTextState extends State {
     super.initState();
   }
 
-  EditSongTextState(song) {
+  EditSongTextState(Song song, List<bool> opt) {
     print("rebuild");
     this.song = song;
+    this.opt = opt;
     //loadTagList();
   }
 
   _uploadSong(BuildContext context) async {
     String text = myController.text;
     song.body = text;
-    int res = await Updater.updateSong(song);
+    int res = await Updater.updateSong(song,opt);
     if (res < 0) {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         backgroundColor: Colors.red,

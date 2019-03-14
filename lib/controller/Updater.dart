@@ -15,10 +15,12 @@ class Updater {
   /// Returns The song list retrieved from the remote address.
   static Future<SongList> updateSongs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String lastCheck = (prefs.getString(Constants.lastDateCheck) ?? DateTime(1900).toIso8601String());
+    String lastCheck = (prefs.getString(Constants.lastDateCheck) ??
+        DateTime(1900).toIso8601String());
     print(lastCheck);
     DateTime lastCheckDate = DateTime.parse(lastCheck);
-    if(DateTime.now().difference(lastCheckDate)>=Constants.waitBetweenCheck) {
+    if (DateTime.now().difference(lastCheckDate) >=
+        Constants.waitBetweenCheck) {
       print("Check for update");
       String max = await DBProvider.db.getLastDate();
       if (max == null) {
@@ -54,11 +56,13 @@ class Updater {
               DBProvider.db.newTag(t);
             });
             print("Aggiorno pref");
-            prefs.setString(Constants.lastDateCheck,DateTime.now().toIso8601String());
+            prefs.setString(
+                Constants.lastDateCheck, DateTime.now().toIso8601String());
             return songs;
-          }else{
+          } else {
             print("Aggiorno pref");
-            prefs.setString(Constants.lastDateCheck,DateTime.now().toIso8601String());
+            prefs.setString(
+                Constants.lastDateCheck, DateTime.now().toIso8601String());
           }
           return SongList();
         } else {
@@ -72,13 +76,25 @@ class Updater {
         print("Failed to load songs");
         return SongList();
       }
-    }else{
+    } else {
       print("Not Checked!");
       return SongList();
     }
   }
 
-  static Future<int> updateSong(Song song) async {
+  static String fromOptToTagList(List<bool> opt){
+    String s="";
+    for(int i=0;i<opt.length;i++){
+        if(opt[i]){
+          s+=Constants.optTag[i]+",";
+        }
+    }
+    if(s.length>0){
+      s.substring(0,s.length-1);
+    }
+    return s;
+  }
+  static Future<int> updateSong(Song song,List<bool> opt) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString(Constants.sharedToken);
 
@@ -86,8 +102,13 @@ class Updater {
       try {
         Map<String, dynamic> s = song.toMap();
         s["token"] = token;
-        final response = await http.post(
-            Constants.tokenApi + Constants.tokenMewSong,
+
+        String tokenAction = Constants.tokenUpdateSong;
+        if (song.id == null || song.id == -1) {
+          tokenAction = Constants.tokenNewSong;
+          s["tag"] = fromOptToTagList(opt);
+        }
+        final response = await http.post(Constants.tokenApi + tokenAction,
             body: json.encode(s));
 
         print(response.request.url);
@@ -99,7 +120,9 @@ class Updater {
           print(response.body);
           // If that response was not OK, throw an error.
           //throw Exception('Failed to load songs');
-          print("Failed to upload songs ["+response.statusCode.toString()+"]");
+          print("Failed to upload songs [" +
+              response.statusCode.toString() +
+              "]");
           return -2;
         }
       } catch (E) {
@@ -107,7 +130,7 @@ class Updater {
         print("Failed to upload songs");
         return -3;
       }
-    }else{
+    } else {
       print("No available token");
       return -4;
     }
@@ -132,7 +155,9 @@ class Updater {
           return 1;
         } else {
           print(response.body);
-          print("Failed to expire token ["+response.statusCode.toString()+"]");
+          print("Failed to expire token [" +
+              response.statusCode.toString() +
+              "]");
           return -2;
         }
       } catch (E) {
@@ -140,14 +165,13 @@ class Updater {
         print("Failed to expire token");
         return -3;
       }
-    }else{
+    } else {
       print("No available token");
       return -4;
     }
   }
 
-
-  static Future<int> updatePswd(String oldPswd,String newPswd) async {
+  static Future<int> updatePswd(String oldPswd, String newPswd) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString(Constants.sharedToken);
 
@@ -169,7 +193,9 @@ class Updater {
           return 1;
         } else {
           print(response.body);
-          print("Failed to change password token ["+response.statusCode.toString()+"]");
+          print("Failed to change password token [" +
+              response.statusCode.toString() +
+              "]");
           return -2;
         }
       } catch (E) {
@@ -177,12 +203,11 @@ class Updater {
         print("Failed to expire token");
         return -3;
       }
-    }else{
+    } else {
       print("No available token");
       return -4;
     }
   }
-
 
   static Future<int> reportSong(Song song, int kind, String description) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -196,8 +221,7 @@ class Updater {
         s["description"] = description;
         s["kind"] = kind;
         print(s);
-        final response = await http.post(
-            Constants.tokenApi + Constants.report,
+        final response = await http.post(Constants.tokenApi + Constants.report,
             body: json.encode(s));
 
         print(response.request.url);
@@ -207,7 +231,9 @@ class Updater {
           return 1;
         } else {
           print(response.body);
-          print("Failed to change password token ["+response.statusCode.toString()+"]");
+          print("Failed to change password token [" +
+              response.statusCode.toString() +
+              "]");
           return -2;
         }
       } catch (E) {
@@ -215,7 +241,7 @@ class Updater {
         print("Failed to expire token");
         return -3;
       }
-    }else{
+    } else {
       print("No available token");
       return -4;
     }
