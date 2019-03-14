@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../controller/Authentication.dart';
+import '../controller/AppLocalizations.dart';
 
 
 //https://github.com/tattwei46/flutter_login_demo
@@ -106,7 +107,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     _isIos = Theme.of(context).platform == TargetPlatform.iOS;
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Flutter login demo'),
+          title: new Text(AppLocalizations.of(context).login),
         ),
         body: Stack(
           children: <Widget>[
@@ -129,11 +130,11 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Verify your account"),
-          content: new Text("Confirmation of login has been sent to your email"),
+          title: new Text(AppLocalizations.of(context).verify_account),
+          content: new Text(AppLocalizations.of(context).verify_account_desc),
           actions: <Widget>[
             new FlatButton(
-              child: new Text("Dismiss"),
+              child: new Text(AppLocalizations.of(context).dismiss),
               onPressed: () {
                 _changeFormToLogin();
                 Navigator.of(context).pop();
@@ -211,14 +212,14 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           keyboardType: TextInputType.text,
           autofocus: false,
           decoration: new InputDecoration(
-              hintText: 'Username',
+              hintText: AppLocalizations.of(context).username,
               icon: new Icon(
                 Icons.account_circle,
                 color: Colors.grey,
               )),
           validator: (value) =>
           value.isEmpty
-              ? 'Username can\'t be empty'
+              ? AppLocalizations.of(context).value_must_not_be_empty
               : null,
           onSaved: (value) => _username = value,
         ),
@@ -234,12 +235,12 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
         decoration: new InputDecoration(
-            hintText: 'Email',
+            hintText: AppLocalizations.of(context).email,
             icon: new Icon(
               Icons.mail,
               color: Colors.grey,
             )),
-        validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
+        validator: (value) => value.isEmpty ? AppLocalizations.of(context).value_must_not_be_empty : null,
         onSaved: (value) => _email = value,
       ),
     );
@@ -253,12 +254,12 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
         obscureText: true,
         autofocus: false,
         decoration: new InputDecoration(
-            hintText: 'Password',
+            hintText: AppLocalizations.of(context).password,
             icon: new Icon(
               Icons.lock,
               color: Colors.grey,
             )),
-        validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+        validator: (value) => value.isEmpty ? AppLocalizations.of(context).password : null,
         onSaved: (value) => _password = value,
       ),
     );
@@ -267,9 +268,9 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
   Widget _showSecondaryButton() {
     return new FlatButton(
       child: _formMode == FormMode.LOGIN
-          ? new Text('Create an account',
+          ? new Text(AppLocalizations.of(context).create_account,
           style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300))
-          : new Text('Have an account? Sign in',
+          : new Text(AppLocalizations.of(context).have_an_account_yet,
           style:
           new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
       onPressed: _formMode == FormMode.LOGIN
@@ -288,9 +289,9 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
             color: Theme.of(context).primaryColor,
             child: _formMode == FormMode.LOGIN
-                ? new Text('Login',
+                ? new Text(AppLocalizations.of(context).login,
                 style: new TextStyle(fontSize: 20.0, color: Colors.white))
-                : new Text('Create account',
+                : new Text(AppLocalizations.of(context).create_account,
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: _validateAndSubmit,
           ),

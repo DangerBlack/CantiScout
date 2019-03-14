@@ -3,6 +3,7 @@ import '../model/Song.dart';
 import '../model/User.dart';
 import '../view/SongUlPlaylistStateless.dart';
 import '../Database.dart';
+import '../controller/AppLocalizations.dart';
 
 class CreatePlaylistStatefull extends StatefulWidget {
   final User user;
@@ -81,7 +82,7 @@ class CreatePlaylist extends State {
             ),
           ),
           Text(
-            "Dai un nome alla tua playlist.",
+            AppLocalizations.of(context).name_playlist,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -91,8 +92,8 @@ class CreatePlaylist extends State {
               textAlign: TextAlign.center,
               controller: myController,
               decoration: InputDecoration(
-                labelText: 'Plylist name',
-                errorText: _validate ? 'Value Can\'t Be Empty' : null,
+                labelText: AppLocalizations.of(context).playlist_name,
+                errorText: _validate ? AppLocalizations.of(context).value_must_not_be_empty : null,
               ),
             ),
           ),
@@ -100,7 +101,7 @@ class CreatePlaylist extends State {
             Expanded(
               child: FlatButton(
                 child: Text(
-                  "ANNULLA",
+                  AppLocalizations.of(context).undo,
                   style: TextStyle(color: Colors.grey),
                 ),
                 onPressed: () {
@@ -111,7 +112,7 @@ class CreatePlaylist extends State {
             Expanded(
               child: FlatButton(
                 child: Text(
-                  "CREA",
+                  AppLocalizations.of(context).create,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                   ),

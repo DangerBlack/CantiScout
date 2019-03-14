@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:share/share.dart';
 import 'package:screen/screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 
 import '../model/Song.dart';
@@ -15,7 +16,9 @@ import '../controller/Updater.dart';
 import '../view/ChoosePlaylist.dart';
 import '../view/EditSongText.dart';
 import '../view/Settings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+
+import '../controller/AppLocalizations.dart';
 
 class SongText extends StatefulWidget {
   final Song song;
@@ -27,20 +30,7 @@ class SongText extends StatefulWidget {
 }
 
 class SongTextState extends State {
-  List<Choice> choices = <Choice>[
-    Choice(
-        title: 'Settings',
-        icon: Icons.settings,
-        action: (context) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SettingsStateful(title: "Settings")),
-          );
-        }),
-    Choice(title: 'Bicycle', icon: Icons.directions_bike, action: null),
-    Choice(title: 'Boat', icon: Icons.directions_boat, action: null),
-  ];
+  List<Choice> choices;
   final RegExp expChord = new RegExp(r"\[([^\]]*)\]");
   final RegExp expSharp = new RegExp(r"#.*");
   final RegExp expComment = new RegExp(r".*\{(.*)\}.*");
@@ -190,7 +180,7 @@ class SongTextState extends State {
                 ),
               );
             },
-      tooltip: !_logged ? "Login needed" : 'Edit',
+      tooltip: !_logged ? AppLocalizations.of(context).login_needed : AppLocalizations.of(context).edit,
       child: Icon(Icons.edit),
       backgroundColor: !_logged ? Colors.grey : Theme.of(context).primaryColor,
     );
@@ -198,6 +188,18 @@ class SongTextState extends State {
 
   @override
   Widget build(BuildContext context) {
+    choices = <Choice>[
+      Choice(
+          title: AppLocalizations.of(context).settings,
+          icon: Icons.settings,
+          action: (context) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SettingsStateful(title: AppLocalizations.of(context).settings)),
+            );
+          }),
+    ];
     _loadFontConfiguration();
     Screen.keepOn(true);
     return Scaffold(
@@ -209,7 +211,7 @@ class SongTextState extends State {
             onPressed: () {
               String url =
                   Constants.urlPathSong + "?id=" + this.song.id.toString();
-              Share.share('Ecco il testo della canzone ' + url);
+              Share.share(AppLocalizations.of(context).here_song_text + url);
             },
           ),
           PopupMenuButton<Choice>(
@@ -497,7 +499,7 @@ class SongTextState extends State {
       w.add(Padding(
         padding: EdgeInsets.symmetric(vertical: 8.0),
         child: Text(
-          'Tags:',
+          AppLocalizations.of(context).tags+":",
           style: new TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.normal,
@@ -555,14 +557,14 @@ class SongTextState extends State {
                 color: Colors.white,
                 icon: Icon(Icons.playlist_add),
                 iconSize: 30.0,
-                tooltip: "Aggiungi alla playlist",
+                tooltip: AppLocalizations.of(context).add_to_playlist,
                 padding: EdgeInsets.all(15.0),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => ChoosePlaylistStateful(
-                            title: "Titolo", song: this.song)),
+                            title: AppLocalizations.of(context).text_title, song: this.song)),
                   );
                 },
               ),
@@ -578,7 +580,7 @@ class SongTextState extends State {
                 color: Colors.white,
                 icon: Icon(Icons.add_photo_alternate),
                 iconSize: 30.0,
-                tooltip: "Carica Media",
+                tooltip: AppLocalizations.of(context).multimedia,
                 padding: EdgeInsets.all(15.0),
                 onPressed: () {},
               ),
@@ -594,7 +596,7 @@ class SongTextState extends State {
                 color: Colors.white,
                 icon: Icon(Icons.report),
                 iconSize: 30.0,
-                tooltip: "Segnala un abuso",
+                tooltip: AppLocalizations.of(context).abuse,
                 padding: EdgeInsets.all(15.0),
                 onPressed: () {
                   _showReportDialog(context);
@@ -654,7 +656,7 @@ class SongTextState extends State {
         return StatefulBuilder(
           builder: (ctx, setState) {
             return AlertDialog(
-              title: new Text("Vuoi segnalare questa canzone?"),
+              title: new Text(AppLocalizations.of(context).abuse_title),
               content: Container(
                 height: 200,
                 child: Column(
@@ -664,7 +666,7 @@ class SongTextState extends State {
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        hint: Text("Ragione della segnalazione"),
+                        hint: Text(AppLocalizations.of(context).abuse_desc),
                         onChanged: (String newValue) {
                           print(newValue);
                           reportValue = newValue;
@@ -694,7 +696,7 @@ class SongTextState extends State {
               actions: <Widget>[
                 new FlatButton(
                   child: new Text(
-                    "ANNULLA",
+                    AppLocalizations.of(context).undo,
                     style: TextStyle(color: Colors.grey),
                   ),
                   onPressed: () {
@@ -702,7 +704,7 @@ class SongTextState extends State {
                   },
                 ),
                 new FlatButton(
-                  child: new Text("INVIA"),
+                  child: new Text(AppLocalizations.of(context).send),
                   onPressed: () {
                     reportSong();
 

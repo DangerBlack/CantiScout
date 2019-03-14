@@ -7,6 +7,8 @@ import 'Createplaylist.dart';
 import 'SongULStateless.dart';
 import 'SongUlPlaylistStateless.dart';
 
+import '../controller/AppLocalizations.dart';
+
 class PlaylistUlStateful extends StatefulWidget {
   final User user;
   PlaylistUlStateful({Key key, this.title, this.user}) : super(key: key);
@@ -52,7 +54,7 @@ class PlaylistUl extends State {
     //updateList();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Elenco Playlist"),
+        title: Text(AppLocalizations.of(context).playlist_list),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
@@ -67,7 +69,7 @@ class PlaylistUl extends State {
       ),
       body: buildList(context),
       floatingActionButton: FloatingActionButton(
-          tooltip: 'Add playlist',
+          tooltip: AppLocalizations.of(context).add_playlist,
           child: Icon(Icons.add),
           onPressed: () {
             Navigator.push(
@@ -89,7 +91,7 @@ class PlaylistUl extends State {
         style: _biggerFont,
       ),
       subtitle: Text(
-        pair.songCount.toString()+" bran"+(pair.songCount>1||pair.songCount==0 ?"i":"o"),
+        pair.songCount.toString()+" "+(pair.songCount>1||pair.songCount==0 ?AppLocalizations.of(context).songs:AppLocalizations.of(context).song),
       ),
       onTap: () {
         routePlaylistSong(context, pair);
@@ -103,7 +105,7 @@ class PlaylistUl extends State {
   Widget buildList(BuildContext context) {
     if (l.isEmpty) {
       return Center(
-        child: Text('There is no playlist right now...'),
+        child: Text(AppLocalizations.of(context).no_playlist),
       );
     } else {
       return ListView.builder(
@@ -131,11 +133,11 @@ class PlaylistUl extends State {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Rimuovere?'),
+          title: Text(AppLocalizations.of(context).ask_remove),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Vuoi rimuovere la playlist:'),
+                Text(AppLocalizations.of(context).ask_remove_desc),
                 Text(pl.title),
               ],
             ),
@@ -143,7 +145,7 @@ class PlaylistUl extends State {
           actions: <Widget>[
             FlatButton(
               child: Text(
-                'ANNULLA',
+                AppLocalizations.of(context).undo,
                 style: TextStyle(color:Colors.grey),
               ),
               onPressed: () {
@@ -151,7 +153,7 @@ class PlaylistUl extends State {
               },
             ),
             FlatButton(
-              child: Text('OK'),
+              child: Text(AppLocalizations.of(context).ok),
               onPressed: () {
                 Navigator.of(context).pop();
                 _deletePlaylist(context,pl);

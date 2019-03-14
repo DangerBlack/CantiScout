@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../model/Song.dart';
 import '../view/EditSongText.dart';
+import '../controller/AppLocalizations.dart';
 
 class CreateSongStatefull extends StatefulWidget {
   CreateSongStatefull({Key key, this.title}) : super(key: key);
@@ -80,7 +81,7 @@ class CreateSong extends State {
             ),
           ),
           Text(
-            "Quale è il titolo",
+            AppLocalizations.of(context).chose_title,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -90,13 +91,13 @@ class CreateSong extends State {
               textAlign: TextAlign.center,
               controller: myController,
               decoration: InputDecoration(
-                labelText: 'Title',
-                errorText: _validate ? 'Value Can\'t Be Empty' : null,
+                labelText: AppLocalizations.of(context).text_title,
+                errorText: _validate ? AppLocalizations.of(context).value_must_not_be_empty : null,
               ),
             ),
           ),
           Text(
-            "Segli l'ambito",
+            AppLocalizations.of(context).choose_scope,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -106,7 +107,7 @@ class CreateSong extends State {
               Expanded(
                 child: Column(
                   children: [
-                    Text("Chiesa"),
+                    Text(AppLocalizations.of(context).church),
                     Checkbox(
                         value: _opt[0],
                         onChanged: (value) => setState(() {
@@ -118,7 +119,7 @@ class CreateSong extends State {
               Expanded(
                 child: Column(
                   children: [
-                    Text("L/C"),
+                    Text(AppLocalizations.of(context).lc),
                     Checkbox(
                         value: _opt[1],
                         onChanged: (value) => setState(() {
@@ -130,7 +131,7 @@ class CreateSong extends State {
               Expanded(
                 child: Column(
                   children: [
-                    Text("E/G"),
+                    Text(AppLocalizations.of(context).eg),
                     Checkbox(
                         value: _opt[2],
                         onChanged: (value) => setState(() {
@@ -142,7 +143,7 @@ class CreateSong extends State {
               Expanded(
                 child: Column(
                   children: [
-                    Text("R/S"),
+                    Text(AppLocalizations.of(context).rs),
                     Checkbox(
                         value: _opt[3],
                         onChanged: (value) => setState(() {
@@ -154,7 +155,7 @@ class CreateSong extends State {
               Expanded(
                 child: Column(
                   children: [
-                    Text("altro"),
+                    Text(AppLocalizations.of(context).other),
                     Checkbox(
                         value: _opt[4],
                         onChanged: (value) => setState(() {
@@ -169,7 +170,7 @@ class CreateSong extends State {
             Expanded(
               child: FlatButton(
                 child: Text(
-                  "ANNULLA",
+                  AppLocalizations.of(context).undo,
                   style: TextStyle(color: Colors.grey),
                 ),
                 onPressed: () {
@@ -180,7 +181,7 @@ class CreateSong extends State {
             Expanded(
               child: FlatButton(
                 child: Text(
-                  "CREA",
+                  AppLocalizations.of(context).create,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                   ),

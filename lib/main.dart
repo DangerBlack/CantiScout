@@ -1,8 +1,9 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'FirstRoute.dart';
 import 'view/SongUl.dart';
 import 'view/Homepage.dart';
-
+import 'controller/AppLocalizations.dart';
 
 void main() => runApp(MyApp());
 
@@ -58,6 +59,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //initUniLinks(context);
     return MaterialApp(
+      localizationsDelegates: [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
+      supportedLocales: [Locale("en"), Locale("it")],
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -76,7 +83,9 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: Homepage(title:"lol"), // MyHomePage(title: 'Flutter Demo Home Page'),
+      onGenerateTitle: (BuildContext context) =>
+      AppLocalizations.of(context).title,
+      home: Homepage(title: "lol"), //AppLocalizations.of(context).title // MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }

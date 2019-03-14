@@ -5,6 +5,7 @@ import '../model/User.dart';
 
 import 'PlaylistUl.dart';
 import '../Database.dart';
+import '../controller/AppLocalizations.dart';
 
 class ChoosePlaylistStateful extends StatefulWidget {
   ChoosePlaylistStateful({Key key, this.title, this.song}) : super(key: key);
@@ -32,7 +33,7 @@ class ChoosePlaylist extends PlaylistUl {
     //updateList();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Scegli una playlist"),
+        title: Text(AppLocalizations.of(context).choose_playlist),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
@@ -57,7 +58,7 @@ class ChoosePlaylist extends PlaylistUl {
           style: _biggerFont,
         ),
         subtitle: Text(
-          pair.songCount.toString()+" bran"+(pair.songCount>1||pair.songCount==0 ?"i":"o"),
+          pair.songCount.toString()+" "+(pair.songCount>1||pair.songCount==0 ?AppLocalizations.of(context).songs:AppLocalizations.of(context).song),
         ),
         onTap: () {
           addSong(context,pair);
@@ -67,7 +68,7 @@ class ChoosePlaylist extends PlaylistUl {
   Widget buildList(BuildContext context) {
     if (l.isEmpty) {
       return Center(
-        child: Text('There is no playlist right now...'),
+        child: Text(AppLocalizations.of(context).no_playlist),
       );
     } else {
       return ListView.builder(

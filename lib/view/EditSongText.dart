@@ -5,6 +5,7 @@ import '../model/Song.dart';
 import '../model/Tag.dart';
 import '../Database.dart';
 import '../controller/Updater.dart';
+import '../controller/AppLocalizations.dart';
 
 class EditSongText extends StatefulWidget {
   final Song song;
@@ -96,7 +97,7 @@ class EditSongTextState extends State {
     if (res < 0) {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         backgroundColor: Colors.red,
-        content: new Text('Error: Errorissimo brutto'),
+        content: new Text(AppLocalizations.of(context).unable_to_update_song),
         duration: new Duration(seconds: 10),
       ));
     } else {
@@ -114,7 +115,7 @@ class EditSongTextState extends State {
       body: _buildSong(context),
       floatingActionButton: FloatingActionButton(
         onPressed: _offline ? null : () => _uploadSong(context),
-        tooltip: _offline ? "Unable to Save" : "Save",
+        tooltip: _offline ? AppLocalizations.of(context).unable_to_save: AppLocalizations.of(context).save,
         child: Icon(Icons.save),
         backgroundColor:
             _offline ? Colors.grey : Theme.of(context).primaryColor,
@@ -132,7 +133,7 @@ class EditSongTextState extends State {
         padding: EdgeInsets.all(10.0),
         child: TextField(
           decoration:
-              InputDecoration(labelText: 'Edit the song: ' + song.title),
+              InputDecoration(labelText: AppLocalizations.of(context).edit_song + song.title),
           maxLines: 500,
           controller: myController,
         ),

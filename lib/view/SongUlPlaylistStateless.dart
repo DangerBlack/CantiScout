@@ -9,7 +9,7 @@ import '../view/SongUlStateless.dart';
 import '../view/SongText.dart';
 import '../Database.dart';
 
-import '../controller/CustomSearchDelegate.dart';
+import '../controller/AppLocalizations.dart';
 
 
 class SongUlPlaylistStateless extends SongUlStateless {
@@ -58,7 +58,7 @@ class SongUlPlaylistStateless extends SongUlStateless {
               print(decompressed);*/
 
               String url =_generateSharableList();
-              Share.share('Guada questa playlist: ' + url);
+              Share.share(AppLocalizations.of(context).look_this_playlist + url);
             },
           ),
         ],
@@ -97,11 +97,11 @@ class SongUlPlaylistStateless extends SongUlStateless {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Rimuovere?'),
+          title: Text(AppLocalizations.of(context).ask_remove),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Vuoi rimuovere "'+song.title+'" dalla playlist:'),
+                Text(AppLocalizations.of(context).do_you_want_to_remove.replaceFirst(new RegExp("###"), song.title)),
                 Text(title),
               ],
             ),
@@ -109,7 +109,7 @@ class SongUlPlaylistStateless extends SongUlStateless {
           actions: <Widget>[
             FlatButton(
               child: Text(
-                  'ANNULLA',
+                  AppLocalizations.of(context).undo,
                   style: TextStyle(color:Colors.grey),
               ),
               onPressed: () {
@@ -117,7 +117,7 @@ class SongUlPlaylistStateless extends SongUlStateless {
               },
             ),
             FlatButton(
-              child: Text('OK'),
+              child: Text(AppLocalizations.of(context).ok),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();

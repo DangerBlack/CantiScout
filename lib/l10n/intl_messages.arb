@@ -1,0 +1,488 @@
+{
+  "@@last_modified": "2019-03-14T17:04:59.863905",
+  "title": "Canti Scout",
+  "@title": {
+    "description": "The application title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "password_changed": "Password Cambiata",
+  "@password_changed": {
+    "description": "Account: Password Cambiata",
+    "type": "text",
+    "placeholders": {}
+  },
+  "password_changed_success": "La password è stata cambiata correttamente.",
+  "@password_changed_success": {
+    "description": "Account: Password Cambiata",
+    "type": "text",
+    "placeholders": {}
+  },
+  "dismiss": "CHIUDI",
+  "@dismiss": {
+    "description": "Account: DISMISS",
+    "type": "text",
+    "placeholders": {}
+  },
+  "manage_user_password": "CAMBIA PASSWORD UTENZA",
+  "@manage_user_password": {
+    "description": "Account: MANAGE USER PASSWORD",
+    "type": "text",
+    "placeholders": {}
+  },
+  "old_password": "Vecchia password",
+  "@old_password": {
+    "description": "Account: Old password",
+    "type": "text",
+    "placeholders": {}
+  },
+  "new_password": "Nuova password",
+  "@new_password": {
+    "description": "Account: New password",
+    "type": "text",
+    "placeholders": {}
+  },
+  "confirmed": "(conferma)",
+  "@confirmed": {
+    "description": "Account: confiermed",
+    "type": "text",
+    "placeholders": {}
+  },
+  "undo": "ANNULLA",
+  "@undo": {
+    "description": "Account: annulla",
+    "type": "text",
+    "placeholders": {}
+  },
+  "change": "CAMBIA",
+  "@change": {
+    "description": "Account: change",
+    "type": "text",
+    "placeholders": {}
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Account: logout",
+    "type": "text",
+    "placeholders": {}
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Homepage: login",
+    "type": "text",
+    "placeholders": {}
+  },
+  "login_desc": "Effettua il login per accedere a tutte le funzionalità",
+  "@login_desc": {
+    "description": "Homepage: login",
+    "type": "text",
+    "placeholders": {}
+  },
+  "choose_playlist": "Scegli una playlist",
+  "@choose_playlist": {
+    "description": "ChoosePlaylist: Choose platlist",
+    "type": "text",
+    "placeholders": {}
+  },
+  "song": "brano",
+  "@song": {
+    "description": "ChoosePlaylist: song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "songs": "brani",
+  "@songs": {
+    "description": "ChoosePlaylist: song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "no_playlist": "Non ci sono ancora playlist...",
+  "@no_playlist": {
+    "description": "ChoosePlaylist: No playlist yet...",
+    "type": "text",
+    "placeholders": {}
+  },
+  "name_playlist": "Dai un nome alla tua playlist.",
+  "@name_playlist": {
+    "description": "CreatePlaylist: Give a name to your playlist.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "playlist_name": "Plylist name",
+  "@playlist_name": {
+    "description": "CreatePlaylist: Playlist name",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create": "CREA",
+  "@create": {
+    "description": "CreatePlaylist: CREATE",
+    "type": "text",
+    "placeholders": {}
+  },
+  "value_must_not_be_empty": "Value Can't Be Empty",
+  "@value_must_not_be_empty": {
+    "description": "CreatePlaylist: Value must not be empty",
+    "type": "text",
+    "placeholders": {}
+  },
+  "chose_title": "Quale è il titolo della canzone?",
+  "@chose_title": {
+    "description": "CreateSong: Chose song title?",
+    "type": "text",
+    "placeholders": {}
+  },
+  "church": "Chiesa",
+  "@church": {
+    "description": "CreateSong: Chiesa",
+    "type": "text",
+    "placeholders": {}
+  },
+  "lc": "L/C",
+  "@lc": {
+    "description": "CreateSong: l/c",
+    "type": "text",
+    "placeholders": {}
+  },
+  "eg": "E/G",
+  "@eg": {
+    "description": "CreateSong: E/G",
+    "type": "text",
+    "placeholders": {}
+  },
+  "rs": "R/S",
+  "@rs": {
+    "description": "CreateSong: R/S",
+    "type": "text",
+    "placeholders": {}
+  },
+  "other": "Altro",
+  "@other": {
+    "description": "CreateSong: Altro",
+    "type": "text",
+    "placeholders": {}
+  },
+  "choose_scope": "Scegli l'ambito",
+  "@choose_scope": {
+    "description": "CreateSong: Chose scope",
+    "type": "text",
+    "placeholders": {}
+  },
+  "text_title": "Titolo",
+  "@text_title": {
+    "description": "CreateSong: Title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "unable_to_update_song": "Errore: Impossibile caricare la canzone",
+  "@unable_to_update_song": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "unable_to_save": "Impossibile Salvare",
+  "@unable_to_save": {
+    "description": "EditSongText: Unable to save",
+    "type": "text",
+    "placeholders": {}
+  },
+  "save": "Salva",
+  "@save": {
+    "description": "EditSongText: save",
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit_song": "Modifica la canzone: ",
+  "@edit_song": {
+    "description": "EditSongText: edit song: SONG_NAME",
+    "type": "text",
+    "placeholders": {}
+  },
+  "sync": "Sincronizza",
+  "@sync": {
+    "description": "Homepage: Syncronize",
+    "type": "text",
+    "placeholders": {}
+  },
+  "account": "Account",
+  "@account": {
+    "description": "Homepage: Account",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settings": "Impostazioni",
+  "@settings": {
+    "description": "Homepage: Settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "guide": "Guida",
+  "@guide": {
+    "description": "Homepage: Guida",
+    "type": "text",
+    "placeholders": {}
+  },
+  "donate": "Dona",
+  "@donate": {
+    "description": "Homepage: Donate",
+    "type": "text",
+    "placeholders": {}
+  },
+  "songs_list": "Elenco Canzoni",
+  "@songs_list": {
+    "description": "Homepage: Settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "songs_book": "Canzoniere",
+  "@songs_book": {
+    "description": "Homepage: Soongs book",
+    "type": "text",
+    "placeholders": {}
+  },
+  "songs_book_desc": "Leggi i testi di tutte le canzoni!",
+  "@songs_book_desc": {
+    "description": "Homepage: Soongs book desc",
+    "type": "text",
+    "placeholders": {}
+  },
+  "playlist": "Playlist",
+  "@playlist": {
+    "description": "Homepage: Playlist",
+    "type": "text",
+    "placeholders": {}
+  },
+  "playlist_desc": "Guarda tutte le tue playlist",
+  "@playlist_desc": {
+    "description": "Homepage: Playlist desc",
+    "type": "text",
+    "placeholders": {}
+  },
+  "verify_account": "Verifica la creazione del tuo account",
+  "@verify_account": {
+    "description": "LoginSignUpPage: Verify your account",
+    "type": "text",
+    "placeholders": {}
+  },
+  "verify_account_desc": "Una mail di conferma è stata sperida al tuo indirizzo",
+  "@verify_account_desc": {
+    "description": "LoginSignUpPage: Confirmation of login has been sent to your email",
+    "type": "text",
+    "placeholders": {}
+  },
+  "username": "Nome utente",
+  "@username": {
+    "description": "LoginSignUpPage: username",
+    "type": "text",
+    "placeholders": {}
+  },
+  "email": "Email",
+  "@email": {
+    "description": "LoginSignUpPage: email",
+    "type": "text",
+    "placeholders": {}
+  },
+  "password": "Password",
+  "@password": {
+    "description": "LoginSignUpPage: password",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_account": "Crea un account",
+  "@create_account": {
+    "description": "LoginSignUpPage: crea",
+    "type": "text",
+    "placeholders": {}
+  },
+  "have_an_account_yet": "Hai già un account? Fai Login",
+  "@have_an_account_yet": {
+    "description": "LoginSignUpPage: have an account? Sign in",
+    "type": "text",
+    "placeholders": {}
+  },
+  "playlist_list": "Elenco Playlist",
+  "@playlist_list": {
+    "description": "PlaylistUl: Playlist list",
+    "type": "text",
+    "placeholders": {}
+  },
+  "add_playlist": "Aggiungi una playlist",
+  "@add_playlist": {
+    "description": "PlaylistUl: Playlist list",
+    "type": "text",
+    "placeholders": {}
+  },
+  "add_to_playlist": "Aggiungi alla playlist",
+  "@add_to_playlist": {
+    "description": "PlaylistUl: Playlist list",
+    "type": "text",
+    "placeholders": {}
+  },
+  "ask_remove": "Rimuovere?",
+  "@ask_remove": {
+    "description": "PlaylistUl: Remove?",
+    "type": "text",
+    "placeholders": {}
+  },
+  "ask_remove_desc": "Vuoi rimuovere la playlist: ",
+  "@ask_remove_desc": {
+    "description": "PlaylistUl: Remove?",
+    "type": "text",
+    "placeholders": {}
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "PlaylistUl: ok",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pick_a_color": "Scegli un colore",
+  "@pick_a_color": {
+    "description": "Settings: pick color",
+    "type": "text",
+    "placeholders": {}
+  },
+  "done": "FATTO",
+  "@done": {
+    "description": "Settings: Done",
+    "type": "text",
+    "placeholders": {}
+  },
+  "text_settings": "Impostazioni del testo",
+  "@text_settings": {
+    "description": "Settings: Text formatting",
+    "type": "text",
+    "placeholders": {}
+  },
+  "text_size": "Dimensione del testo",
+  "@text_size": {
+    "description": "Settings: Text size",
+    "type": "text",
+    "placeholders": {}
+  },
+  "font": "Font",
+  "@font": {
+    "description": "Settings: font",
+    "type": "text",
+    "placeholders": {}
+  },
+  "choose_font": "Scegli un font",
+  "@choose_font": {
+    "description": "Settings: Choose font",
+    "type": "text",
+    "placeholders": {}
+  },
+  "chord_color": "Colore accordi",
+  "@chord_color": {
+    "description": "Settings: Choose color",
+    "type": "text",
+    "placeholders": {}
+  },
+  "chord_color_press": "Premere per modificare",
+  "@chord_color_press": {
+    "description": "Settings: Press to edit",
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings": "Impostazioni dell'applicazione",
+  "@app_settings": {
+    "description": "Settings: Application settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "auto_scroll": "Autoscorrimento",
+  "@auto_scroll": {
+    "description": "Settings: Autoscorrimento",
+    "type": "text",
+    "placeholders": {}
+  },
+  "login_needed": "Richiesto Login",
+  "@login_needed": {
+    "description": "SongText: login",
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Modifica",
+  "@edit": {
+    "description": "SongText: edit",
+    "type": "text",
+    "placeholders": {}
+  },
+  "here_song_text": "Ecco il testo della canzone: ",
+  "@here_song_text": {
+    "description": "SongText: edit",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tags": "Tags",
+  "@tags": {
+    "description": "SongText: edit",
+    "type": "text",
+    "placeholders": {}
+  },
+  "multimedia": "Carica media",
+  "@multimedia": {
+    "description": "SongText: load multimedia",
+    "type": "text",
+    "placeholders": {}
+  },
+  "abuse": "Segnala un abuso",
+  "@abuse": {
+    "description": "SongText: load multimedia",
+    "type": "text",
+    "placeholders": {}
+  },
+  "abuse_title": "Vuoi segnalare questa canzone?",
+  "@abuse_title": {
+    "description": "SongText: abuse",
+    "type": "text",
+    "placeholders": {}
+  },
+  "abuse_desc": "Ragione della segnalazione",
+  "@abuse_desc": {
+    "description": "SongText: reasons",
+    "type": "text",
+    "placeholders": {}
+  },
+  "description": "Descrizione",
+  "@description": {
+    "description": "SongText: description",
+    "type": "text",
+    "placeholders": {}
+  },
+  "send": "INVIA",
+  "@send": {
+    "description": "SongText: SEND",
+    "type": "text",
+    "placeholders": {}
+  },
+  "look_this_playlist": "Guarda questa playlist: ",
+  "@look_this_playlist": {
+    "description": "SongUlPlylist: look this playlist: ",
+    "type": "text",
+    "placeholders": {}
+  },
+  "do_you_want_to_remove": "Vuoi rimuovere \"###\" dalla playlist:",
+  "@do_you_want_to_remove": {
+    "description": "SongUlPlylist: Do you want to remove \"###\" from playlist: do not remove ### ",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_song": "Crea canzone",
+  "@create_song": {
+    "description": "SongUlStateless: Create song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "add": "Aggiungi",
+  "@add": {
+    "description": "SongUlStateless: add",
+    "type": "text",
+    "placeholders": {}
+  },
+  "hello": "Hello",
+  "@hello": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

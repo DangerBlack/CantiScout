@@ -20,6 +20,8 @@ import '../model/User.dart';
 import '../controller/Authentication.dart';
 import '../controller/Routing.dart';
 
+import '../controller/AppLocalizations.dart';
+
 class Homepage extends StatefulWidget {
   Homepage({Key key, this.title}) : super(key: key);
 
@@ -54,13 +56,13 @@ class HomepageState extends State {
 
   _buildDrawList() {
     drawerItems = [
-      new DrawerItem("Sincronizza", Icons.sync, null),
-      user.logged ? new DrawerItem("Account", Icons.account_circle, (context) async {
+      new DrawerItem(AppLocalizations.of(context).sync, Icons.sync, null),
+      user.logged ? new DrawerItem(AppLocalizations.of(context).account, Icons.account_circle, (context) async {
         Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => AccountStateful(
-                    title: "Account",
+                    title: AppLocalizations.of(context).account,
                     user: user,
                     onLogoutCallback: () =>
                     {
@@ -71,16 +73,16 @@ class HomepageState extends State {
         );
       }):new Padding(padding: EdgeInsets.all(0),),
       new Divider(),
-      new DrawerItem("Impostazioni", Icons.settings, (context) {
+      new DrawerItem(AppLocalizations.of(context).settings, Icons.settings, (context) {
         Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => SettingsStateful(title: "Settings")),
         );
       }),
-      new DrawerItem("Guida", Icons.help_outline, null),
+      new DrawerItem(AppLocalizations.of(context).guide, Icons.help_outline, null),
       new Divider(),
-      new DrawerItem("Dona", Icons.card_giftcard, null),
+      new DrawerItem(AppLocalizations.of(context).donate, Icons.card_giftcard, null),
     ];
   }
 
@@ -106,7 +108,7 @@ class HomepageState extends State {
       context,
       MaterialPageRoute(
           builder: (context) =>
-              SongUlStateless(songs, "Elenco canzoni", user = user)),
+              SongUlStateless(songs, AppLocalizations.of(context).songs_list, user = user)),
       //MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
     );
   }
@@ -162,8 +164,8 @@ class HomepageState extends State {
         child: ListTile(
             contentPadding: _listPadding,
             leading: Icon(Icons.book),
-            title: Text('Canzoniere'),
-            subtitle: Text('Ascolta tutte le canzoni'),
+            title: Text(AppLocalizations.of(context).songs_book),
+            subtitle: Text(AppLocalizations.of(context).songs_book_desc),
             onTap: () {
               routeSongs(context);
               /*Navigator.push(
@@ -181,8 +183,8 @@ class HomepageState extends State {
         child: ListTile(
             contentPadding: _listPadding,
             leading: Icon(Icons.album),
-            title: Text('Playlist'),
-            subtitle: Text('Tutte le playlist'),
+            title: Text(AppLocalizations.of(context).playlist),
+            subtitle: Text(AppLocalizations.of(context).playlist_desc),
             onTap: () {
               Navigator.push(
                 context,
@@ -219,9 +221,9 @@ class HomepageState extends State {
           child: ListTile(
             contentPadding: _listPadding,
             leading: Icon(Icons.account_circle),
-            title: Text('Login'),
+            title: Text(AppLocalizations.of(context).login),
             subtitle:
-                Text('Effettua il login per accedere a tutte le funzionalità'),
+                Text(AppLocalizations.of(context).login_desc),
             onTap: () {
               Navigator.push(
                 context,
@@ -278,7 +280,7 @@ class HomepageState extends State {
         ),
       ),
       appBar: AppBar(
-        title: Text('Canti Scout'),
+        title: Text(AppLocalizations.of(context).title),
       ),
       body: ListView(
         children: _buildCards(context),

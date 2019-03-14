@@ -7,6 +7,8 @@ import '../controller/Utils.dart';
 import '../controller/Updater.dart';
 import '../view/SongULStateless.dart';
 import '../Database.dart';
+import '../controller/AppLocalizations.dart';
+
 
 class AccountStateful extends StatefulWidget {
   final User user;
@@ -88,8 +90,8 @@ class Account extends State {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Password Changed"),
-          content: new Text("The password is changed correctly!"),
+          title: new Text(AppLocalizations.of(context).password_changed),
+          content: new Text(AppLocalizations.of(context).password_changed_success),
           actions: <Widget>[
             new FlatButton(
               child: new Text("Dismiss"),
@@ -148,7 +150,7 @@ class Account extends State {
           Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0),
               child: Text(
-                "MANAGE USER PASSWORD",
+                AppLocalizations.of(context).manage_user_password,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontWeight: FontWeight.bold),
               )),
@@ -159,7 +161,7 @@ class Account extends State {
               controller: passwordController1,
               obscureText: true,
               decoration: InputDecoration(
-                labelText: 'Old password',
+                labelText: AppLocalizations.of(context).old_password,
                 errorText: _validate ? 'Value Can\'t Be Empty' : null,
               ),
             ),
@@ -171,7 +173,7 @@ class Account extends State {
               controller: passwordController2,
               obscureText: true,
               decoration: InputDecoration(
-                labelText: 'New password',
+                labelText: AppLocalizations.of(context).new_password,
                 errorText: _validate ? 'Value Can\'t Be Empty' : null,
               ),
             ),
@@ -183,7 +185,7 @@ class Account extends State {
               controller: passwordController3,
               obscureText: true,
               decoration: InputDecoration(
-                labelText: 'New password (confirm)',
+                labelText: AppLocalizations.of(context).new_password+" "+AppLocalizations.of(context).confirmed,
                 errorText: _validate ? 'Value Can\'t Be Empty' : null,
               ),
             ),
@@ -192,7 +194,7 @@ class Account extends State {
             Expanded(
               child: FlatButton(
                 child: Text(
-                  "ANNULLA",
+                  AppLocalizations.of(context).undo,
                   style: TextStyle(color: Colors.grey),
                 ),
                 onPressed: () {
@@ -203,7 +205,7 @@ class Account extends State {
             Expanded(
               child: FlatButton(
                 child: Text(
-                  "CAMBIA",
+                  AppLocalizations.of(context).change,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                   ),
@@ -218,7 +220,7 @@ class Account extends State {
               padding: EdgeInsets.only(
                   left: 40.0, right: 40.0, top: 100.0, bottom: 10),
               child: Text(
-                "LOGOUT",
+                AppLocalizations.of(context).logout.toUpperCase(),
                 textAlign: TextAlign.left,
                 style: TextStyle(fontWeight: FontWeight.bold),
               )),
@@ -232,7 +234,7 @@ class Account extends State {
                     borderRadius: new BorderRadius.circular(30.0)),
                 color: Theme.of(context).primaryColor,
                 child: Text(
-                  "Logout",
+                  AppLocalizations.of(context).logout,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20.0,

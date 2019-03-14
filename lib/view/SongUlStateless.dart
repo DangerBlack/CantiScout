@@ -5,6 +5,7 @@ import '../model/User.dart';
 import '../view/SongText.dart';
 import '../view/CreateSong.dart';
 import '../controller/CustomSearchDelegate.dart';
+import '../controller/AppLocalizations.dart';
 
 
 class SongUlStateless extends StatelessWidget {
@@ -47,11 +48,11 @@ class SongUlStateless extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CreateSongStatefull(title: "Create song"),
+              builder: (context) => CreateSongStatefull(title: AppLocalizations.of(context).create_song),
             ),
           );
         },
-        tooltip: 'Aggiungi',
+        tooltip: AppLocalizations.of(context).add,
         child: Icon(Icons.add),
       ):null,
     );

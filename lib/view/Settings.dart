@@ -8,6 +8,8 @@ import '../model/Chartset.dart';
 
 import '../model/Constants.dart';
 
+import '../controller/AppLocalizations.dart';
+
 class SettingsStateful extends StatefulWidget {
   SettingsStateful({Key key, this.title}) : super(key: key);
 
@@ -95,7 +97,7 @@ class Settings extends State {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-            title: const Text('Pick a color!'),
+            title: Text(AppLocalizations.of(context).pick_a_color),
             content: SingleChildScrollView(
               child: BlockPicker(
                 pickerColor: currentColor,
@@ -104,7 +106,7 @@ class Settings extends State {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text('Got it'),
+                child: Text(AppLocalizations.of(context).done),
                 onPressed: () {
                   setState(() => currentColor = pickerColor);
                   updatePreferences(Constants.sharedFontColor, currentColor);
@@ -141,7 +143,7 @@ class Settings extends State {
     settings.add(
       new ListTile(
         title: new Text(
-          "Impostazioni del testo".toUpperCase(),
+          AppLocalizations.of(context).text_settings.toUpperCase(),
           textAlign: TextAlign.left,
           style: _titleFontStyle,
         ),
@@ -153,8 +155,8 @@ class Settings extends State {
           textAlign: TextAlign.center,
           controller: _controller,
           decoration: InputDecoration(
-            labelText: 'Dimensione del testo',
-            errorText: _validate ? 'Value Can\'t Be Empty' : null,
+            labelText: AppLocalizations.of(context).text_size,
+            errorText: _validate ? AppLocalizations.of(context).value_must_not_be_empty : null,
           ),
         ),
       ),
@@ -163,11 +165,11 @@ class Settings extends State {
     settings.add(
       new ListTile(
         title: new Text(
-          "Font",
+          AppLocalizations.of(context).font,
           style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
         ),
         subtitle: DropdownButton<String>(
-            hint: Text("Choose Font"),
+            hint: Text(AppLocalizations.of(context).choose_font),
             value: dropdownValue,
             isExpanded: true,
             onChanged: (String newValue) {
@@ -186,8 +188,8 @@ class Settings extends State {
           Icons.color_lens, //fiber_manual_record
           color: pickerColor,
         ),
-        title: Text("Colore accordi"),
-        subtitle: Text("Premere per modificare"),
+        title: Text(AppLocalizations.of(context).chord_color),
+        subtitle: Text(AppLocalizations.of(context).chord_color_press),
         onTap: () {
           showColorPicker();
         },
@@ -197,7 +199,7 @@ class Settings extends State {
     settings.add(
       new ListTile(
         title: new Text(
-          "Impostazioni dell'applicazione".toUpperCase(),
+          AppLocalizations.of(context).app_settings.toUpperCase(),
           textAlign: TextAlign.left,
           style: _titleFontStyle,
         ),
@@ -205,7 +207,7 @@ class Settings extends State {
     );
 
     settings.add(SwitchListTile(
-      title: const Text('Autoscroll'),
+      title: Text(AppLocalizations.of(context).auto_scroll),
       value: _autoscroll,
       onChanged: (bool value) {
         updatePreferences(Constants.sharedAutoscroll, value);
@@ -290,7 +292,7 @@ class Settings extends State {
     //updateList();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: Text(AppLocalizations.of(context).settings),
       ),
       body: new Column(
         mainAxisSize: MainAxisSize.min,

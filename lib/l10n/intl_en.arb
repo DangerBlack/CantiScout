@@ -1,0 +1,487 @@
+{
+  "title": "Scout Songs",
+  "@title": {
+    "description": "The application title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "password_changed": "Password changed",
+  "@password_changed": {
+    "description": "Account: Password Cambiata",
+    "type": "text",
+    "placeholders": {}
+  },
+  "password_changed_success": "The password has been changed correctly.",
+  "@password_changed_success": {
+    "description": "Account: Password Cambiata",
+    "type": "text",
+    "placeholders": {}
+  },
+  "dismiss": "CLOSE",
+  "@dismiss": {
+    "description": "Account: DISMISS",
+    "type": "text",
+    "placeholders": {}
+  },
+  "manage_user_password": "CHANGE PASSWORD USER",
+  "@manage_user_password": {
+    "description": "Account: MANAGE USER PASSWORD",
+    "type": "text",
+    "placeholders": {}
+  },
+  "old_password": "old password",
+  "@old_password": {
+    "description": "Account: Old password",
+    "type": "text",
+    "placeholders": {}
+  },
+  "new_password": "New password",
+  "@new_password": {
+    "description": "Account: New password",
+    "type": "text",
+    "placeholders": {}
+  },
+  "confirmed": "(confirmation)",
+  "@confirmed": {
+    "description": "Account: confiermed",
+    "type": "text",
+    "placeholders": {}
+  },
+  "undo": "CANCEL",
+  "@undo": {
+    "description": "Account: annulla",
+    "type": "text",
+    "placeholders": {}
+  },
+  "change": "CHANGE",
+  "@change": {
+    "description": "Account: change",
+    "type": "text",
+    "placeholders": {}
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Account: logout",
+    "type": "text",
+    "placeholders": {}
+  },
+  "login": "Log in",
+  "@login": {
+    "description": "Homepage: login",
+    "type": "text",
+    "placeholders": {}
+  },
+  "login_desc": "Login to access all features",
+  "@login_desc": {
+    "description": "Homepage: login",
+    "type": "text",
+    "placeholders": {}
+  },
+  "choose_playlist": "Choose a playlist",
+  "@choose_playlist": {
+    "description": "ChoosePlaylist: Choose platlist",
+    "type": "text",
+    "placeholders": {}
+  },
+  "song": "track",
+  "@song": {
+    "description": "ChoosePlaylist: song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "songs": "tracks",
+  "@songs": {
+    "description": "ChoosePlaylist: song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "no_playlist": "There are no playlists yet ...",
+  "@no_playlist": {
+    "description": "ChoosePlaylist: No playlist yet...",
+    "type": "text",
+    "placeholders": {}
+  },
+  "name_playlist": "Give your playlist a name.",
+  "@name_playlist": {
+    "description": "CreatePlaylist: Give a name to your playlist.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "playlist_name": "Plylist name",
+  "@playlist_name": {
+    "description": "CreatePlaylist: Playlist name",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create": "CREATE",
+  "@create": {
+    "description": "CreatePlaylist: CREATE",
+    "type": "text",
+    "placeholders": {}
+  },
+  "value_must_not_be_empty": "Value Can't Be Empty",
+  "@value_must_not_be_empty": {
+    "description": "CreatePlaylist: Value must not be empty",
+    "type": "text",
+    "placeholders": {}
+  },
+  "chose_title": "What is the title of the song?",
+  "@chose_title": {
+    "description": "CreateSong: Chose song title?",
+    "type": "text",
+    "placeholders": {}
+  },
+  "church": "Church",
+  "@church": {
+    "description": "CreateSong: Chiesa",
+    "type": "text",
+    "placeholders": {}
+  },
+  "lc": "L / C",
+  "@lc": {
+    "description": "CreateSong: l/c",
+    "type": "text",
+    "placeholders": {}
+  },
+  "eg": "E / G",
+  "@eg": {
+    "description": "CreateSong: E/G",
+    "type": "text",
+    "placeholders": {}
+  },
+  "rs": "R / S",
+  "@rs": {
+    "description": "CreateSong: R/S",
+    "type": "text",
+    "placeholders": {}
+  },
+  "other": "Other",
+  "@other": {
+    "description": "CreateSong: Altro",
+    "type": "text",
+    "placeholders": {}
+  },
+  "choose_scope": "Choose the scope",
+  "@choose_scope": {
+    "description": "CreateSong: Chose scope",
+    "type": "text",
+    "placeholders": {}
+  },
+  "text_title": "Title",
+  "@text_title": {
+    "description": "CreateSong: Title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "unable_to_update_song": "Error: Cannot load the song",
+  "@unable_to_update_song": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "unable_to_save": "Unable to Save",
+  "@unable_to_save": {
+    "description": "EditSongText: Unable to save",
+    "type": "text",
+    "placeholders": {}
+  },
+  "save": "Save",
+  "@save": {
+    "description": "EditSongText: save",
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit_song": "Edit the song: ",
+  "@edit_song": {
+    "description": "EditSongText: edit song: SONG_NAME",
+    "type": "text",
+    "placeholders": {}
+  },
+  "sync": "Synchronize",
+  "@sync": {
+    "description": "Homepage: Syncronize",
+    "type": "text",
+    "placeholders": {}
+  },
+  "account": "Account",
+  "@account": {
+    "description": "Homepage: Account",
+    "type": "text",
+    "placeholders": {}
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Homepage: Settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "guide": "Guide",
+  "@guide": {
+    "description": "Homepage: Guida",
+    "type": "text",
+    "placeholders": {}
+  },
+  "donate": "Donate",
+  "@donate": {
+    "description": "Homepage: Donate",
+    "type": "text",
+    "placeholders": {}
+  },
+  "songs_list": "List of Songs",
+  "@songs_list": {
+    "description": "Homepage: Settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "songs_book": "Songsbook",
+  "@songs_book": {
+    "description": "Homepage: Soongs book",
+    "type": "text",
+    "placeholders": {}
+  },
+  "songs_book_desc": "Read the lyrics of all the songs!",
+  "@songs_book_desc": {
+    "description": "Homepage: Soongs book desc",
+    "type": "text",
+    "placeholders": {}
+  },
+  "playlist": "Playlist",
+  "@playlist": {
+    "description": "Homepage: Playlist",
+    "type": "text",
+    "placeholders": {}
+  },
+  "playlist_desc": "See all your playlists",
+  "@playlist_desc": {
+    "description": "Homepage: Playlist desc",
+    "type": "text",
+    "placeholders": {}
+  },
+  "verify_account": "Verify the creation of your account",
+  "@verify_account": {
+    "description": "LoginSignUpPage: Verify your account",
+    "type": "text",
+    "placeholders": {}
+  },
+  "verify_account_desc": "A confirmation email has been sent to your address",
+  "@verify_account_desc": {
+    "description": "LoginSignUpPage: Confirmation of login has been sent to your email",
+    "type": "text",
+    "placeholders": {}
+  },
+  "username": "Username",
+  "@username": {
+    "description": "LoginSignUpPage: username",
+    "type": "text",
+    "placeholders": {}
+  },
+  "email": "E-mail",
+  "@email": {
+    "description": "LoginSignUpPage: email",
+    "type": "text",
+    "placeholders": {}
+  },
+  "password": "Password",
+  "@password": {
+    "description": "LoginSignUpPage: password",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_account": "Create an account",
+  "@create_account": {
+    "description": "LoginSignUpPage: crea",
+    "type": "text",
+    "placeholders": {}
+  },
+  "have_an_account_yet": "Do you already have an account? Login",
+  "@have_an_account_yet": {
+    "description": "LoginSignUpPage: have an account? Sign in",
+    "type": "text",
+    "placeholders": {}
+  },
+  "playlist_list": "Playlist list",
+  "@playlist_list": {
+    "description": "PlaylistUl: Playlist list",
+    "type": "text",
+    "placeholders": {}
+  },
+  "add_playlist": "Add a playlist",
+  "@add_playlist": {
+    "description": "PlaylistUl: Playlist list",
+    "type": "text",
+    "placeholders": {}
+  },
+  "add_to_playlist": "Add to playlist",
+  "@add_to_playlist": {
+    "description": "PlaylistUl: Playlist list",
+    "type": "text",
+    "placeholders": {}
+  },
+  "ask_remove": "Remove?",
+  "@ask_remove": {
+    "description": "PlaylistUl: Remove?",
+    "type": "text",
+    "placeholders": {}
+  },
+  "ask_remove_desc": "Do you want to remove the playlist: ",
+  "@ask_remove_desc": {
+    "description": "PlaylistUl: Remove?",
+    "type": "text",
+    "placeholders": {}
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "PlaylistUl: ok",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pick_a_color": "Choose a color",
+  "@pick_a_color": {
+    "description": "Settings: pick color",
+    "type": "text",
+    "placeholders": {}
+  },
+  "done": "DONE",
+  "@done": {
+    "description": "Settings: Done",
+    "type": "text",
+    "placeholders": {}
+  },
+  "text_settings": "Text settings",
+  "@text_settings": {
+    "description": "Settings: Text formatting",
+    "type": "text",
+    "placeholders": {}
+  },
+  "text_size": "Text size",
+  "@text_size": {
+    "description": "Settings: Text size",
+    "type": "text",
+    "placeholders": {}
+  },
+  "font": "Font",
+  "@font": {
+    "description": "Settings: font",
+    "type": "text",
+    "placeholders": {}
+  },
+  "choose_font": "Choose a font",
+  "@choose_font": {
+    "description": "Settings: Choose font",
+    "type": "text",
+    "placeholders": {}
+  },
+  "chord_color": "Chord's color",
+  "@chord_color": {
+    "description": "Settings: Choose color",
+    "type": "text",
+    "placeholders": {}
+  },
+  "chord_color_press": "Press to change",
+  "@chord_color_press": {
+    "description": "Settings: Press to edit",
+    "type": "text",
+    "placeholders": {}
+  },
+  "app_settings": "Application settings",
+  "@app_settings": {
+    "description": "Settings: Application settings",
+    "type": "text",
+    "placeholders": {}
+  },
+  "auto_scroll": "Autoscroll",
+  "@auto_scroll": {
+    "description": "Settings: Autoscorrimento",
+    "type": "text",
+    "placeholders": {}
+  },
+  "login_needed": "Login Required",
+  "@login_needed": {
+    "description": "SongText: login",
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "SongText: edit",
+    "type": "text",
+    "placeholders": {}
+  },
+  "here_song_text": "Here is the text of the song: ",
+  "@here_song_text": {
+    "description": "SongText: edit",
+    "type": "text",
+    "placeholders": {}
+  },
+  "tags": "Tags",
+  "@tags": {
+    "description": "SongText: edit",
+    "type": "text",
+    "placeholders": {}
+  },
+  "multimedia": "Average charge",
+  "@multimedia": {
+    "description": "SongText: load multimedia",
+    "type": "text",
+    "placeholders": {}
+  },
+  "abuse": "Report abuse",
+  "@abuse": {
+    "description": "SongText: load multimedia",
+    "type": "text",
+    "placeholders": {}
+  },
+  "abuse_title": "Do you want to report this song?",
+  "@abuse_title": {
+    "description": "SongText: abuse",
+    "type": "text",
+    "placeholders": {}
+  },
+  "abuse_desc": "Reason for reporting",
+  "@abuse_desc": {
+    "description": "SongText: reasons",
+    "type": "text",
+    "placeholders": {}
+  },
+  "description": "Description",
+  "@description": {
+    "description": "SongText: description",
+    "type": "text",
+    "placeholders": {}
+  },
+  "send": "SEND",
+  "@send": {
+    "description": "SongText: SEND",
+    "type": "text",
+    "placeholders": {}
+  },
+  "look_this_playlist": "Watch this playlist: ",
+  "@look_this_playlist": {
+    "description": "SongUlPlylist: look this playlist: ",
+    "type": "text",
+    "placeholders": {}
+  },
+  "do_you_want_to_remove": "Do you want to remove \"###\" from the playlist:",
+  "@do_you_want_to_remove": {
+    "description": "SongUlPlylist: Do you want to remove \"###\" from playlist: do not remove ### ",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_song": "Create song",
+  "@create_song": {
+    "description": "SongUlStateless: Create song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "add": "add",
+  "@add": {
+    "description": "SongUlStateless: add",
+    "type": "text",
+    "placeholders": {}
+  },
+  "hello": "Hello",
+  "@hello": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

@@ -5,6 +5,7 @@ import '../model/User.dart';
 import '../view/SongText.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../Database.dart';
+import '../controller/AppLocalizations.dart';
 
 class SongUlStateful extends StatefulWidget {
   final User user;
@@ -56,7 +57,7 @@ class SongUl extends State {
     //updateList();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Elenco canzoni"),
+        title: Text(AppLocalizations.of(context).songs_list),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
