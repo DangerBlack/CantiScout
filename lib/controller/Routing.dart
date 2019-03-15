@@ -35,7 +35,7 @@ class Routing{
       title = Uri.decodeFull(title);
       String plHash = pl.split("/")[1];
       List<int> list = hex.decode(plHash);
-      
+
       List<Playlist> playlists = await DBProvider.db.hasPlaylist(title);
       int idPl;
       if(playlists.isEmpty){
