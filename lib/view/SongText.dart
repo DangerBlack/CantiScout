@@ -669,9 +669,8 @@ class SongTextState extends State {
                         hint: Text(AppLocalizations.of(context).abuse_desc),
                         onChanged: (String newValue) {
                           print(newValue);
-                          reportValue = newValue;
                           setState(() {
-                            reportValue;
+                            reportValue = newValue;
                             print(reportValue);
                           });
                         },

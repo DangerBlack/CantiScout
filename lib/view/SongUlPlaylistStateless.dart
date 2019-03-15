@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:convert/convert.dart';
-import 'package:lzma/lzma.dart';
 import '../model/Song.dart';
 import '../model/Playlist.dart';
 import '../model/Constants.dart';
@@ -14,14 +15,13 @@ import '../controller/AppLocalizations.dart';
 
 class SongUlPlaylistStateless extends SongUlStateless {
   final _biggerFont = const TextStyle(fontSize: 18.0);
-  Playlist playlist;
+  final Playlist playlist = new Playlist();
 
 
   SongUlPlaylistStateless(List<Song> songs,title, user, int plId):super(songs,title,user){
     //this.title = title;
     //this.user = user;
     this.l.list = songs;
-    this.playlist = new Playlist();
     this.playlist.id = plId;
     this.playlist.title = title;
     //updateList(songs);
@@ -36,7 +36,7 @@ class SongUlPlaylistStateless extends SongUlStateless {
 
     print(g);
     print(hex.encode(g));
-    s+=Uri.encodeFull(this.title)+"-"+hex.encode(g);
+    s+=Uri.encodeFull(this.title)+"/"+hex.encode(g);
     s = Constants.tokenApi+Constants.tokenPlaylist+s;
     return s;
   }

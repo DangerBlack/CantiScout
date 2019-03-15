@@ -33,7 +33,7 @@ class Constants {
   static final double initialAutoscrollSpeed = 3.0;
   static final String initialFontStyle = "Roboto";
   static final int initialColor = Colors.black.value;
-  static final double scrollMultiplier = 5.0;
+  static final double scrollMultiplier = 25.0;
   static final double maxScrollSpeed = 10.0;
 
   static final IconData autoscrollIcon = Icons.playlist_play;

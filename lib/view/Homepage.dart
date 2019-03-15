@@ -120,10 +120,6 @@ class HomepageState extends State {
     }
   }
 
-  void _onLoggedIn(BuildContext context) {
-    Navigator.pop(context);
-  }
-
   _loadUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String mail =

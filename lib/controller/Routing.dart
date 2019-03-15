@@ -31,12 +31,11 @@ class Routing{
   static _checkPlaylistView(String initialLink, BuildContext context, User user) async{
     if(initialLink.contains("playlist/")) {
       String pl = initialLink.split("playlist/")[1];
-      String title = pl.split("-")[0];
+      String title = pl.split("/")[0];
       title = Uri.decodeFull(title);
-      String plHash = pl.split("-")[1];
+      String plHash = pl.split("/")[1];
       List<int> list = hex.decode(plHash);
-
-      //TODO verificare che non esista playlist con stesso nome!!!
+      
       List<Playlist> playlists = await DBProvider.db.hasPlaylist(title);
       int idPl;
       if(playlists.isEmpty){
