@@ -294,9 +294,9 @@ class Settings extends State {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).settings),
       ),
-      body: new Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
+      body: new ListView(
+        //mainAxisSize: MainAxisSize.min,
+        //mainAxisAlignment: MainAxisAlignment.start,
         children: settings,
       ),
     );

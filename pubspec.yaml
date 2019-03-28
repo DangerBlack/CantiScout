@@ -33,6 +33,7 @@ dependencies:
   lzma: any
   uni_links: any
   flutter_xlider: any
+  flutter_svg: any
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +51,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/images/logo.svg
 
   fonts:
     - family: Inconsolata
