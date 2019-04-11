@@ -45,7 +45,9 @@ class HomepageState extends State {
 
   _buildDrawList() {
     drawerItems = [
-      new DrawerItem(AppLocalizations.of(context).sync, Icons.sync, null),
+      new DrawerItem(AppLocalizations.of(context).sync, Icons.sync, (context) async {
+        updateListRemote();
+      }),
       user.logged ? new DrawerItem(AppLocalizations.of(context).account, Icons.account_circle, (context) async {
         Navigator.push(
           context,
@@ -69,9 +71,13 @@ class HomepageState extends State {
               builder: (context) => SettingsStateful(title: "Settings")),
         );
       }),
-      new DrawerItem(AppLocalizations.of(context).guide, Icons.help_outline, null),
+      new DrawerItem(AppLocalizations.of(context).guide, Icons.help_outline, (context) {
+        Utils.launchURL(Constants.urlGuide);
+      }),
       new Divider(),
-      new DrawerItem(AppLocalizations.of(context).donate, Icons.card_giftcard, null),
+      new DrawerItem(AppLocalizations.of(context).donate, Icons.card_giftcard, (context) {
+        Utils.launchURL(Constants.urlDonation);
+      }),
     ];
   }
 
@@ -183,7 +189,7 @@ class HomepageState extends State {
       ),
     ));
 
-    l.add(Card(
+    /*l.add(Card(
       margin: _cardMargin,
       elevation: _cardElevation,
       child: Container(
@@ -195,7 +201,7 @@ class HomepageState extends State {
           subtitle: Text('Altro...'),
         ),
       ),
-    ));
+    ));*/
 
     if (!user.logged) {
       l.add(Card(

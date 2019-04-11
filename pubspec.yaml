@@ -35,6 +35,7 @@ dependencies:
   flutter_xlider: any
   flutter_svg: any
   flutter_launcher_icons: ^0.7.0
+  url_launcher: any
 
 dev_dependencies:
   flutter_test:
