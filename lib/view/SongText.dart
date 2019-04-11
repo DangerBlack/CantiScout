@@ -570,7 +570,7 @@ class SongTextState extends State {
               ),
             ),
           ),
-          Expanded(
+          /*Expanded(
             child: Ink(
               decoration: ShapeDecoration(
                 color: Theme.of(context).primaryColorDark,
@@ -585,7 +585,7 @@ class SongTextState extends State {
                 onPressed: () {},
               ),
             ),
-          ),
+          ),*/
           Expanded(
             child: Ink(
               decoration: ShapeDecoration(
