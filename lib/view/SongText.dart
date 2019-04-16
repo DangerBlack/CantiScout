@@ -243,7 +243,7 @@ class SongTextState extends State {
                             activeTrackBarColor:
                                 Theme.of(context).primaryColorLight,
                             activeTrackBarHeight: 5,
-                            leftInactiveTrackBarColor: Colors.grey.shade200,
+                            inactiveTrackBarColor: Colors.grey.shade200,
                           ),
                           values: [_speed],
                           min: 0,

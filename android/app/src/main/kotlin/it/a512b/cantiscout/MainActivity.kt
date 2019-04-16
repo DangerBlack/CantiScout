@@ -1,4 +1,4 @@
-package it.a512b.cantiscout
+package danielebaschieri.eu.cantiscout
 
 import android.os.Bundle
 
