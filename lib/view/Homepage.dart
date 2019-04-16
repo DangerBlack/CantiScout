@@ -41,6 +41,8 @@ class HomepageState extends State {
   double _cardElevation = 1.0;
   List<Song> songs;
 
+  bool syncing = false;
+
   var drawerItems = [];
 
   _buildDrawList() {
@@ -83,7 +85,13 @@ class HomepageState extends State {
 
   updateListRemote() async {
     songs = await DBProvider.db.getAllSongs();
+    setState(() {
+      this.syncing = true;
+    });
     SongList lg = await Updater.updateSongs();
+    setState(() {
+      this.syncing = false;
+    });
     if (lg.list.isNotEmpty) {
       print("Aggiornata!");
       songs = await DBProvider.db.getAllSongs();
@@ -154,7 +162,7 @@ class HomepageState extends State {
         height: _tileHeight,
         child: ListTile(
             contentPadding: _listPadding,
-            leading: Icon(Icons.book),
+            leading: Icon(syncing?Icons.update:Icons.book),
             title: Text(AppLocalizations.of(context).songs_book),
             subtitle: Text(AppLocalizations.of(context).songs_book_desc),
             onTap: () {

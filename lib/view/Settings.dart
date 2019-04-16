@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//import 'package:flutter_xlider/flutter_xlider.dart';
-import '../view/xsliderfixed.dart';
+import 'package:flutter_xlider/flutter_xlider.dart';
+//import '../view/xsliderfixed.dart';
 import '../model/Chartset.dart';
 
 import '../model/Constants.dart';
@@ -251,7 +251,7 @@ class Settings extends State {
         trackBar: FlutterSliderTrackBar(
           activeTrackBarColor: Theme.of(context).primaryColorLight,
           activeTrackBarHeight: 5,
-          leftInactiveTrackBarColor: Colors.grey.shade200,
+          inactiveTrackBarColor: Colors.grey.shade200,
         ),
         values: <double>[_speed],
         min: 0,
