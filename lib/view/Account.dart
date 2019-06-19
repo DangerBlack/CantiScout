@@ -5,7 +5,7 @@ import '../model/User.dart';
 import '../model/Constants.dart';
 import '../controller/Utils.dart';
 import '../controller/Updater.dart';
-import '../view/SongULStateless.dart';
+import '../view/SongUlStateless.dart';
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
 
