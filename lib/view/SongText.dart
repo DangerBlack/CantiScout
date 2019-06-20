@@ -449,6 +449,8 @@ class SongTextState extends State {
                 style: new TextStyle(fontSize: fSize),
               ));
               fStyle = FontStyle.italic;
+              if(row.length > ('{' + head + '}').length)
+                resp.addAll(_buildSongChordRow(row.replaceAll('{' + head + '}', '')));
             }
             if (head == "eoc") {
               //TODO: impostare bold
@@ -458,6 +460,8 @@ class SongTextState extends State {
                     fontSize: fSize, fontWeight: fWeight, fontStyle: fStyle),
               ));
               fStyle = FontStyle.normal;
+              if(row.length > ('{' + head + '}').length)
+                resp.addAll(_buildSongChordRow(row.replaceAll('{' + head + '}', '')));
             }
           }
         }
