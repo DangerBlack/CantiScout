@@ -409,6 +409,18 @@ class AppLocalizations {
     return Intl.message('Aggiungi', name: 'add', desc: 'SongUlStateless: add');
   }
 
+  String get i_accept_the {
+    return Intl.message('Io accetto i', name: 'i_accept_the', desc: 'LoginSignupPage: i_accept_the');
+  }
+
+  String get therm_of_service {
+    return Intl.message('Termini di servizio', name: 'therm_of_service', desc: 'LoginSignupPage: therm_of_service');
+  }
+
+  String get please_accept {
+    return Intl.message('Ti prego di accettare i termini di servizio', name: 'please_accept', desc: 'LoginSignupPage: please_accept');
+  }
+
   String get hello {
     return Intl.message('Hello', name: 'hello');
   }

@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2019-03-14T17:04:59.863905",
+  "@@last_modified": "2019-06-28T15:52:17.809973",
   "title": "Canti Scout",
   "@title": {
     "description": "The application title",
@@ -477,6 +477,24 @@
   "add": "Aggiungi",
   "@add": {
     "description": "SongUlStateless: add",
+    "type": "text",
+    "placeholders": {}
+  },
+  "i_accept_the": "Io accetto i",
+  "@i_accept_the": {
+    "description": "LoginSignupPage: i_accept_the",
+    "type": "text",
+    "placeholders": {}
+  },
+  "therm_of_service": "Termini di servizio",
+  "@therm_of_service": {
+    "description": "LoginSignupPage: therm_of_service",
+    "type": "text",
+    "placeholders": {}
+  },
+  "please_accept": "Ti prego di accettare i termini di servizio",
+  "@please_accept": {
+    "description": "LoginSignupPage: please_accept",
     "type": "text",
     "placeholders": {}
   },

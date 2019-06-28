@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../controller/Authentication.dart';
 import '../controller/AppLocalizations.dart';
-
+import '../controller/Utils.dart';
+import '../model/Constants.dart';
 
 //https://github.com/tattwei46/flutter_login_demo
 class LoginSignUpPage extends StatefulWidget {
@@ -28,6 +29,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
   // Initial form is login form
   FormMode _formMode = FormMode.LOGIN;
   bool _isIos;
+  bool _isAcceptedTos = false;
   bool _isLoading;
 
   // Check if form is valid before perform login or signup
@@ -53,10 +55,20 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           userId = await widget.auth.signIn(_email, _password);
           userId ?? print('Signed in: $userId');
         } else {
-          userId = await widget.auth.signUp(_email, _username, _password);
-          widget.auth.sendEmailVerification();
-          _showVerifyEmailSentDialog();
-          print('Signed up user: $userId');
+          if(this._isAcceptedTos) {
+            userId = await widget.auth.signUp(_email, _username, _password);
+            widget.auth.sendEmailVerification();
+            _showVerifyEmailSentDialog();
+            print('Signed up user: $userId');
+          }else{
+            print("Accept the tos");
+            setState(() {
+              _isLoading = false;
+              _errorMessage = AppLocalizations
+                  .of(context)
+                  .please_accept;
+            });
+          }
         }
         setState(() {
           _isLoading = false;
@@ -76,6 +88,10 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
             _errorMessage = e.message;
         });
       }
+    }else{
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -160,9 +176,10 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
               _showEmailInput(),
               _showUsernameInput(),
               _showPasswordInput(),
+              _showTosCheckbox(),
+              _showErrorMessage(),
               _showPrimaryButton(),
               _showSecondaryButton(),
-              _showErrorMessage(),
             ],
           ),
         ));
@@ -262,6 +279,37 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
             )),
         validator: (value) => value.isEmpty ? AppLocalizations.of(context).password : null,
         onSaved: (value) => _password = value,
+      ),
+    );
+  }
+
+  Widget _showTosCheckbox() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+      child: Row(
+        children: _formMode == FormMode.SIGNUP
+            ? [
+              Checkbox(
+                  value: this._isAcceptedTos,
+                  onChanged: (value) => setState(() {
+                    this._isAcceptedTos = value;
+                  })
+              ),
+              new FlatButton(
+                  child: Row(
+                      children: [
+                        Text(AppLocalizations.of(context).i_accept_the + " "),
+                        Text(AppLocalizations.of(context).therm_of_service,
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                  ),
+                  onPressed: () => Utils.launchURL(Constants.urlTos),
+              ),
+            ]
+            : []
       ),
     );
   }

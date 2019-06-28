@@ -3,6 +3,8 @@
 // messages from the main program should be duplicated here with the same
 // function name.
 
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
@@ -57,6 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "have_an_account_yet" : MessageLookupByLibrary.simpleMessage("Hai già un account? Fai Login"),
     "hello" : MessageLookupByLibrary.simpleMessage("Hello"),
     "here_song_text" : MessageLookupByLibrary.simpleMessage("Ecco il testo della canzone: "),
+    "i_accept_the" : MessageLookupByLibrary.simpleMessage("Io accetto i"),
     "lc" : MessageLookupByLibrary.simpleMessage("L/C"),
     "login" : MessageLookupByLibrary.simpleMessage("Login"),
     "login_desc" : MessageLookupByLibrary.simpleMessage("Effettua il login per accedere a tutte le funzionalità"),

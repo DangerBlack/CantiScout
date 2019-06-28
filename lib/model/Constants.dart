@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class Constants {
   static final String urlDonation = "https://www.512b.it/cantiscout/donate.html";
   static final String urlGuide = "https://www.512b.it/cantiscout/guide.html";
+  static final String urlTos = "https://www.512b.it/cantiscout/tos.html";
   static final String urlPathSong = "https://www.512b.it/cantiscout/php/song.php";
   static final String urlPathSongList = "https://www.512b.it/cantiscout/php/get.php?max=";
   static final String tokenApi = 'https://www.512b.it/cantiscout/api/';

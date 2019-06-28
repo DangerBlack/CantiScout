@@ -3,6 +3,8 @@
 // messages from the main program should be duplicated here with the same
 // function name.
 
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
@@ -57,6 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "have_an_account_yet" : MessageLookupByLibrary.simpleMessage("Do you already have an account? Login"),
     "hello" : MessageLookupByLibrary.simpleMessage("Hello"),
     "here_song_text" : MessageLookupByLibrary.simpleMessage("Here is the text of the song: "),
+    "i_accept_the" : MessageLookupByLibrary.simpleMessage("I accept the"),
     "lc" : MessageLookupByLibrary.simpleMessage("L / C"),
     "login" : MessageLookupByLibrary.simpleMessage("Log in"),
     "login_desc" : MessageLookupByLibrary.simpleMessage("Login to access all features"),
@@ -79,6 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "playlist_desc" : MessageLookupByLibrary.simpleMessage("See all your playlists"),
     "playlist_list" : MessageLookupByLibrary.simpleMessage("Playlist list"),
     "playlist_name" : MessageLookupByLibrary.simpleMessage("Plylist name"),
+    "please_accept" : MessageLookupByLibrary.simpleMessage("Please accept the Terms of service"),
     "rs" : MessageLookupByLibrary.simpleMessage("R / S"),
     "save" : MessageLookupByLibrary.simpleMessage("Save"),
     "send" : MessageLookupByLibrary.simpleMessage("SEND"),

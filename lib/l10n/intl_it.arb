@@ -480,6 +480,24 @@
     "type": "text",
     "placeholders": {}
   },
+  "i_accept_the": "Io accetto i",
+  "@i_accept_the": {
+    "description": "LoginSignupPage: I accept the",
+    "type": "text",
+    "placeholders": {}
+  },
+  "terms_of_service": "Termini di servizio",
+  "@terms_of_service": {
+    "description": "LoginSignupPage: Terms of Service",
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleace_accept": "Ti prego di accettare i termini di servizio",
+  "@pleace_accept": {
+    "description": "LoginSignupPage: please_accept",
+    "type": "text",
+    "placeholders": {}
+  },
   "hello": "Hello",
   "@hello": {
     "type": "text",
