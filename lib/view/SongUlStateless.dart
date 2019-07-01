@@ -66,7 +66,7 @@ class SongUlStateless extends StatelessWidget {
           style: _biggerFont,
         ),
         subtitle: Text(
-          pair.author,
+          pair.author ?? "",
         ),
         onTap: () {
           Navigator.push(

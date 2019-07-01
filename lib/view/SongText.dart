@@ -88,11 +88,24 @@ class SongTextState extends State {
     loadTagList();
   }
 
-  _loadFontConfiguration() async {
+  _loadMailConfiguration() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String mail =
-        (prefs.getString(Constants.sharedMail) ?? Constants.defaultMail);
+    (prefs.getString(Constants.sharedMail) ?? Constants.defaultMail);
+
+    setState(() {
+      if (mail != Constants.defaultMail) {
+        print("eNTRO");
+        _logged = true;
+      } else {
+        _logged = false;
+      }
+    });
+  }
+  _loadFontConfiguration() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
 
     if (((fSize !=
                 (prefs.getDouble(Constants.sharedDefaultFontSize) ??
@@ -123,12 +136,6 @@ class SongTextState extends State {
         _speed = (prefs.getDouble(Constants.sharedAutoscrollSpeed) ??
             Constants.initialAutoscrollSpeed);
 
-        if (mail != Constants.defaultMail) {
-          _logged = true;
-        } else {
-          _logged = false;
-        }
-
         _runScroller();
       });
     }
@@ -156,6 +163,7 @@ class SongTextState extends State {
     _controller = ScrollController();
     _controllerReportDesc = new TextEditingController(text: "");
     _loadFontConfiguration();
+    _loadMailConfiguration();
   }
 
   void _select(Choice choice) {
@@ -169,6 +177,7 @@ class SongTextState extends State {
   }
 
   _buildFloatButton(BuildContext context) {
+    print("logged? "+_logged.toString());
     return FloatingActionButton(
       onPressed: !_logged
           ? null
@@ -270,7 +279,7 @@ class SongTextState extends State {
                               {
                                 setState(() {
                                   _speed = lowerValue;
-                                  print("VELOCITA: " + _speed.toString());
+                                   print("VELOCITA: " + _speed.toString());
                                   _runScroller();
                                 })
                               }),

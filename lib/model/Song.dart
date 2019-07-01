@@ -39,17 +39,24 @@ class Song{
   Map<String, dynamic> toMap() => {
     "id": id,
     "title": title,
-    "author": author,
+    "author": safe(author),
     "time": time,
     "body": body,
   };
 
   List toDb(){
-    return [this.id,this.title,this.author,this.time,this.body];
+    return [this.id,this.title,safe(this.author),this.time,this.body];
   }
 
   setTags(List<Tag> tags){
     this.tags = tags;
+  }
 
+  static safe(Object x)
+  {
+    if(x != null)
+      return x;
+
+    return "";
   }
 }

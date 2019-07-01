@@ -93,6 +93,31 @@ class EditSongTextState extends State {
   _uploadSong(BuildContext context) async {
     String text = myController.text;
     song.body = text;
+
+    if(text.contains('{author:')){
+      var init = text.indexOf('{author:');
+      var end = text.indexOf("}", init);
+      var author = text.substring(init + '{author:'.length, end);
+      if(author.length > 0)
+        song.author = author;
+    }
+    else
+    if(text.contains('{Author:')){
+      var init = text.indexOf('{author:');
+      var end = text.indexOf("}", init);
+      var author = text.substring(init + '{author:'.length, end);
+      if(author.length > 0)
+        song.author = author;
+    }
+    else
+    if(text.contains('{a:')){
+      var init = text.indexOf('{author:');
+      var end = text.indexOf("}", init);
+      var author = text.substring(init + '{author:'.length, end);
+      if(author.length > 0)
+        song.author = author;
+    }
+
     int res = await Updater.updateSong(song,opt);
     if (res < 0) {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
