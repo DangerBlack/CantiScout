@@ -23,3 +23,14 @@ flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --n
 flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/controller/AppLocalizations.dart lib/l10n/intl_en.arb
 
 ```
+
+## Build
+
+```bash
+flutter build apk --build-name=4.0.0 --build-number=20
+```
+
+64 bit
+```bash
+flutter build apk --build-name=4.0.0 --build-number=20 --target-platform android-arm64
+```
