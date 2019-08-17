@@ -179,12 +179,60 @@
     "type": "text",
     "placeholders": {}
   },
+  "error_upload_song_missing_chord": "Error: Cannot load the song, no chord",
+    "@error_upload_song_missing_chord": {
+      "description": "EditSongText: Unable to load song",
+      "type": "text",
+      "placeholders": {}
+    },
+    "error_upload_song_parentesis": "Error: Cannot load song, square brackets not balanced",
+    "@error_upload_song_parentesis": {
+      "description": "EditSongText: Unable to load song",
+      "type": "text",
+      "placeholders": {}
+    },
+    "error_upload_song_graph_parentesis": "Error: Cannot load song, graph brackets not balanced",
+    "@error_upload_song_graph_parentesis": {
+      "description": "EditSongText: Unable to load song",
+      "type": "text",
+      "placeholders": {}
+    },
+    "error_upload_song_malformed": "Error: Cannot load song, format is wrong",
+    "@error_upload_song_malformed": {
+      "description": "EditSongText: Unable to load song",
+      "type": "text",
+      "placeholders": {}
+  },
   "unable_to_save": "Unable to Save",
   "@unable_to_save": {
     "description": "EditSongText: Unable to save",
     "type": "text",
     "placeholders": {}
   },
+  "dialog_confirm": "Confirm",
+    "@dialog_confirm": {
+      "description": "EditSongText: Confirm",
+      "type": "text",
+      "placeholders": {}
+    },
+    "dialog_cancel": "Cancel",
+    "@dialog_cancel": {
+      "description": "EditSongText: Cancel",
+      "type": "text",
+      "placeholders": {}
+    },
+    "upload_dialog_title": "Confirm the edit?",
+    "@upload_dialog_title": {
+      "description": "EditSongText: Confermi le modifiche",
+      "type": "text",
+      "placeholders": {}
+    },
+    "upload_dialog_body": "You are editing this song for all Canti Scout users, are you sure you have edited the text and chords correctly?\nHave you followed the ChordPro standard?\nNot to have made spelling mistakes?",
+    "@upload_dialog_body": {
+      "description": "EditSongText: Confermi le modifiche",
+      "type": "text",
+      "placeholders": {}
+    },
   "save": "Save",
   "@save": {
     "description": "EditSongText: save",

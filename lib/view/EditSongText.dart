@@ -120,9 +120,31 @@ class EditSongTextState extends State {
 
     int res = await Updater.updateSong(song,opt);
     if (res < 0) {
+      String message = AppLocalizations.of(context).error_upload_song_malformed;
+      switch(res){
+        case -1:
+          message = AppLocalizations.of(context).error_upload_song_missing_chord;
+          break;
+        case -2:
+          message = AppLocalizations.of(context).error_upload_song_parentesis;
+          break;
+        case -3:
+          message = AppLocalizations.of(context).error_upload_song_graph_parentesis;
+          break;
+        case -4:
+          message = AppLocalizations.of(context).error_upload_song_malformed;
+          break;
+        case -30:
+          message = AppLocalizations.of(context).unable_to_save;
+          break;
+        case -40:
+          message = AppLocalizations.of(context).login_desc;
+          break;
+      }
+
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         backgroundColor: Colors.red,
-        content: new Text(AppLocalizations.of(context).unable_to_update_song),
+        content: new Text(message),
         duration: new Duration(seconds: 10),
       ));
     } else {
@@ -139,12 +161,41 @@ class EditSongTextState extends State {
       ),
       body: _buildSong(context),
       floatingActionButton: FloatingActionButton(
-        onPressed: _offline ? null : () => _uploadSong(context),
+        onPressed: _offline ? null : () => _showConfirmDialog(context),
         tooltip: _offline ? AppLocalizations.of(context).unable_to_save: AppLocalizations.of(context).save,
         child: Icon(Icons.save),
         backgroundColor:
             _offline ? Colors.grey : Theme.of(context).primaryColor,
       ),
+    );
+  }
+
+
+  // user defined function
+  void _showConfirmDialog(BuildContext context) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(AppLocalizations.of(context).upload_dialog_title),
+          content: new Text(AppLocalizations.of(context).upload_dialog_body),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialo
+            new FlatButton(
+              child: new Text(AppLocalizations.of(context).dialog_cancel.toUpperCase()),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text(AppLocalizations.of(context).dialog_confirm.toUpperCase()),
+              onPressed: () => _uploadSong(context),
+            ),
+          ],
+        );
+      },
     );
   }
 

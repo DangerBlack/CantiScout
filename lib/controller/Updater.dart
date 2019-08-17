@@ -121,19 +121,21 @@ class Updater {
           print(response.body);
           // If that response was not OK, throw an error.
           //throw Exception('Failed to load songs');
+
+          final jsonData = json.decode(response.body);
           print("Failed to upload songs [" +
               response.statusCode.toString() +
               "]");
-          return -2;
+          return jsonData['code'];
         }
       } catch (E) {
         //throw Exception('Failed to load songs');
         print("Failed to upload songs");
-        return -3;
+        return -30;
       }
     } else {
       print("No available token");
-      return -4;
+      return -40;
     }
   }
 

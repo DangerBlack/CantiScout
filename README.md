@@ -16,9 +16,19 @@ For help getting started with Flutter, view our
 samples, guidance on mobile development, and a full API reference.
 
 
+## Localization
+
+In order to create locale data, you shuld edit AppLocalizations adding the new line.
+then run
 ```
 flutter pub pub run intl_translation:extract_to_arb --output-dir=lib/l10n lib/controller/AppLocalizations.dart
+```
 
+copy the block from l10n/intl_messages.arb to intl_en.arb and intl_it.arb and edit the message.
+
+run
+
+```
 flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/controller/AppLocalizations.dart lib/l10n/intl_it.arb
 flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --no-use-deferred-loading lib/controller/AppLocalizations.dart lib/l10n/intl_en.arb
 

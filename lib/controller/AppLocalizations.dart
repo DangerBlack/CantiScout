@@ -165,10 +165,56 @@ class AppLocalizations {
         desc: 'EditSongText: Unable to load song');
   }
 
+  String get error_upload_song_missing_chord {
+    return Intl.message('Errore: Impossibile caricare la canzone, nessun accordo',
+        name: 'error_upload_song_missing_chord',
+        desc: 'EditSongText: Unable to load song');
+  }
+
+  String get error_upload_song_parentesis {
+    return Intl.message('Errore: Impossibile caricare la canzone, parentesi quadre non bilanciate',
+        name: 'error_upload_song_parentesis',
+        desc: 'EditSongText: Unable to load song');
+  }
+
+  String get error_upload_song_graph_parentesis {
+    return Intl.message('Errore: Impossibile caricare la canzone, parentesi graffe non bilanciate',
+        name: 'error_upload_song_graph_parentesis',
+        desc: 'EditSongText: Unable to load song');
+  }
+
+  String get error_upload_song_malformed {
+    return Intl.message('Errore: Impossibile caricare la canzone, formattazione errata',
+        name: 'error_upload_song_malformed',
+        desc: 'EditSongText: Unable to load song');
+  }
+
   String get unable_to_save {
     return Intl.message('Impossibile Salvare',
         name: 'unable_to_save', desc: 'EditSongText: Unable to save');
   }
+
+  String get dialog_confirm {
+    return Intl.message('Conferma',
+        name: 'dialog_confirm', desc: 'EditSongText: Confirm');
+  }
+
+  String get dialog_cancel {
+    return Intl.message('Annulla',
+        name: 'dialog_cancel', desc: 'EditSongText: Cancel');
+  }
+
+  String get upload_dialog_title {
+    return Intl.message('Confermi le modifiche?',
+        name: 'upload_dialog_title', desc: 'EditSongText: Confermi le modifiche');
+  }
+
+
+  String get upload_dialog_body {
+    return Intl.message('Stai modificando questa canzone per tutti gli utenti di Canti Scout, sei sicuro di aver modificato correttamente il testo e gli accordi?\nDi aver seguito lo standard ChordPro?\nDi non aver fatto errori ortografici?',
+        name: 'upload_dialog_body', desc: 'EditSongText: Confermi le modifiche');
+  }
+
 
   String get save {
     return Intl.message('Salva', name: 'save', desc: 'EditSongText: save');

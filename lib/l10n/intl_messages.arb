@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2019-06-28T15:52:17.809973",
+  "@@last_modified": "2019-08-17T18:41:00.025664",
   "title": "Canti Scout",
   "@title": {
     "description": "The application title",
@@ -180,9 +180,57 @@
     "type": "text",
     "placeholders": {}
   },
+  "error_upload_song_missing_chord": "Errore: Impossibile caricare la canzone, nessun accordo",
+  "@error_upload_song_missing_chord": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "error_upload_song_parentesis": "Errore: Impossibile caricare la canzone, parentesi quadre non bilanciate",
+  "@error_upload_song_parentesis": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "error_upload_song_graph_parentesis": "Errore: Impossibile caricare la canzone, parentesi graffe non bilanciate",
+  "@error_upload_song_graph_parentesis": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "error_upload_song_malformed": "Errore: Impossibile caricare la canzone, formattazione errata",
+  "@error_upload_song_malformed": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
+  },
   "unable_to_save": "Impossibile Salvare",
   "@unable_to_save": {
     "description": "EditSongText: Unable to save",
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialog_confirm": "Conferma",
+  "@dialog_confirm": {
+    "description": "EditSongText: Confirm",
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialog_cancel": "Annulla",
+  "@dialog_cancel": {
+    "description": "EditSongText: Cancel",
+    "type": "text",
+    "placeholders": {}
+  },
+  "upload_dialog_title": "Confermi le modifiche?",
+  "@upload_dialog_title": {
+    "description": "EditSongText: Confermi le modifiche",
+    "type": "text",
+    "placeholders": {}
+  },
+  "upload_dialog_body": "Stai modificando questa canzone per tutti gli utenti di Canti Scout, sei sicuro di aver modificato correttamente il testo e gli accordi?\nDi aver seguito lo standard ChordPro?\nDi non aver fatto errori ortografici?",
+  "@upload_dialog_body": {
+    "description": "EditSongText: Confermi le modifiche",
     "type": "text",
     "placeholders": {}
   },
