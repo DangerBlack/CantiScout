@@ -85,7 +85,7 @@ class DBProvider {
     //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
     search = "%"+search+"%";
     //var res = await db.query("Song",  where: "title LIKE ? or author LIKE ? or body LIKE ?", whereArgs: [search,search,search]);
-    var res = await db.rawQuery("SELECT s.id,s.title,s.author,s.time,s.body,s.status FROM  Song as s join Tag as t on s.id = t.idSong where s.status = 0 and s.title LIKE ? or s.author LIKE ? or s.body LIKE ? or t.tag LIKE ? GROUP BY s.id", [search,search,search,search]);
+    var res = await db.rawQuery("SELECT s.id,s.title,s.author,s.time,s.body,s.status FROM  Song as s join Tag as t on s.id = t.idSong where s.status = 0 and (s.title LIKE ? or s.author LIKE ? or s.body LIKE ? or t.tag LIKE ?) GROUP BY s.id", [search,search,search,search]);
 
     List<Song> list =
     res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];
