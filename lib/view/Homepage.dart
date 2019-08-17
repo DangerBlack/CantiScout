@@ -88,7 +88,7 @@ class HomepageState extends State {
     setState(() {
       this.syncing = true;
     });
-    SongList lg = await Updater.updateSongs();
+    SongList lg = await Updater.updateSongs(true);
     setState(() {
       this.syncing = false;
     });

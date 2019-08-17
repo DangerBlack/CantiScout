@@ -38,7 +38,8 @@ class DBProvider {
             "title TEXT NOT NULL,"
             "author TEXT,"
             "time TIMESTAMP NOT NULL,"
-            "body TEXT NOT NULL"
+            "body TEXT NOT NULL,"
+            "status INTEGER NOT NULL DEFAULT 0"
             ")");
 
           await db.execute("CREATE TABLE Playlist ("
@@ -69,7 +70,7 @@ class DBProvider {
     print("Loading Songs!");
     // var res = await db.rawQuery("SELECT * FROM Client WHERE blocked=1");
     //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
-    var res = await db.query("Song",orderBy: "title");
+    var res = await db.query("Song", where: "status = 0", orderBy: "title");
 
     List<Song> list =
     res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];
@@ -84,7 +85,7 @@ class DBProvider {
     //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
     search = "%"+search+"%";
     //var res = await db.query("Song",  where: "title LIKE ? or author LIKE ? or body LIKE ?", whereArgs: [search,search,search]);
-    var res = await db.rawQuery("SELECT s.id,s.title,s.author,s.time,s.body FROM  Song as s join Tag as t on s.id = t.idSong where s.title LIKE ? or s.author LIKE ? or s.body LIKE ? or t.tag LIKE ? GROUP BY s.id", [search,search,search,search]);
+    var res = await db.rawQuery("SELECT s.id,s.title,s.author,s.time,s.body,s.status FROM  Song as s join Tag as t on s.id = t.idSong where s.status = 0 and s.title LIKE ? or s.author LIKE ? or s.body LIKE ? or t.tag LIKE ? GROUP BY s.id", [search,search,search,search]);
 
     List<Song> list =
     res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];
@@ -153,17 +154,28 @@ class DBProvider {
     return res.isNotEmpty ? res.first['max'] : null;
   }
 
-  newTag(Tag tag) async {
+  hasTag(int id) async {
     final db = await database;
-    /*var raw = await db.rawInsert(
-        "INSERT Into Song (id,title,author,time,body)"
-            " VALUES (?,?,?,?)",
-        [song.id,song.title,song.author,song.time,song.body]);*/
-    var raw = await db.insert("Tag",tag.toMap());
-    return raw;
+    var res = await db.query("Tag", where: "id = ?", whereArgs: [id]);
+    return res.isNotEmpty;
   }
 
+  updateTag(Tag tag) async {
+    final db = await database;
+    var res = await db.update("Tag", tag.toMap(),
+        where: "id = ?", whereArgs: [tag.id]);
+    return res;
+  }
 
+  newTag(Tag tag) async {
+    final db = await database;
+    bool t = await hasTag(tag.id);
+    if(t){
+      return await updateTag(tag);
+    }else{
+      return await db.insert("Tag", tag.toMap());;
+    }
+  }
   //Playlist
 
   Future<List<Playlist>> getAllPlaylist() async {
@@ -204,7 +216,7 @@ class DBProvider {
     //var res = await db.query("Song", where: "blocked = ? ", whereArgs: [1]);
 
     //Siamo sicuri che l'ordine per titolo sia una buona idea, se sto organizzando i canti per la messa l'ordine è fondamentale!!!
-    var res = await db.rawQuery("SELECT s.id,s.title,s.author,s.time,s.body FROM  Song as s join PlaylistSong as p on s.id = p.idSong WHERE p.idPlaylist = ? ORDER BY p.id ",[idPlaylist]);
+    var res = await db.rawQuery("SELECT s.id,s.title,s.author,s.time,s.body,s.status FROM Song as s join PlaylistSong as p on s.id = p.idSong WHERE p.idPlaylist = ? and s.status = 0 ORDER BY p.id ",[idPlaylist]);
 
     List<Song> list =
     res.isNotEmpty ? res.map((c) => Song.fromMap(c)).toList() : [];
@@ -236,6 +248,7 @@ class DBProvider {
     print("deleted? "+raw.toString());
     return raw;
   }
+
   removePlaylistRaw(int plID) async {
     final db = await database;
     var raw0 = await db.rawDelete(

@@ -13,13 +13,13 @@ import '../model/Constants.dart';
 class Updater {
   /// Update the database retrieving from website the list of the new song.
   /// Returns The song list retrieved from the remote address.
-  static Future<SongList> updateSongs() async {
+  static Future<SongList> updateSongs([bool force=false]) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String lastCheck = (prefs.getString(Constants.lastDateCheck) ??
         DateTime(1900).toIso8601String());
     print(lastCheck);
     DateTime lastCheckDate = DateTime.parse(lastCheck);
-    if (DateTime.now().difference(lastCheckDate) >=
+    if (force || DateTime.now().difference(lastCheckDate) >=
         Constants.waitBetweenCheck) {
       print("Check for update");
       String max = await DBProvider.db.getLastDate();
@@ -73,6 +73,7 @@ class Updater {
         }
       } catch (E) {
         //throw Exception('Failed to load songs');
+        print(E.toString());
         print("Failed to load songs");
         return SongList();
       }
