@@ -6,7 +6,8 @@ import '../view/SongText.dart';
 import '../view/CreateSong.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../controller/AppLocalizations.dart';
-
+import '../controller/Utils.dart';
+import '../model/Constants.dart';
 
 class SongUlStateless extends StatelessWidget {
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -44,17 +45,66 @@ class SongUlStateless extends StatelessWidget {
       ),
       body: buildList(context),
       floatingActionButton: user.logged?FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CreateSongStatefull(title: AppLocalizations.of(context).create_song),
-            ),
-          );
-        },
+        onPressed: () => _showConfirmDialog(context),
         tooltip: AppLocalizations.of(context).add,
         child: Icon(Icons.add),
       ):null,
+    );
+  }
+
+  void _showConfirmDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+
+          title: new Text(AppLocalizations.of(context).create_dialog_title),
+          content: new Container(
+                height: 200,
+                child: new Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                      new Text(AppLocalizations.of(context).create_dialog_body),
+                      new Text(""),
+                      new Text(AppLocalizations.of(context).create_dialog_body_sample,
+                          style: TextStyle(fontStyle: FontStyle.italic),textAlign: TextAlign.left),
+                      new FlatButton(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            new Text(AppLocalizations.of(context).create_dialog_body_more + " ",
+                              style: TextStyle(fontSize: 17),
+                            ),
+                            Text("ChordPro",
+                              style: TextStyle(
+                                fontSize: 17,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
+                        onPressed: () => Utils.launchURL(Constants.urlChordPro),
+                      ),
+                  ],
+              ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text(AppLocalizations.of(context).dialog_confirm.toUpperCase()),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateSongStatefull(title: AppLocalizations.of(context).create_song),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

@@ -171,18 +171,14 @@ class EditSongTextState extends State {
   }
 
 
-  // user defined function
   void _showConfirmDialog(BuildContext context) {
-    // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           title: new Text(AppLocalizations.of(context).upload_dialog_title),
           content: new Text(AppLocalizations.of(context).upload_dialog_body),
           actions: <Widget>[
-            // usually buttons at the bottom of the dialo
             new FlatButton(
               child: new Text(AppLocalizations.of(context).dialog_cancel.toUpperCase()),
               onPressed: () {

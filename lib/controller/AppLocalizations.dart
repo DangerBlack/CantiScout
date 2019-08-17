@@ -209,10 +209,29 @@ class AppLocalizations {
         name: 'upload_dialog_title', desc: 'EditSongText: Confermi le modifiche');
   }
 
-
   String get upload_dialog_body {
     return Intl.message('Stai modificando questa canzone per tutti gli utenti di Canti Scout, sei sicuro di aver modificato correttamente il testo e gli accordi?\nDi aver seguito lo standard ChordPro?\nDi non aver fatto errori ortografici?',
         name: 'upload_dialog_body', desc: 'EditSongText: Confermi le modifiche');
+  }
+
+  String get create_dialog_title {
+    return Intl.message('Stai per aggiungere una canzone!',
+        name: 'create_dialog_title', desc: 'SongUlStateless: Stai creando');
+  }
+
+  String get create_dialog_body {
+    return Intl.message('Ricordati che le canzoni saranno visibili a tutti gli utenti.\nLe canzoni vanno scritte nel formato ChordPro.\nAd esempio:',
+        name: 'create_dialog_body', desc: 'SongUlStateless: info');
+  }
+
+  String get create_dialog_body_sample {
+    return Intl.message('[Do]Camminerò, [La-]camminerò',
+        name: 'create_dialog_body_sample', desc: 'SongUlStateless: Sample');
+  }
+
+  String get create_dialog_body_more {
+    return Intl.message('Scopri di più su: ',
+        name: 'create_dialog_body_more', desc: 'SongUlStateless: More');
   }
 
 
