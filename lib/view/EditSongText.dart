@@ -147,7 +147,9 @@ class EditSongTextState extends State {
         content: new Text(message),
         duration: new Duration(seconds: 10),
       ));
+      Navigator.of(context).pop();
     } else {
+      Navigator.of(context).pop();
       Navigator.of(context).pop();
     }
   }
