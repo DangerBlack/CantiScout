@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2019-08-17T18:41:00.025664",
+  "@@last_modified": "2019-08-17T20:14:25.597317",
   "title": "Canti Scout",
   "@title": {
     "description": "The application title",
@@ -231,6 +231,30 @@
   "upload_dialog_body": "Stai modificando questa canzone per tutti gli utenti di Canti Scout, sei sicuro di aver modificato correttamente il testo e gli accordi?\nDi aver seguito lo standard ChordPro?\nDi non aver fatto errori ortografici?",
   "@upload_dialog_body": {
     "description": "EditSongText: Confermi le modifiche",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_dialog_title": "Stai per aggiungere una canzone!",
+  "@create_dialog_title": {
+    "description": "SongUlStateless: Stai creando",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_dialog_body": "Ricordati che le canzoni saranno visibili a tutti gli utenti.\nLe canzoni vanno scritte nel formato ChordPro.\nAd esempio:",
+  "@create_dialog_body": {
+    "description": "SongUlStateless: info",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_dialog_body_sample": "[Do]Camminerò, [La-]camminerò",
+  "@create_dialog_body_sample": {
+    "description": "SongUlStateless: Sample",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_dialog_body_more": "Scopri di più su: ",
+  "@create_dialog_body_more": {
+    "description": "SongUlStateless: More",
     "type": "text",
     "placeholders": {}
   },

@@ -234,6 +234,30 @@
       "type": "text",
       "placeholders": {}
   },
+  "create_dialog_title": "Stai per aggiungere una canzone!",
+    "@create_dialog_title": {
+      "description": "SongUlStateless: Stai creando",
+      "type": "text",
+      "placeholders": {}
+    },
+    "create_dialog_body": "Ricordati che le canzoni saranno visibili a tutti gli utenti.\nLe canzoni vanno scritte nel formato ChordPro.\nAd esempio:",
+    "@create_dialog_body": {
+      "description": "SongUlStateless: info",
+      "type": "text",
+      "placeholders": {}
+    },
+    "create_dialog_body_sample": "[Do]Camminerò, [La-]camminerò",
+    "@create_dialog_body_sample": {
+      "description": "SongUlStateless: Sample",
+      "type": "text",
+      "placeholders": {}
+    },
+    "create_dialog_body_more": "Scopri di più su: ",
+    "@create_dialog_body_more": {
+      "description": "SongUlStateless: More",
+      "type": "text",
+      "placeholders": {}
+  },
   "save": "Salva",
   "@save": {
     "description": "EditSongText: save",
