@@ -271,7 +271,8 @@ class HomepageState extends State {
                 currentAccountPicture: new CircleAvatar(
                   backgroundImage: NetworkImage(
                       Constants.gravatarUrl + Utils.generateMd5(user.mail)),
-                )),
+                ),
+            ),
             new Expanded(
               child: ListView(children: drawerOptions),
             ),

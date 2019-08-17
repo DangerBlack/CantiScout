@@ -25,6 +25,7 @@ class Constants {
 
 
   static final String gravatarUrl = "https://www.gravatar.com/avatar/";
+  static final String gravatarBaseUrl = "https://www.gravatar.com/";
 
   static final String sharedDefaultFontSize = "defaultFontSize";
   static final String sharedAutoscroll = "Autoscroll";

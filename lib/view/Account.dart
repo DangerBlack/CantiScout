@@ -134,18 +134,22 @@ class Account extends State {
         child: ListView(children: [
           new Container(
             height: 200,
-            child: CircleAvatar(
-              //radius: 50,
-              //radius: 48.0,
-              radius: 18.0,
-              child: ClipOval(
-                child: Image.network(
-                    Constants.gravatarUrl + Utils.generateMd5(user.mail)),
+              child: CircleAvatar(
+                //radius: 50,
+                //radius: 48.0,
+                radius: 18.0,
+                child: FlatButton(
+                onPressed: () => Utils.launchURL(Constants.gravatarBaseUrl),
+                child:
+                ClipOval(
+                  child: Image.network(
+                      Constants.gravatarUrl + Utils.generateMd5(user.mail)),
+                ),
+                //NetworkImage(Constants.gravatarUrl + Utils.generateMd5(user.mail)),
+                //Image.asset('assets/flutter-icon.png'),
+                ),
+                backgroundColor: Colors.transparent,
               ),
-              //NetworkImage(Constants.gravatarUrl + Utils.generateMd5(user.mail)),
-              //Image.asset('assets/flutter-icon.png'),
-              backgroundColor: Colors.transparent,
-            ),
           ),
           Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0),
