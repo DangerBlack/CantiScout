@@ -113,8 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload_dialog_body" : MessageLookupByLibrary.simpleMessage("Stai modificando questa canzone per tutti gli utenti di Canti Scout, sei sicuro di aver modificato correttamente il testo e gli accordi?\nDi aver seguito lo standard ChordPro?\nDi non aver fatto errori ortografici?"),
     "upload_dialog_title" : MessageLookupByLibrary.simpleMessage("Confermi le modifiche?"),
     "username" : MessageLookupByLibrary.simpleMessage("Nome utente"),
-    "value_must_not_be_empty" : MessageLookupByLibrary.simpleMessage("Value Can\'t Be Empty"),
+    "value_must_not_be_empty" : MessageLookupByLibrary.simpleMessage("Il campo non può essere vuoto."),
     "verify_account" : MessageLookupByLibrary.simpleMessage("Verifica la creazione del tuo account"),
-    "verify_account_desc" : MessageLookupByLibrary.simpleMessage("Una mail di conferma è stata sperida al tuo indirizzo")
+    "verify_account_desc" : MessageLookupByLibrary.simpleMessage("Una mail di conferma è stata spedita al tuo indirizzo")
   };
 }

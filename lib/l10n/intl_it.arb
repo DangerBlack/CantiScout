@@ -120,7 +120,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "value_must_not_be_empty": "Value Can't Be Empty",
+  "value_must_not_be_empty": "Il campo non può essere vuoto.",
   "@value_must_not_be_empty": {
     "description": "CreatePlaylist: Value must not be empty",
     "type": "text",
@@ -336,7 +336,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "verify_account_desc": "Una mail di conferma è stata sperida al tuo indirizzo",
+  "verify_account_desc": "Una mail di conferma è stata spedita al tuo indirizzo",
   "@verify_account_desc": {
     "description": "LoginSignUpPage: Confirmation of login has been sent to your email",
     "type": "text",

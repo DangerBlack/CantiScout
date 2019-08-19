@@ -297,7 +297,7 @@ class AppLocalizations {
   }
 
   String get verify_account_desc {
-    return Intl.message('Una mail di conferma è stata sperida al tuo indirizzo',
+    return Intl.message('Una mail di conferma è stata spedita al tuo indirizzo',
         name: 'verify_account_desc',
         desc:
             'LoginSignUpPage: Confirmation of login has been sent to your email');
