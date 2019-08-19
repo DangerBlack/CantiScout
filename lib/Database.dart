@@ -30,7 +30,7 @@ class DBProvider {
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, dbName);
-    return await openDatabase(path, version: 1, onOpen: (db) {},
+    return await openDatabase(path, version: 2, onOpen: (db) {},
         onCreate: (Database db, int version) async {
 
           await db.execute("CREATE TABLE Song ("
@@ -39,7 +39,8 @@ class DBProvider {
             "author TEXT,"
             "time TIMESTAMP NOT NULL,"
             "body TEXT NOT NULL,"
-            "status INTEGER NOT NULL DEFAULT 0"
+            "status INTEGER NOT NULL DEFAULT 0,"
+            "username TEXT"
             ")");
 
           await db.execute("CREATE TABLE Playlist ("
