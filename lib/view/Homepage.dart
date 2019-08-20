@@ -48,7 +48,7 @@ class HomepageState extends State {
   _buildDrawList() {
     drawerItems = [
       new DrawerItem(AppLocalizations.of(context).sync, Icons.sync, (context) async {
-        updateListRemote();
+        updateListRemote(true);
       }),
       user.logged ? new DrawerItem(AppLocalizations.of(context).account, Icons.account_circle, (context) async {
         Navigator.push(
@@ -83,12 +83,12 @@ class HomepageState extends State {
     ];
   }
 
-  updateListRemote() async {
+  updateListRemote([bool force=false]) async {
     songs = await DBProvider.db.getAllSongs();
     setState(() {
       this.syncing = true;
     });
-    SongList lg = await Updater.updateSongs(true);
+    SongList lg = await Updater.updateSongs(force);
     setState(() {
       this.syncing = false;
     });

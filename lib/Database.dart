@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 import 'model/Song.dart';
 import 'model/Playlist.dart';
 import 'model/Tag.dart';
+import 'model/Constants.dart';
 
 
 // Database guide
@@ -16,8 +18,16 @@ import 'model/Tag.dart';
 class DBProvider {
   static final String dbName = "CantiScout.db";
   static final _upgrades = {
-    3: "ALTER TABLE Song ADD COLUMN status INTEGER NOT NULL DEFAULT 0;"
-        "ALTER TABLE Song ADD COLUMN username TEXT;"
+    3: ["DROP TABLE Song;",
+        "CREATE TABLE Song ("
+        "id INTEGER PRIMARY KEY,"
+        "title TEXT NOT NULL,"
+        "author TEXT,"
+        "time TIMESTAMP NOT NULL,"
+        "body TEXT NOT NULL,"
+        "status INTEGER NOT NULL DEFAULT 0,"
+        "username TEXT"
+        ")"]
   };
 
   DBProvider._();
@@ -68,15 +78,29 @@ class DBProvider {
               ")");
         },
         onUpgrade: (Database db, int oldVersion, int newVersion) async {
-          for(int tmpVersion = oldVersion; tmpVersion < newVersion; tmpVersion++)
+          print("Database update " + oldVersion.toString() + " => " + newVersion.toString());
+          for(int tmpVersion = oldVersion; tmpVersion < newVersion; tmpVersion++) {
+            print("Database update " + (tmpVersion + 1).toString());
             await _upgradeDb(db, tmpVersion, tmpVersion + 1);
+          }
         }
     );
   }
 
   Future<void>_upgradeDb(Database db, int oldVersion, int newVersion) async {
-    if(_upgrades.containsKey(newVersion))
-      await db.execute(_upgrades[newVersion]);
+    if(_upgrades.containsKey(newVersion)) {
+      try {
+        for(String query in _upgrades[newVersion]) {
+          print("Database update query:" + query);
+          await db.execute(query);
+        }
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        prefs.setString(Constants.lastDateCheck, DateTime(1900).toIso8601String());
+      }catch(error){
+        print("Database update " + error.toString());
+      }
+    }
   }
 
   Future<List<Song>> getAllSongs() async {
