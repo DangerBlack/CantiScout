@@ -37,10 +37,10 @@ flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/l10n --n
 ## Build
 
 ```bash
-flutter build apk --build-name=4.2.0 --build-number=25
+flutter build apk --build-name=4.3.0 --build-number=27
 ```
 
 64 bit
 ```bash
-flutter build apk --build-name=4.2.0 --build-number=26 --target-platform android-arm64
+flutter build apk --build-name=4.3.0 --build-number=28 --target-platform android-arm64
 ```

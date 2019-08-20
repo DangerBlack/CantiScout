@@ -15,6 +15,10 @@ import 'model/Tag.dart';
 // https://github.com/Rahiche/sqlite_demo/tree/master/lib
 class DBProvider {
   static final String dbName = "CantiScout.db";
+  static final _upgrades = {
+    3: "ALTER TABLE Song ADD COLUMN status INTEGER NOT NULL DEFAULT 0;"
+        "ALTER TABLE Song ADD COLUMN username TEXT;"
+  };
 
   DBProvider._();
   static final DBProvider db = DBProvider._();
@@ -30,7 +34,7 @@ class DBProvider {
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, dbName);
-    return await openDatabase(path, version: 2, onOpen: (db) {},
+    return await openDatabase(path, version: 3, onOpen: (db) {},
         onCreate: (Database db, int version) async {
 
           await db.execute("CREATE TABLE Song ("
@@ -62,7 +66,17 @@ class DBProvider {
               "idSong INTEGER NOT NULL,"
               "tag TEXT NOT NULL"
               ")");
-        });
+        },
+        onUpgrade: (Database db, int oldVersion, int newVersion) async {
+          for(int tmpVersion = oldVersion; tmpVersion < newVersion; tmpVersion++)
+            await _upgradeDb(db, tmpVersion, tmpVersion + 1);
+        }
+    );
+  }
+
+  Future<void>_upgradeDb(Database db, int oldVersion, int newVersion) async {
+    if(_upgrades.containsKey(newVersion))
+      await db.execute(_upgrades[newVersion]);
   }
 
   Future<List<Song>> getAllSongs() async {
