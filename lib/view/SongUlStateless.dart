@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -13,6 +14,8 @@ import '../view/BleReceiveView.dart';
 import '../view/BleSendView.dart';
 import '../view/CreateSong.dart';
 import '../view/SongText.dart';
+
+enum _BulkConflictPolicy { skip, keepBoth, replace }
 
 class SongUlStateless extends StatefulWidget {
   final String title;
@@ -71,6 +74,14 @@ class _SongUlStatelessState extends State<SongUlStateless> {
               onTap: () {
                 Navigator.pop(ctx);
                 _importFromFile(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.file_upload),
+              title: const Text('Importa libreria (.json)'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _importBulkJson(context);
               },
             ),
             const Divider(),
@@ -218,6 +229,117 @@ class _SongUlStatelessState extends State<SongUlStateless> {
       final text = await File(path).readAsString();
       if (!mounted) return;
       await _importChordPro(context, text);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Errore importazione: $e')),
+      );
+    }
+  }
+
+  // ── Bulk JSON import ────────────────────────────────────────────────────────
+
+  Future<void> _importBulkJson(BuildContext context) async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+      if (result == null || result.files.isEmpty) return;
+      final path = result.files.single.path;
+      if (path == null) return;
+
+      final raw = await File(path).readAsString();
+      final data = jsonDecode(raw) as Map<String, dynamic>;
+      final songsJson = data['songs'] as List<dynamic>;
+      final incoming =
+          songsJson.map((s) => Song.fromMap(s as Map<String, dynamic>)).toList();
+
+      if (!mounted) return;
+      if (incoming.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Nessuna canzone trovata nel file.')),
+        );
+        return;
+      }
+
+      // Separate new vs conflicting
+      final newSongs = <Song>[];
+      final conflicts = <Song>[];
+      for (final song in incoming) {
+        final existing =
+            await DBProvider.db.getSongByTitleAuthor(song.title, song.author);
+        (existing != null ? conflicts : newSongs).add(song);
+      }
+
+      // Ask what to do with conflicts (if any)
+      _BulkConflictPolicy policy = _BulkConflictPolicy.skip;
+      if (conflicts.isNotEmpty && mounted) {
+        final chosen = await showDialog<_BulkConflictPolicy>(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Canzoni già presenti'),
+            content: Text(
+                '${newSongs.length} nuove, ${conflicts.length} già presenti.\n'
+                'Cosa fare con i duplicati?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, _BulkConflictPolicy.skip),
+                child: const Text('SALTA'),
+              ),
+              TextButton(
+                onPressed: () =>
+                    Navigator.pop(ctx, _BulkConflictPolicy.keepBoth),
+                child: const Text('MANTIENI ENTRAMBE'),
+              ),
+              TextButton(
+                onPressed: () =>
+                    Navigator.pop(ctx, _BulkConflictPolicy.replace),
+                child: const Text('SOSTITUISCI'),
+              ),
+            ],
+          ),
+        );
+        if (chosen != null) policy = chosen;
+      }
+
+      int imported = 0;
+      // Import new songs
+      for (final song in newSongs) {
+        await DBProvider.db.newSong(
+            Song.create(title: song.title, author: song.author, body: song.body));
+        imported++;
+      }
+      // Handle conflicts
+      for (final song in conflicts) {
+        switch (policy) {
+          case _BulkConflictPolicy.skip:
+            break;
+          case _BulkConflictPolicy.keepBoth:
+            await DBProvider.db.newSong(Song.create(
+                title: '${song.title} (2)',
+                author: song.author,
+                body: song.body));
+            imported++;
+          case _BulkConflictPolicy.replace:
+            final existing = await DBProvider.db
+                .getSongByTitleAuthor(song.title, song.author);
+            if (existing != null) {
+              existing.body = song.body;
+              existing.author = song.author;
+              await DBProvider.db.updateSong(existing);
+              imported++;
+            }
+        }
+      }
+
+      await _loadSongs();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$imported canzoni importate!')),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
