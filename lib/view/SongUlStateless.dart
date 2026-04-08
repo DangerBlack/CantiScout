@@ -9,6 +9,8 @@ import '../controller/CustomSearchDelegate.dart';
 import '../controller/Utils.dart';
 import '../model/Constants.dart';
 import '../model/Song.dart';
+import '../view/BleReceiveView.dart';
+import '../view/BleSendView.dart';
 import '../view/CreateSong.dart';
 import '../view/SongText.dart';
 
@@ -69,6 +71,29 @@ class _SongUlStatelessState extends State<SongUlStateless> {
               onTap: () {
                 Navigator.pop(ctx);
                 _importFromFile(context);
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.bluetooth),
+              title: const Text('Invia via Bluetooth'),
+              onTap: () {
+                Navigator.pop(ctx);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BleSendView()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.bluetooth_searching),
+              title: const Text('Ricevi via Bluetooth'),
+              onTap: () {
+                Navigator.pop(ctx);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BleReceiveView()),
+                ).then((_) => _loadSongs());
               },
             ),
           ],

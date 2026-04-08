@@ -41,5 +41,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Utilizziamo il Bluetooth per trasferire canzoni con altri dispositivi.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Utilizziamo il Bluetooth per inviare canzoni ad altri dispositivi.</string>
 </dict>
 </plist>

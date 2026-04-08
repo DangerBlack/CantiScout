@@ -3,8 +3,8 @@ import 'package:share_plus/share_plus.dart';
 
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
-import '../model/Playlist.dart';
 import '../model/Song.dart';
+import '../view/BleSendView.dart';
 import '../view/SongText.dart';
 
 class SongUlPlaylistStateless extends StatefulWidget {
@@ -101,6 +101,21 @@ class _SongUlPlaylistStatelessState extends State<SongUlPlaylistStateless> {
             icon: const Icon(Icons.share),
             tooltip: AppLocalizations.of(context).share ?? 'Share',
             onPressed: () => _shareSongList(context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.bluetooth),
+            tooltip: 'Invia via Bluetooth',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BleSendView(
+                    playlistId: widget.playlistId,
+                    playlistName: widget.title,
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),
