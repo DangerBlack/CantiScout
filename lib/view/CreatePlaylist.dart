@@ -1,125 +1,103 @@
 import 'package:flutter/material.dart';
 import '../model/Song.dart';
-import '../model/User.dart';
 import '../view/SongUlPlaylistStateless.dart';
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
 
 class CreatePlaylistStatefull extends StatefulWidget {
-  final User user;
-  CreatePlaylistStatefull({Key key, this.title, this.user}) : super(key: key);
+  const CreatePlaylistStatefull({Key? key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  final String? title;
 
   @override
-  CreatePlaylist createState() => CreatePlaylist(user);
-//_MyHomePageState createState() => _MyHomePageState();
+  CreatePlaylist createState() => CreatePlaylist();
 }
 
-class CreatePlaylist extends State {
-  User user;
+class CreatePlaylist extends State<CreatePlaylistStatefull> {
   final myController = TextEditingController();
   bool _validate = false;
 
-  CreatePlaylist(this.user):super();
-
-  routePlaylistSong(BuildContext context, String title, int id) async {
-    //TODO: Aprire playlist appena creata!
-    List<Song> songs = await DBProvider.db.getAllPlaylistSongs(id);
+  Future<void> _routeToPlaylist(BuildContext context, String title, int id) async {
+    final List<Song> songs = await DBProvider.db.getAllPlaylistSongs(id);
+    if (!mounted) return;
     Navigator.pop(context);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SongUlPlaylistStateless(songs, title, user, id)),
-      //MaterialPageRoute(builder: (context) => SongUlStateful(title: 'Flutter Demo Home Page')),
+      MaterialPageRoute(
+          builder: (context) =>
+              SongUlPlaylistStateless(songs, title, id)),
     );
   }
 
-  createPlaylist(BuildContext context) async {
-    var text = myController.text;
+  Future<void> _createPlaylist(BuildContext context) async {
+    final text = myController.text;
     if (text.isNotEmpty) {
-      print(text);
-      int t = await DBProvider.db.newPlaylist(text);
-      routePlaylistSong(context, text, t);
+      final int id = await DBProvider.db.newPlaylist(text);
+      if (!mounted) return;
+      _routeToPlaylist(context, text, id);
       _validate = false;
     } else {
-      setState(() {
-        _validate = true;
-      });
+      setState(() => _validate = true);
     }
   }
 
   @override
   void dispose() {
-    // Clean up the controller when the Widget is disposed
     myController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    //updateList();
     return Scaffold(
       body: Center(
         child: ListView(children: [
-          new Hero(
+          const Hero(
             tag: 'hero',
             child: Padding(
               padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
               child: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  radius: 48.0,
-                  child: Icon(Icons.album), //Image.asset('assets/flutter-icon.png'),
-                  ),
+                backgroundColor: Colors.transparent,
+                radius: 48.0,
+                child: Icon(Icons.album),
+              ),
             ),
           ),
           Text(
             AppLocalizations.of(context).name_playlist,
             textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Padding(
-            padding: EdgeInsets.all(40.0),
+            padding: const EdgeInsets.all(40.0),
             child: TextField(
               textAlign: TextAlign.center,
               controller: myController,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context).playlist_name,
-                errorText: _validate ? AppLocalizations.of(context).value_must_not_be_empty : null,
+                errorText: _validate
+                    ? AppLocalizations.of(context).value_must_not_be_empty
+                    : null,
               ),
             ),
           ),
           Row(children: [
             Expanded(
-              child: FlatButton(
+              child: TextButton(
                 child: Text(
                   AppLocalizations.of(context).undo,
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
               ),
             ),
             Expanded(
-              child: FlatButton(
+              child: TextButton(
                 child: Text(
                   AppLocalizations.of(context).create,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                  ),
+                  style: TextStyle(color: Theme.of(context).primaryColor),
                 ),
-                onPressed: () {
-                  createPlaylist(context);
-                },
+                onPressed: () => _createPlaylist(context),
               ),
             ),
           ]),

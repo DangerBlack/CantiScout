@@ -1,9 +1,9 @@
-import "Song.dart";
+import 'Song.dart';
 
-class SongList{
-  List<Song> list = new List<Song>();
+class SongList {
+  List<Song> list = [];
 
-  Song get(int i){
+  Song get(int i) {
     return list[i];
   }
 }

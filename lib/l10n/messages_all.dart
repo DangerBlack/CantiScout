@@ -2,25 +2,30 @@
 // This is a library that looks up messages for specific locales by
 // delegating to the appropriate library.
 
+// ignore_for_file: implementation_imports, deprecated_member_use_from_same_package
+
 import 'dart:async';
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
-// ignore: implementation_imports
 import 'package:intl/src/intl_helpers.dart';
 
 import 'messages_en.dart' as messages_en;
+import 'messages_it.dart' as messages_it;
 
-typedef Future<dynamic> LibraryLoader();
+typedef LibraryLoader = Future<dynamic> Function();
+
 Map<String, LibraryLoader> _deferredLibraries = {
-// ignore: unnecessary_new
-  'en': () => new Future.value(null),
+  'en': () => Future.value(null),
+  'it': () => Future.value(null),
 };
 
-MessageLookupByLibrary _findExact(localeName) {
+MessageLookupByLibrary? _findExact(String localeName) {
   switch (localeName) {
     case 'en':
       return messages_en.messages;
+    case 'it':
+      return messages_it.messages;
     default:
       return null;
   }
@@ -28,22 +33,17 @@ MessageLookupByLibrary _findExact(localeName) {
 
 /// User programs should call this before using [localeName] for messages.
 Future<bool> initializeMessages(String localeName) async {
-  var availableLocale = Intl.verifiedLocale(
-    localeName,
-    (locale) => _deferredLibraries[locale] != null,
-    onFailure: (_) => null);
+  final availableLocale = Intl.verifiedLocale(
+      localeName, (locale) => _deferredLibraries[locale] != null,
+      onFailure: (_) => null);
   if (availableLocale == null) {
-    // ignore: unnecessary_new
-    return new Future.value(false);
+    return false;
   }
-  var lib = _deferredLibraries[availableLocale];
-  // ignore: unnecessary_new
-  await (lib == null ? new Future.value(false) : lib());
-  // ignore: unnecessary_new
-  initializeInternalMessageLookup(() => new CompositeMessageLookup());
+  final lib = _deferredLibraries[availableLocale];
+  await (lib == null ? Future.value(false) : lib());
+  initializeInternalMessageLookup(() => CompositeMessageLookup());
   messageLookup.addLocale(availableLocale, _findGeneratedMessagesFor);
-  // ignore: unnecessary_new
-  return new Future.value(true);
+  return true;
 }
 
 bool _messagesExistFor(String locale) {
@@ -54,8 +54,8 @@ bool _messagesExistFor(String locale) {
   }
 }
 
-MessageLookupByLibrary _findGeneratedMessagesFor(locale) {
-  var actualLocale = Intl.verifiedLocale(locale, _messagesExistFor,
+MessageLookupByLibrary? _findGeneratedMessagesFor(String locale) {
+  final actualLocale = Intl.verifiedLocale(locale, _messagesExistFor,
       onFailure: (_) => null);
   if (actualLocale == null) return null;
   return _findExact(actualLocale);

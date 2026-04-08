@@ -1,74 +1,40 @@
 import 'package:flutter/material.dart';
 
-
-
 class Constants {
-  static final String urlDonation = "https://www.512b.it/cantiscout/donate.html";
-  static final String urlGuide = "https://www.512b.it/cantiscout/guide.html";
-  static final String urlTos = "https://www.512b.it/cantiscout/tos.html";
-  static final String urlChordPro = "https://www.512b.it/cantiscout/chordpro.html";
-  static final String urlPathSong = "https://www.512b.it/cantiscout/php/song.php";
-  static final String urlPathSongList = "https://www.512b.it/cantiscout/php/get.php?max=";
-  static final String tokenApi = 'https://www.512b.it/cantiscout/api/';
+  // External URLs
+  static const String urlDonation = "https://www.512b.it/cantiscout/donate.html";
+  static const String urlGuide = "https://www.512b.it/cantiscout/guide.html";
+  static const String urlTos = "https://www.512b.it/cantiscout/tos.html";
+  static const String urlChordPro = "https://www.512b.it/cantiscout/chordpro.html";
 
-  static final String token = 'token';
-  static final String register = 'register';
-  static final String updatePassword = 'updatePassword';
-  static final String report = 'report';
-  static final String tokenExpire = 'token/expire';
-  static final String tokenUpdateSong = 'updateSong';
-  static final String tokenNewSong = 'insertSong';
-  static final String tokenPlaylist = 'playlist/';
+  // Display settings keys
+  static const String sharedDefaultFontSize = "defaultFontSize";
+  static const String sharedAutoscroll = "Autoscroll";
+  static const String sharedAutoscrollSpeed = "AutoscrollSpeed";
+  static const String sharedFontStyle = "FontStyle";
+  static const String sharedFontColor = "FontColor";
 
-  static final String  lastDateCheck = 'lastDateCheck';
-  static final Duration  waitBetweenCheck = new Duration(days:1);
+  // User identity
+  static const String sharedUsername = "username";
+  static const String defaultUsername = "Scout";
 
-
-  static final String gravatarUrl = "https://www.gravatar.com/avatar/";
-  static final String gravatarBaseUrl = "https://www.gravatar.com/";
-
-  static final String sharedDefaultFontSize = "defaultFontSize";
-  static final String sharedAutoscroll = "Autoscroll";
-  static final String sharedAutoscrollSpeed = "AutoscrollSpeed";
-  static final String sharedFontStyle = "FontStyle";
-  static final String sharedFontColor = "FontColor";
-
-  static final double initialFontSize = 18.0;
-  static final bool initialAutoscroll = false;
-  static final double initialAutoscrollSpeed = 3.0;
-  static final String initialFontStyle = "Roboto";
+  // Display defaults
+  static const double initialFontSize = 18.0;
+  static const bool initialAutoscroll = false;
+  static const double initialAutoscrollSpeed = 3.0;
+  static const String initialFontStyle = "Roboto";
   static final int initialColor = Colors.black.value;
-  static final double scrollMultiplier = 25.0;
-  static final double maxScrollSpeed = 10.0;
+  static const double scrollMultiplier = 25.0;
+  static const double maxScrollSpeed = 10.0;
 
-  static final IconData autoscrollIcon = Icons.playlist_play;
-  static final IconData autoscrollIconPause = Icons.pause;
+  static const IconData autoscrollIcon = Icons.playlist_play;
+  static const IconData autoscrollIconPause = Icons.pause;
 
-  //USER space
-
-  static final String sharedMail = "mail";
-  static final String sharedName = "name";
-  static final String sharedToken = "token";
-
-  static final String defaultMail = "unkown";
-  static final String defaultName = "Unkown";
-
-
-  static final List<String> reportOption = <String>[
-    "copiright",
-    "contenuti espliciti o offensivi",
-    "note errate",
-    "testo errato",
-    "altro"
-  ];
-
-
-  static final List<String> optTag = <String>[
+  static const List<String> optTag = <String>[
     "chiesa,messa,liturgia,preghiera",
     "lc,lupetti,coccinelle,branco,cerchio",
     "eg,esploratori,guide,reparto",
     "rs,rover,scolte,clan",
-    "altro"
+    "altro",
   ];
-
 }

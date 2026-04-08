@@ -13,14 +13,14 @@ class AppLocalizations {
         locale.countryCode == null ? locale.languageCode : locale.toString();
     final String localeName = Intl.canonicalizedLocale(name);
 
-    return initializeMessages(localeName).then((bool _) {
+    return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      return new AppLocalizations();
+      return AppLocalizations();
     });
   }
 
   static AppLocalizations of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
   String get title {
@@ -488,6 +488,15 @@ class AppLocalizations {
 
   String get hello {
     return Intl.message('Hello', name: 'hello');
+  }
+
+  String get share {
+    return Intl.message('Condividi', name: 'share', desc: 'Share action');
+  }
+
+  String get random_username {
+    return Intl.message('Genera nome casuale',
+        name: 'random_username', desc: 'Settings: generate random username');
   }
 }
 

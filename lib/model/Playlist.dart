@@ -1,47 +1,40 @@
 import 'dart:convert';
 
 Playlist playlistFromJson(String str) {
-  final jsonData = json.decode(str);
+  final jsonData = json.decode(str) as Map<String, dynamic>;
   return Playlist.fromMap(jsonData);
 }
 
 String playlistToJson(Playlist data) {
-  final dyn = data.toMap();
-  return json.encode(dyn);
+  return json.encode(data.toMap());
 }
 
-class Playlist{
+class Playlist {
   int id;
   String title;
-  int idUser;
-  String permission;
   String time;
   int songCount;
 
   Playlist({
-    this.id,
-    this.title,
-    this.idUser,
-    this.permission,
-    this.time,
-    this.songCount
+    this.id = 0,
+    this.title = '',
+    this.time = '',
+    this.songCount = 0,
   });
 
-  factory Playlist.fromMap(Map<String, dynamic> json) => new Playlist(
-      id: int.parse(json["id"].toString()),
-      title: json["title"],
-      idUser: int.parse(json["idUser"].toString()),
-      time: json["time"].toString(),
-      permission: json["permission"].toString(),
-      songCount: json["songCount"],
-  );
+  factory Playlist.fromMap(Map<String, dynamic> json) => Playlist(
+        id: int.tryParse(json['id'].toString()) ?? 0,
+        title: json['title']?.toString() ?? '',
+        time: json['time']?.toString() ?? '',
+        songCount: json['songCount'] != null
+            ? int.tryParse(json['songCount'].toString()) ?? 0
+            : 0,
+      );
 
   Map<String, dynamic> toMap() => {
-    "id": id,
-    "title": title,
-    "idUser": idUser,
-    "time": time,
-    "permission": permission,
-    "songCount": songCount,
-  };
+        'id': id,
+        'title': title,
+        'time': time,
+        'songCount': songCount,
+      };
 }

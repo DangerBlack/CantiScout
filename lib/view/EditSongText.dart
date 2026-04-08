@@ -1,195 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:connectivity/connectivity.dart';
 import '../model/Song.dart';
 import '../model/Tag.dart';
 import '../Database.dart';
-import '../controller/Updater.dart';
 import '../controller/AppLocalizations.dart';
 
 class EditSongText extends StatefulWidget {
   final Song song;
-  final List<bool> opt;
-  EditSongText({Key key, this.song, this.opt}) : super(key: key);
+  final List<bool>? opt;
+
+  const EditSongText({Key? key, required this.song, this.opt}) : super(key: key);
 
   @override
-  EditSongTextState createState() => EditSongTextState(this.song, this.opt);
+  EditSongTextState createState() => EditSongTextState();
 }
 
-class EditSongTextState extends State {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+class EditSongTextState extends State<EditSongText> {
+  final GlobalKey<ScaffoldMessengerState> _messengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   final myController = TextEditingController();
 
-  /*final RegExp expChord = new RegExp(r"\[([^\]]*)\]");
-  final RegExp expSharp = new RegExp(r"#.*");
-  final RegExp expComment = new RegExp(r".*\{(.*)\}.*");
-  final RegExp expCommentL = new RegExp(r".*\{(.*):(.*)\}.*");
-  final RegExp expInlineChorus =
-      new RegExp(r".*\{(soc|start_of_chorus)\}(.*)\{(eoc|end_of_chorus)\}.*");
-
-  final RegExp expTComment = new RegExp(r"c|comment");
-  final RegExp expTitleComment = new RegExp(r"t|title");
-  final RegExp expAuthorComment = new RegExp(r"a|author");
-  final RegExp expChorusStart = new RegExp(r"soc|start_of_chorus");
-  final RegExp expChorusEnd = new RegExp(r"eoc|end_of_chorus");
-  */
-  Song song;
-  List<bool> opt;
-
-  //double fSize = 18.0;
-  //FontWeight fWeight = FontWeight.normal;
-  //FontStyle fStyle = FontStyle.normal;
-
-  //int numberOfDays = 31;
-  //double previousfSize;
-
-  //List<Widget> w = new List<Widget>();
-
-  bool _offline = true;
-
-  loadTagList() async {
-    print("vuoto!");
-    List<Tag> tags = await DBProvider.db.getTagsBySongId(this.song.id);
-    tags.forEach((t) {
-      print("#" + t.tag);
-    });
-    setState(() {
-      this.song.tags = tags;
-      build(context);
-    });
-  }
-
-  checkNetwork() async {
-    var result = await (Connectivity().checkConnectivity());
-    print(result);
-    if ((result == ConnectivityResult.wifi) ||
-        (result == ConnectivityResult.mobile)) {
-      setState(() {
-        _offline = false;
-      });
-    }
-    if (result == ConnectivityResult.none) {
-      setState(() {
-        _offline = true;
-      });
-    }
-  }
+  late Song song;
+  List<bool> opt = [];
 
   @override
-  initState() {
-    myController.text = song.body ?? "";
-    checkNetwork();
-
+  void initState() {
     super.initState();
+    song = widget.song;
+    opt = widget.opt ?? List.filled(5, false);
+    myController.text = song.body;
+    _loadTags();
   }
 
-  EditSongTextState(Song song, List<bool> opt) {
-    print("rebuild");
-    this.song = song;
-    this.opt = opt;
-    //loadTagList();
+  Future<void> _loadTags() async {
+    final List<Tag> tags = await DBProvider.db.getTagsBySongId(song.id);
+    if (mounted) {
+      setState(() => song.tags = tags);
+    }
   }
 
-  _uploadSong(BuildContext context) async {
-    String text = myController.text;
+  /// Save the song locally, handling both new and existing songs.
+  Future<void> _saveSong(BuildContext context) async {
+    final text = myController.text;
     song.body = text;
 
-    if(text.contains('{author:')){
-      var init = text.indexOf('{author:');
-      var end = text.indexOf("}", init);
-      var author = text.substring(init + '{author:'.length, end);
-      if(author.length > 0)
-        song.author = author;
-    }
-    else
-    if(text.contains('{Author:')){
-      var init = text.indexOf('{author:');
-      var end = text.indexOf("}", init);
-      var author = text.substring(init + '{author:'.length, end);
-      if(author.length > 0)
-        song.author = author;
-    }
-    else
-    if(text.contains('{a:')){
-      var init = text.indexOf('{author:');
-      var end = text.indexOf("}", init);
-      var author = text.substring(init + '{author:'.length, end);
-      if(author.length > 0)
-        song.author = author;
-    }
-
-    int res = await Updater.updateSong(song,opt);
-    if (res < 0) {
-      String message = AppLocalizations.of(context).error_upload_song_malformed;
-      switch(res){
-        case -1:
-          message = AppLocalizations.of(context).error_upload_song_missing_chord;
-          break;
-        case -2:
-          message = AppLocalizations.of(context).error_upload_song_parentesis;
-          break;
-        case -3:
-          message = AppLocalizations.of(context).error_upload_song_graph_parentesis;
-          break;
-        case -4:
-          message = AppLocalizations.of(context).error_upload_song_malformed;
-          break;
-        case -30:
-          message = AppLocalizations.of(context).unable_to_save;
-          break;
-        case -40:
-          message = AppLocalizations.of(context).login_desc;
-          break;
+    // Parse {author: ...} from ChordPro body
+    final bodyLower = text.toLowerCase();
+    for (final prefix in ['{author:', '{a:']) {
+      final idx = bodyLower.indexOf(prefix);
+      if (idx != -1) {
+        final end = text.indexOf('}', idx);
+        if (end != -1) {
+          final author =
+              text.substring(idx + prefix.length, end).trim();
+          if (author.isNotEmpty) song.author = author;
+        }
+        break;
       }
+    }
 
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
+    try {
+      await DBProvider.db.updateOrInsertSong(song);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: Colors.red,
-        content: new Text(message),
-        duration: new Duration(seconds: 10),
+        content: Text(AppLocalizations.of(context).unable_to_save),
+        duration: const Duration(seconds: 5),
       ));
-      Navigator.of(context).pop();
-    } else {
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(this.song.title),
-      ),
-      body: _buildSong(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _offline ? null : () => _showConfirmDialog(context),
-        tooltip: _offline ? AppLocalizations.of(context).unable_to_save: AppLocalizations.of(context).save,
-        child: Icon(Icons.save),
-        backgroundColor:
-            _offline ? Colors.grey : Theme.of(context).primaryColor,
-      ),
-    );
-  }
-
 
   void _showConfirmDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext ctx) {
         return AlertDialog(
-          title: new Text(AppLocalizations.of(context).upload_dialog_title),
-          content: new Text(AppLocalizations.of(context).upload_dialog_body),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text(AppLocalizations.of(context).dialog_cancel.toUpperCase()),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+          title: Text(AppLocalizations.of(context).upload_dialog_title),
+          content: Text(AppLocalizations.of(context).upload_dialog_body),
+          actions: [
+            TextButton(
+              child: Text(
+                  AppLocalizations.of(context).dialog_cancel.toUpperCase()),
+              onPressed: () => Navigator.of(ctx).pop(),
             ),
-            new FlatButton(
-              child: new Text(AppLocalizations.of(context).dialog_confirm.toUpperCase()),
-              onPressed: () => _uploadSong(context),
+            TextButton(
+              child: Text(
+                  AppLocalizations.of(context).dialog_confirm.toUpperCase()),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                _saveSong(context);
+              },
             ),
           ],
         );
@@ -197,26 +100,35 @@ class EditSongTextState extends State {
     );
   }
 
-  printD(String s) {
-    //print(s);
-  }
-
-  Widget _buildSong(BuildContext context) {
-    return ListView(children: [
-      Padding(
-        padding: EdgeInsets.all(10.0),
-        child: TextField(
-          decoration:
-              InputDecoration(labelText: AppLocalizations.of(context).edit_song + song.title),
-          maxLines: 500,
-          controller: myController,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(song.title),
+      ),
+      body: ListView(children: [
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).edit_song + song.title,
+            ),
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+            controller: myController,
+          ),
         ),
-      )
-    ]);
+      ]),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showConfirmDialog(context),
+        tooltip: AppLocalizations.of(context).save,
+        child: const Icon(Icons.save),
+      ),
+    );
   }
 
-// Be sure to cancel subscription after you are done
-  dispose() {
+  @override
+  void dispose() {
     myController.dispose();
     super.dispose();
   }

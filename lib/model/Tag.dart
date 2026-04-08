@@ -1,41 +1,34 @@
 import 'dart:convert';
 
 Tag tagFromJson(String str) {
-  final jsonData = json.decode(str);
+  final jsonData = json.decode(str) as Map<String, dynamic>;
   return Tag.fromMap(jsonData);
 }
 
 String tagToJson(Tag data) {
-  final dyn = data.toMap();
-  return json.encode(dyn);
+  return json.encode(data.toMap());
 }
 
 class Tag {
   int id;
-  int idSong;
+  String idSong; // UUID of the parent song
   String tag;
 
   Tag({
-    this.id,
-    this.idSong,
-    this.tag,
+    required this.id,
+    required this.idSong,
+    required this.tag,
   });
 
-  factory Tag.fromRemoteMap(Map<String, dynamic> json) => new Tag(
-      id: int.parse(json["id"].toString()),
-      idSong: int.parse(json["id_song"].toString()),
-      tag: json["tag"],
-  );
-
-  factory Tag.fromMap(Map<String, dynamic> json) => new Tag(
-      id: int.parse(json["id"].toString()),
-      idSong: int.parse(json["idSong"].toString()),
-      tag: json["tag"],
-  );
+  factory Tag.fromMap(Map<String, dynamic> json) => Tag(
+        id: int.tryParse(json['id'].toString()) ?? 0,
+        idSong: json['idSong']?.toString() ?? '',
+        tag: json['tag']?.toString() ?? '',
+      );
 
   Map<String, dynamic> toMap() => {
-    "id": id,
-    "idSong": idSong,
-    "tag": tag,
-  };
+        'id': id,
+        'idSong': idSong,
+        'tag': tag,
+      };
 }

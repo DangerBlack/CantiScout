@@ -1,44 +1,55 @@
-import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:convert/convert.dart';
-import 'package:crypto/crypto.dart' as crypto;
 import 'package:url_launcher/url_launcher.dart';
-
-
+import 'package:flutter/material.dart';
+import '../model/Song.dart';
 
 class Utils {
-  static updatePreferences(String key, var value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  /// Parse a ChordPro-formatted string into a Song.
+  /// Extracts {title:}, {t:}, {author:}, {a:} directives.
+  static Song parseSongFromChordPro(String text) {
+    String title = '';
+    String? author;
+
+    final titleMatch =
+        RegExp(r'\{(?:title|t)\s*:\s*(.+?)\}', caseSensitive: false)
+            .firstMatch(text);
+    if (titleMatch != null) title = titleMatch.group(1)!.trim();
+
+    final authorMatch =
+        RegExp(r'\{(?:author|a)\s*:\s*(.+?)\}', caseSensitive: false)
+            .firstMatch(text);
+    if (authorMatch != null) author = authorMatch.group(1)!.trim();
+
+    // Fallback title: first non-empty, non-directive line
+    if (title.isEmpty) {
+      title = text
+          .split('\n')
+          .map((l) => l.trim())
+          .firstWhere(
+              (l) => l.isNotEmpty && !l.startsWith('{') && !l.startsWith('#'),
+              orElse: () => 'Canzone senza titolo');
+    }
+
+    return Song.create(title: title, author: author, body: text.trim());
+  }
+
+  static Future<void> updatePreferences(String key, dynamic value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (value is bool) {
       await prefs.setBool(key, value);
-    }
-    if (value is double) {
+    } else if (value is double) {
       await prefs.setDouble(key, value);
-    }
-    if (value is Color) {
+    } else if (value is Color) {
       await prefs.setInt(key, value.value);
-    }
-    if (value is String) {
+    } else if (value is String) {
       await prefs.setString(key, value);
     }
   }
 
-  getPreferences(key, _callBack) async {
-  }
-
-  static generateMd5(String data) {
-    var content = new Utf8Encoder().convert(data);
-    var md5 = crypto.md5;
-    var digest = md5.convert(content);
-    return hex.encode(digest.bytes);
-  }
-
-  static launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
+  static Future<void> launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 }

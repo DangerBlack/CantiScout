@@ -1,76 +1,86 @@
 import 'dart:convert';
+import 'package:uuid/uuid.dart';
 import 'Tag.dart';
 
 Song songFromJson(String str) {
-  final jsonData = json.decode(str);
+  final jsonData = json.decode(str) as Map<String, dynamic>;
   return Song.fromMap(jsonData);
 }
 
 String songToJson(Song data) {
-  final dyn = data.toMap();
-  return json.encode(dyn);
+  return json.encode(data.toMap());
 }
 
-class Song{
-  int id;
+class Song {
+  String id;
   String title;
-  String author;
+  String? author;
   String time;
   String body;
   int status;
+  String? username;
 
-  List<Tag> tags = new List<Tag>();
+  List<Tag> tags = [];
 
   Song({
-    this.id,
-    this.title,
+    required this.id,
+    required this.title,
     this.author,
-    this.time,
-    this.body,
-    this.status,
+    required this.time,
+    required this.body,
+    this.status = 0,
+    this.username,
   });
 
-  factory Song.fromMap(Map<String, dynamic> json) => new Song(
-    id: int.parse(json["id"].toString()),
-    title: ucfirst(json["title"]),
-    author: ucfirst(json["author"]),
-    time: json["time"],
-    body: json["body"],
-    status: int.parse(json["status"].toString())
-  );
-
-  Map<String, dynamic> toMap() => {
-    "id": id,
-    "title": title,
-    "author": safe(author),
-    "time": time,
-    "body": body,
-    "status": status,
-  };
-
-  List toDb(){
-    return [this.id,this.title,safe(this.author),this.time,this.body,this.status];
+  /// Create a brand-new song with a generated UUID and current timestamp.
+  factory Song.create({
+    required String title,
+    String? author,
+    required String body,
+    String? username,
+  }) {
+    return Song(
+      id: const Uuid().v4(),
+      title: title,
+      author: author,
+      time: DateTime.now().toIso8601String(),
+      body: body,
+      status: 0,
+      username: username,
+    );
   }
 
-  setTags(List<Tag> tags){
+  factory Song.fromMap(Map<String, dynamic> json) => Song(
+        id: json['id']?.toString() ?? const Uuid().v4(),
+        title: _ucfirst(json['title']?.toString() ?? ''),
+        author: json['author'] != null && json['author'].toString().isNotEmpty
+            ? _ucfirst(json['author'].toString())
+            : null,
+        time: json['time']?.toString() ?? DateTime.now().toIso8601String(),
+        body: json['body']?.toString() ?? '',
+        status: json['status'] != null
+            ? int.tryParse(json['status'].toString()) ?? 0
+            : 0,
+        username: json['username']?.toString(),
+      );
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'author': author ?? '',
+        'time': time,
+        'body': body,
+        'status': status,
+        'username': username ?? '',
+      };
+
+  void setTags(List<Tag> tags) {
     this.tags = tags;
   }
 
-
-  static ucfirst(String s)
-  {
+  static String _ucfirst(String s) {
     s = s.trim();
-    if(s.length <= 0)
-      return s;
-
+    if (s.isEmpty) return s;
     return s[0].toUpperCase() + s.substring(1);
-  }
-
-  static safe(Object x)
-  {
-    if(x != null)
-      return x;
-
-    return "";
   }
 }

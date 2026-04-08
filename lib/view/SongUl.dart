@@ -1,38 +1,23 @@
 import 'package:flutter/material.dart';
 import '../model/Song.dart';
 import '../model/SongList.dart';
-import '../model/User.dart';
 import '../view/SongText.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
 
 class SongUlStateful extends StatefulWidget {
-  final User user;
-  SongUlStateful({Key key, this.title, this.user}) : super(key: key);
-
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  const SongUlStateful({Key? key, this.title}) : super(key: key);
+  final String? title;
 
   @override
   SongUl createState() => SongUl();
-//_MyHomePageState createState() => _MyHomePageState();
 }
 
-class SongUl extends State {
+class SongUl extends State<SongUlStateful> {
   IconData leadingIcon = Icons.album;
   final _biggerFont = const TextStyle(fontSize: 18.0);
-  SongList l = new SongList();
-  SongUl():super();
+  SongList l = SongList();
 
   @override
   void initState() {
@@ -40,27 +25,21 @@ class SongUl extends State {
     updateList();
   }
 
-  updateList() async {
-    //TODO: lista
-    if(l.list.isEmpty) {
-      List<Song> lg = await DBProvider.db.getAllSongs();
-      if(mounted) {
-        setState(() {
-          l.list = lg;
-        });
-      }
+  Future<void> updateList() async {
+    final List<Song> lg = await DBProvider.db.getAllSongs();
+    if (mounted) {
+      setState(() => l.list = lg);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    //updateList();
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).songs_list),
-        actions: <Widget>[
+        actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               showSearch(
                 context: context,
@@ -76,39 +55,24 @@ class SongUl extends State {
 
   Widget _buildSongRow(Song pair) {
     return ListTile(
-        leading: Icon(leadingIcon),
-        title: Text(
-          pair.title,
-          style: _biggerFont,
-        ),
-        subtitle: Text(
-          pair.author,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SongText(song: pair)),
-          );
-        });
+      leading: Icon(leadingIcon),
+      title: Text(pair.title, style: _biggerFont),
+      subtitle: Text(pair.author ?? ''),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SongText(song: pair)),
+        );
+      },
+    );
   }
 
   Widget buildList() {
-    return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemCount: l.list.length * 2,
-        itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) return Divider();
-          /*2*/
-          int index = i ~/ 2;
-          if (index <= l.list.length) {
-            var s = l.get(index);
-            return _buildSongRow(s);
-          } else {
-            //TODO: Statement unreachable!!!!
-            return null;
-          }
-        });
+    return ListView.separated(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: l.list.length,
+      separatorBuilder: (_, __) => const Divider(),
+      itemBuilder: (context, index) => _buildSongRow(l.list[index]),
+    );
   }
 }
-
-

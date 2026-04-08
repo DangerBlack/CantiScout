@@ -395,32 +395,21 @@ class Charset {
     "caveatbrushBold": caveatbrushRegular,
   };
 
-  static Map<String, double> getFont(String name){
+  static Map<String, double> getFont(String name) {
     name = name.toLowerCase();
-    if(font.containsKey(name)) {
-      return font[name];
-    }else{
-      print("ERRORE FONT ASSENTE");
-      return robotoRegular;
-    }
+    return font[name] ?? robotoRegular;
   }
 
-  static Map<String, double> getFontBold(String name){
-    name = name.toLowerCase()+"Bold";
-    if(font.containsKey(name)) {
-      return font[name];
-    }else{
-      print("ERRORE FONT BOLD ASSENTE");
-      return robotoBold;
-    }
+  static Map<String, double> getFontBold(String name) {
+    name = name.toLowerCase() + 'Bold';
+    return font[name] ?? robotoBold;
   }
 
-  static getFonts(){
-    List<String> f = List<String>();
-
-    for( String k in font.keys ){
-      if(!k.contains("Bold")){
-        f.add(k[0].toUpperCase()+k.substring(1));
+  static List<String> getFonts() {
+    final List<String> f = [];
+    for (final String k in font.keys) {
+      if (!k.contains('Bold')) {
+        f.add(k[0].toUpperCase() + k.substring(1));
       }
     }
     return f;
