@@ -148,6 +148,12 @@ class Settings extends State<SettingsStateful> {
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).username,
             ),
+            onChanged: (value) {
+              if (value.trim().isNotEmpty) {
+                _username = value.trim();
+                _updatePref(Constants.sharedUsername, value.trim());
+              }
+            },
             onSubmitted: (value) {
               if (value.trim().isNotEmpty) {
                 setState(() => _username = value.trim());

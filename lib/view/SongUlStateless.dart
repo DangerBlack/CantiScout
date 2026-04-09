@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
+import '../controller/ChopackController.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../controller/Utils.dart';
 import '../model/Constants.dart';
@@ -78,10 +79,18 @@ class _SongUlStatelessState extends State<SongUlStateless> {
             ),
             ListTile(
               leading: const Icon(Icons.file_upload),
-              title: const Text('Importa libreria (.json)'),
+              title: const Text('Importa raccolta (.chopack)'),
               onTap: () {
                 Navigator.pop(ctx);
-                _importBulkJson(context);
+                _importChopack(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.archive),
+              title: const Text('Esporta libreria (.chopack)'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _exportChopack(context);
               },
             ),
             const Divider(),
@@ -220,12 +229,19 @@ class _SongUlStatelessState extends State<SongUlStateless> {
   Future<void> _importFromFile(BuildContext context) async {
     try {
       final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['chopro', 'cho', 'txt'],
+        type: FileType.any,
       );
       if (result == null || result.files.isEmpty) return;
       final path = result.files.single.path;
       if (path == null) return;
+      final lower = path.toLowerCase();
+      if (!lower.endsWith('.chopro') && !lower.endsWith('.cho') && !lower.endsWith('.txt')) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Seleziona un file .chopro, .cho o .txt')),
+        );
+        return;
+      }
       final text = await File(path).readAsString();
       if (!mounted) return;
       await _importChordPro(context, text);
@@ -237,24 +253,25 @@ class _SongUlStatelessState extends State<SongUlStateless> {
     }
   }
 
-  // ── Bulk JSON import ────────────────────────────────────────────────────────
+  // ── .chopack import ─────────────────────────────────────────────────────────
 
-  Future<void> _importBulkJson(BuildContext context) async {
+  Future<void> _importChopack(BuildContext context) async {
     try {
       final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['json'],
+        type: FileType.any,
       );
       if (result == null || result.files.isEmpty) return;
       final path = result.files.single.path;
       if (path == null) return;
+      if (!path.toLowerCase().endsWith('.chopack')) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Seleziona un file .chopack')),
+        );
+        return;
+      }
 
-      final raw = await File(path).readAsString();
-      final data = jsonDecode(raw) as Map<String, dynamic>;
-      final songsJson = data['songs'] as List<dynamic>;
-      final incoming =
-          songsJson.map((s) => Song.fromMap(s as Map<String, dynamic>)).toList();
-
+      final (incoming, tagsMap) = await ChopackController.importPack(path);
       if (!mounted) return;
       if (incoming.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -263,7 +280,6 @@ class _SongUlStatelessState extends State<SongUlStateless> {
         return;
       }
 
-      // Separate new vs conflicting
       final newSongs = <Song>[];
       final conflicts = <Song>[];
       for (final song in incoming) {
@@ -272,7 +288,6 @@ class _SongUlStatelessState extends State<SongUlStateless> {
         (existing != null ? conflicts : newSongs).add(song);
       }
 
-      // Ask what to do with conflicts (if any)
       _BulkConflictPolicy policy = _BulkConflictPolicy.skip;
       if (conflicts.isNotEmpty && mounted) {
         final chosen = await showDialog<_BulkConflictPolicy>(
@@ -280,24 +295,20 @@ class _SongUlStatelessState extends State<SongUlStateless> {
           barrierDismissible: false,
           builder: (ctx) => AlertDialog(
             title: const Text('Canzoni già presenti'),
-            content: Text(
-                '${newSongs.length} nuove, ${conflicts.length} già presenti.\n'
+            content: Text('${newSongs.length} nuove, ${conflicts.length} già presenti.\n'
                 'Cosa fare con i duplicati?'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(ctx, _BulkConflictPolicy.skip),
-                child: const Text('SALTA'),
-              ),
+                  onPressed: () => Navigator.pop(ctx, _BulkConflictPolicy.skip),
+                  child: const Text('SALTA')),
               TextButton(
-                onPressed: () =>
-                    Navigator.pop(ctx, _BulkConflictPolicy.keepBoth),
-                child: const Text('MANTIENI ENTRAMBE'),
-              ),
+                  onPressed: () =>
+                      Navigator.pop(ctx, _BulkConflictPolicy.keepBoth),
+                  child: const Text('MANTIENI ENTRAMBE')),
               TextButton(
-                onPressed: () =>
-                    Navigator.pop(ctx, _BulkConflictPolicy.replace),
-                child: const Text('SOSTITUISCI'),
-              ),
+                  onPressed: () =>
+                      Navigator.pop(ctx, _BulkConflictPolicy.replace),
+                  child: const Text('SOSTITUISCI')),
             ],
           ),
         );
@@ -305,30 +316,40 @@ class _SongUlStatelessState extends State<SongUlStateless> {
       }
 
       int imported = 0;
-      // Import new songs
       for (final song in newSongs) {
-        await DBProvider.db.newSong(
-            Song.create(title: song.title, author: song.author, body: song.body));
+        final saved = Song.create(
+            title: song.title, author: song.author, body: song.body);
+        await DBProvider.db.newSong(saved);
+        if (tagsMap.containsKey(song.id)) {
+          await ChopackController.saveTags(saved.id, tagsMap[song.id]!);
+        }
         imported++;
       }
-      // Handle conflicts
+
       for (final song in conflicts) {
         switch (policy) {
           case _BulkConflictPolicy.skip:
             break;
           case _BulkConflictPolicy.keepBoth:
-            await DBProvider.db.newSong(Song.create(
+            final saved = Song.create(
                 title: '${song.title} (2)',
                 author: song.author,
-                body: song.body));
+                body: song.body);
+            await DBProvider.db.newSong(saved);
+            if (tagsMap.containsKey(song.id)) {
+              await ChopackController.saveTags(saved.id, tagsMap[song.id]!);
+            }
             imported++;
           case _BulkConflictPolicy.replace:
-            final existing = await DBProvider.db
-                .getSongByTitleAuthor(song.title, song.author);
+            final existing =
+                await DBProvider.db.getSongByTitleAuthor(song.title, song.author);
             if (existing != null) {
               existing.body = song.body;
               existing.author = song.author;
               await DBProvider.db.updateSong(existing);
+              if (tagsMap.containsKey(song.id)) {
+                await ChopackController.saveTags(existing.id, tagsMap[song.id]!);
+              }
               imported++;
             }
         }
@@ -336,15 +357,31 @@ class _SongUlStatelessState extends State<SongUlStateless> {
 
       await _loadSongs();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$imported canzoni importate!')),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('$imported canzoni importate!')));
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Errore importazione: $e')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Errore importazione: $e')));
+    }
+  }
+
+  // ── .chopack export ──────────────────────────────────────────────────────────
+
+  Future<void> _exportChopack(BuildContext context) async {
+    try {
+      final songs = await DBProvider.db.getAllSongs();
+      if (songs.isEmpty) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Nessuna canzone da esportare.')));
+        return;
+      }
+      await ChopackController.exportPack(songs, 'CantScout - Libreria');
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Errore esportazione: $e')));
     }
   }
 

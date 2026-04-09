@@ -71,9 +71,7 @@ class HomepageState extends State<Homepage> {
           MaterialPageRoute(
               builder: (context) =>
                   SettingsStateful(title: AppLocalizations.of(context).settings)),
-        );
-        // Reload username after returning from settings
-        _loadUsername();
+        ).then((_) => _loadUsername());
       }),
       const Divider(),
       DrawerItem(AppLocalizations.of(context).guide, Icons.help_outline,

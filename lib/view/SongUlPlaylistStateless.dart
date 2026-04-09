@@ -3,6 +3,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
+import '../controller/ChopackController.dart';
 import '../model/Song.dart';
 import '../view/BleSendView.dart';
 import '../view/SongText.dart';
@@ -101,6 +102,21 @@ class _SongUlPlaylistStatelessState extends State<SongUlPlaylistStateless> {
             icon: const Icon(Icons.share),
             tooltip: AppLocalizations.of(context).share ?? 'Share',
             onPressed: () => _shareSongList(context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.archive),
+            tooltip: 'Esporta playlist (.chopack)',
+            onPressed: () async {
+              try {
+                final songs = await DBProvider.db.getAllPlaylistSongs(widget.playlistId);
+                await ChopackController.exportPack(songs, widget.title);
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Errore esportazione: $e')));
+                }
+              }
+            },
           ),
           IconButton(
             icon: const Icon(Icons.bluetooth),
