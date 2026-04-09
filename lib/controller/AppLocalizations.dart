@@ -110,7 +110,7 @@ class AppLocalizations {
   }
 
   String get playlist_name {
-    return Intl.message('Plylist name',
+    return Intl.message('Playlist name',
         name: 'playlist_name', desc: 'CreatePlaylist: Playlist name');
   }
 

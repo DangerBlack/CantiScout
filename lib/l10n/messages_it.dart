@@ -91,7 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "playlist" : MessageLookupByLibrary.simpleMessage("Playlist"),
     "playlist_desc" : MessageLookupByLibrary.simpleMessage("Guarda tutte le tue playlist"),
     "playlist_list" : MessageLookupByLibrary.simpleMessage("Elenco Playlist"),
-    "playlist_name" : MessageLookupByLibrary.simpleMessage("Plylist name"),
+    "playlist_name" : MessageLookupByLibrary.simpleMessage("Nome playlist"),
     "rs" : MessageLookupByLibrary.simpleMessage("R/S"),
     "save" : MessageLookupByLibrary.simpleMessage("Salva"),
     "send" : MessageLookupByLibrary.simpleMessage("INVIA"),

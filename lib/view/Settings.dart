@@ -1,14 +1,26 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Database.dart';
+import '../controller/AppLocalizations.dart';
+import '../controller/ChopackController.dart';
 import '../model/Chartset.dart';
 import '../model/Constants.dart';
-import '../controller/AppLocalizations.dart';
+import '../model/Song.dart';
+import '../view/BleReceiveView.dart';
+import '../view/BleSendView.dart';
+
+enum _BulkConflictPolicy { skip, keepBoth, replace }
 
 class SettingsStateful extends StatefulWidget {
-  const SettingsStateful({Key? key, this.title}) : super(key: key);
+  const SettingsStateful({Key? key, this.title, this.onImportComplete})
+      : super(key: key);
   final String? title;
+  final VoidCallback? onImportComplete;
 
   @override
   Settings createState() => Settings();
@@ -33,16 +45,16 @@ class Settings extends State<SettingsStateful> {
   @override
   void initState() {
     super.initState();
-    _fontSizeController = TextEditingController(
-        text: Constants.initialFontSize.toString());
+    _fontSizeController =
+        TextEditingController(text: Constants.initialFontSize.toString());
     _usernameController = TextEditingController();
     _loadPreferences();
   }
 
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    final fontSize =
-        prefs.getDouble(Constants.sharedDefaultFontSize) ?? Constants.initialFontSize;
+    final fontSize = prefs.getDouble(Constants.sharedDefaultFontSize) ??
+        Constants.initialFontSize;
     final username = prefs.getString(Constants.sharedUsername) ?? '';
 
     setState(() {
@@ -69,6 +81,179 @@ class Settings extends State<SettingsStateful> {
     else if (value is int) await prefs.setInt(key, value);
     else if (value is String) await prefs.setString(key, value);
   }
+
+  // ── Loading dialog ──────────────────────────────────────────────────────────
+
+  void _showLoadingDialog(String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          content: Row(
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(width: 20),
+              Expanded(child: Text(message)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Libreria: import .chopack ───────────────────────────────────────────────
+
+  Future<void> _importChopack() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(type: FileType.any);
+      if (result == null || result.files.isEmpty) return;
+      final path = result.files.single.path;
+      if (path == null) return;
+      if (!path.toLowerCase().endsWith('.chopack')) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Seleziona un file .chopack')),
+        );
+        return;
+      }
+
+      if (!mounted) return;
+      _showLoadingDialog('Lettura del file in corso…');
+
+      final (incoming, tagsMap) = await ChopackController.importPack(path);
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pop(); // close loading dialog
+
+      if (incoming.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Nessuna canzone trovata nel file.')),
+        );
+        return;
+      }
+
+      final newSongs = <Song>[];
+      final conflicts = <Song>[];
+      for (final song in incoming) {
+        final existing =
+            await DBProvider.db.getSongByTitleAuthor(song.title, song.author);
+        (existing != null ? conflicts : newSongs).add(song);
+      }
+
+      _BulkConflictPolicy policy = _BulkConflictPolicy.skip;
+      if (conflicts.isNotEmpty && mounted) {
+        final chosen = await showDialog<_BulkConflictPolicy>(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Canzoni già presenti'),
+            content: Text(
+                '${newSongs.length} nuove, ${conflicts.length} già presenti.\n'
+                'Cosa fare con i duplicati?'),
+            actions: [
+              TextButton(
+                  onPressed: () =>
+                      Navigator.pop(ctx, _BulkConflictPolicy.skip),
+                  child: const Text('SALTA')),
+              TextButton(
+                  onPressed: () =>
+                      Navigator.pop(ctx, _BulkConflictPolicy.keepBoth),
+                  child: const Text('MANTIENI ENTRAMBE')),
+              TextButton(
+                  onPressed: () =>
+                      Navigator.pop(ctx, _BulkConflictPolicy.replace),
+                  child: const Text('SOSTITUISCI')),
+            ],
+          ),
+        );
+        if (chosen != null) policy = chosen;
+      }
+
+      if (!mounted) return;
+      _showLoadingDialog('Importazione in corso…');
+
+      int imported = 0;
+      for (final song in newSongs) {
+        final saved =
+            Song.create(title: song.title, author: song.author, body: song.body);
+        await DBProvider.db.newSong(saved);
+        if (tagsMap.containsKey(song.id)) {
+          await ChopackController.saveTags(saved.id, tagsMap[song.id]!);
+        }
+        imported++;
+      }
+
+      for (final song in conflicts) {
+        switch (policy) {
+          case _BulkConflictPolicy.skip:
+            break;
+          case _BulkConflictPolicy.keepBoth:
+            final saved = Song.create(
+                title: '${song.title} (2)',
+                author: song.author,
+                body: song.body);
+            await DBProvider.db.newSong(saved);
+            if (tagsMap.containsKey(song.id)) {
+              await ChopackController.saveTags(saved.id, tagsMap[song.id]!);
+            }
+            imported++;
+          case _BulkConflictPolicy.replace:
+            final existing = await DBProvider.db
+                .getSongByTitleAuthor(song.title, song.author);
+            if (existing != null) {
+              existing.body = song.body;
+              existing.author = song.author;
+              await DBProvider.db.updateSong(existing);
+              if (tagsMap.containsKey(song.id)) {
+                await ChopackController.saveTags(
+                    existing.id, tagsMap[song.id]!);
+              }
+              imported++;
+            }
+        }
+      }
+
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pop(); // close loading dialog
+
+      widget.onImportComplete?.call();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$imported canzoni importate!')),
+      );
+    } catch (e) {
+      // Close any open loading dialog before showing the error.
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).maybePop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Errore importazione: $e')),
+        );
+      }
+    }
+  }
+
+  // ── Libreria: export .chopack ───────────────────────────────────────────────
+
+  Future<void> _exportChopack() async {
+    try {
+      final songs = await DBProvider.db.getAllSongs();
+      if (!mounted) return;
+      if (songs.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Nessuna canzone da esportare.')),
+        );
+        return;
+      }
+      await ChopackController.exportPack(songs, 'CantScout - Libreria');
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Errore esportazione: $e')),
+      );
+    }
+  }
+
+  // ── App settings helpers ────────────────────────────────────────────────────
 
   void _showColorPicker() {
     showDialog(
@@ -99,8 +284,7 @@ class Settings extends State<SettingsStateful> {
     return Charset.getFonts()
         .map((f) => DropdownMenuItem<String>(
               value: f as String,
-              child: Text(f as String,
-                  style: TextStyle(fontFamily: f as String)),
+              child: Text(f as String, style: TextStyle(fontFamily: f as String)),
             ))
         .toList();
   }
@@ -112,6 +296,39 @@ class Settings extends State<SettingsStateful> {
         title: Text(AppLocalizations.of(context).settings),
       ),
       body: ListView(children: [
+        // ── Libreria ──────────────────────────────────────────────────────────
+        ListTile(
+          title: Text('LIBRERIA', style: _titleFontStyle),
+        ),
+        ListTile(
+          leading: const Icon(Icons.file_upload),
+          title: const Text('Importa raccolta (.chopack)'),
+          onTap: _importChopack,
+        ),
+        ListTile(
+          leading: const Icon(Icons.archive),
+          title: const Text('Esporta libreria (.chopack)'),
+          onTap: _exportChopack,
+        ),
+        const Divider(),
+        ListTile(
+          leading: const Icon(Icons.bluetooth),
+          title: const Text('Invia via Bluetooth'),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const BleSendView()),
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.bluetooth_searching),
+          title: const Text('Ricevi via Bluetooth'),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const BleReceiveView()),
+          ).then((_) => widget.onImportComplete?.call()),
+        ),
+        const Divider(),
+
         // ── Identity ──────────────────────────────────────────────────────────
         ListTile(
           title: Text(

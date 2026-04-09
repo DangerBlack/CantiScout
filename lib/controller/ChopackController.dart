@@ -139,8 +139,12 @@ class ChopackController {
   /// Persist imported tags for a song that was just inserted/updated.
   static Future<void> saveTags(String songId, List<String> tags) async {
     await DBProvider.db.deleteTagsBySongId(songId);
+    // Insert without an explicit id so SQLite auto-assigns the rowid.
+    // Using newTag(id: 0) would cause every tag after the first to overwrite
+    // id=0 via the hasTag/updateTag path instead of creating a new row.
+    final db = await DBProvider.db.database;
     for (final tag in tags) {
-      await DBProvider.db.newTag(Tag(id: 0, idSong: songId, tag: tag));
+      await db.insert('Tag', {'idSong': songId, 'tag': tag});
     }
   }
 

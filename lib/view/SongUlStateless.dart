@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -6,24 +5,22 @@ import 'package:flutter/material.dart';
 
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
-import '../controller/ChopackController.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../controller/Utils.dart';
 import '../model/Constants.dart';
 import '../model/Song.dart';
-import '../view/BleReceiveView.dart';
-import '../view/BleSendView.dart';
 import '../view/CreateSong.dart';
 import '../view/SongText.dart';
 
-enum _BulkConflictPolicy { skip, keepBoth, replace }
-
 class SongUlStateless extends StatefulWidget {
   final String title;
+  final ValueNotifier<int>? reloadTrigger;
 
   // The songs parameter is kept for API compatibility but ignored — we always
   // load fresh from DB so the list reflects newly created/imported songs.
-  const SongUlStateless(List<Song> _, this.title, {Key? key}) : super(key: key);
+  const SongUlStateless(List<Song> _, this.title,
+      {Key? key, this.reloadTrigger})
+      : super(key: key);
 
   @override
   State<SongUlStateless> createState() => _SongUlStatelessState();
@@ -36,7 +33,14 @@ class _SongUlStatelessState extends State<SongUlStateless> {
   @override
   void initState() {
     super.initState();
+    widget.reloadTrigger?.addListener(_loadSongs);
     _loadSongs();
+  }
+
+  @override
+  void dispose() {
+    widget.reloadTrigger?.removeListener(_loadSongs);
+    super.dispose();
   }
 
   Future<void> _loadSongs() async {
@@ -75,45 +79,6 @@ class _SongUlStatelessState extends State<SongUlStateless> {
               onTap: () {
                 Navigator.pop(ctx);
                 _importFromFile(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.file_upload),
-              title: const Text('Importa raccolta (.chopack)'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _importChopack(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.archive),
-              title: const Text('Esporta libreria (.chopack)'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _exportChopack(context);
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.bluetooth),
-              title: const Text('Invia via Bluetooth'),
-              onTap: () {
-                Navigator.pop(ctx);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const BleSendView()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.bluetooth_searching),
-              title: const Text('Ricevi via Bluetooth'),
-              onTap: () {
-                Navigator.pop(ctx);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const BleReceiveView()),
-                ).then((_) => _loadSongs());
               },
             ),
           ],
@@ -235,10 +200,13 @@ class _SongUlStatelessState extends State<SongUlStateless> {
       final path = result.files.single.path;
       if (path == null) return;
       final lower = path.toLowerCase();
-      if (!lower.endsWith('.chopro') && !lower.endsWith('.cho') && !lower.endsWith('.txt')) {
+      if (!lower.endsWith('.chopro') &&
+          !lower.endsWith('.cho') &&
+          !lower.endsWith('.txt')) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Seleziona un file .chopro, .cho o .txt')),
+          const SnackBar(
+              content: Text('Seleziona un file .chopro, .cho o .txt')),
         );
         return;
       }
@@ -250,138 +218,6 @@ class _SongUlStatelessState extends State<SongUlStateless> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Errore importazione: $e')),
       );
-    }
-  }
-
-  // ── .chopack import ─────────────────────────────────────────────────────────
-
-  Future<void> _importChopack(BuildContext context) async {
-    try {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.any,
-      );
-      if (result == null || result.files.isEmpty) return;
-      final path = result.files.single.path;
-      if (path == null) return;
-      if (!path.toLowerCase().endsWith('.chopack')) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Seleziona un file .chopack')),
-        );
-        return;
-      }
-
-      final (incoming, tagsMap) = await ChopackController.importPack(path);
-      if (!mounted) return;
-      if (incoming.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Nessuna canzone trovata nel file.')),
-        );
-        return;
-      }
-
-      final newSongs = <Song>[];
-      final conflicts = <Song>[];
-      for (final song in incoming) {
-        final existing =
-            await DBProvider.db.getSongByTitleAuthor(song.title, song.author);
-        (existing != null ? conflicts : newSongs).add(song);
-      }
-
-      _BulkConflictPolicy policy = _BulkConflictPolicy.skip;
-      if (conflicts.isNotEmpty && mounted) {
-        final chosen = await showDialog<_BulkConflictPolicy>(
-          context: context,
-          barrierDismissible: false,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Canzoni già presenti'),
-            content: Text('${newSongs.length} nuove, ${conflicts.length} già presenti.\n'
-                'Cosa fare con i duplicati?'),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(ctx, _BulkConflictPolicy.skip),
-                  child: const Text('SALTA')),
-              TextButton(
-                  onPressed: () =>
-                      Navigator.pop(ctx, _BulkConflictPolicy.keepBoth),
-                  child: const Text('MANTIENI ENTRAMBE')),
-              TextButton(
-                  onPressed: () =>
-                      Navigator.pop(ctx, _BulkConflictPolicy.replace),
-                  child: const Text('SOSTITUISCI')),
-            ],
-          ),
-        );
-        if (chosen != null) policy = chosen;
-      }
-
-      int imported = 0;
-      for (final song in newSongs) {
-        final saved = Song.create(
-            title: song.title, author: song.author, body: song.body);
-        await DBProvider.db.newSong(saved);
-        if (tagsMap.containsKey(song.id)) {
-          await ChopackController.saveTags(saved.id, tagsMap[song.id]!);
-        }
-        imported++;
-      }
-
-      for (final song in conflicts) {
-        switch (policy) {
-          case _BulkConflictPolicy.skip:
-            break;
-          case _BulkConflictPolicy.keepBoth:
-            final saved = Song.create(
-                title: '${song.title} (2)',
-                author: song.author,
-                body: song.body);
-            await DBProvider.db.newSong(saved);
-            if (tagsMap.containsKey(song.id)) {
-              await ChopackController.saveTags(saved.id, tagsMap[song.id]!);
-            }
-            imported++;
-          case _BulkConflictPolicy.replace:
-            final existing =
-                await DBProvider.db.getSongByTitleAuthor(song.title, song.author);
-            if (existing != null) {
-              existing.body = song.body;
-              existing.author = song.author;
-              await DBProvider.db.updateSong(existing);
-              if (tagsMap.containsKey(song.id)) {
-                await ChopackController.saveTags(existing.id, tagsMap[song.id]!);
-              }
-              imported++;
-            }
-        }
-      }
-
-      await _loadSongs();
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('$imported canzoni importate!')));
-      }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Errore importazione: $e')));
-    }
-  }
-
-  // ── .chopack export ──────────────────────────────────────────────────────────
-
-  Future<void> _exportChopack(BuildContext context) async {
-    try {
-      final songs = await DBProvider.db.getAllSongs();
-      if (songs.isEmpty) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Nessuna canzone da esportare.')));
-        return;
-      }
-      await ChopackController.exportPack(songs, 'CantScout - Libreria');
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Errore esportazione: $e')));
     }
   }
 
@@ -414,8 +250,7 @@ class _SongUlStatelessState extends State<SongUlStateless> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Canzone già esistente'),
-        content: Text(
-            '"${existingSong.title}"'
+        content: Text('"${existingSong.title}"'
             '${existingSong.author != null ? ' di ${existingSong.author}' : ''}'
             ' è già presente. Cosa vuoi fare?'),
         actions: [

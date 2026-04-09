@@ -7,8 +7,10 @@ import 'SongUlPlaylistStateless.dart';
 import '../controller/AppLocalizations.dart';
 
 class PlaylistUlStateful extends StatefulWidget {
-  const PlaylistUlStateful({Key? key, this.title}) : super(key: key);
+  const PlaylistUlStateful({Key? key, this.title, this.reloadTrigger})
+      : super(key: key);
   final String? title;
+  final ValueNotifier<int>? reloadTrigger;
 
   @override
   PlaylistUl createState() => PlaylistUl();
@@ -21,7 +23,14 @@ class PlaylistUl extends State<PlaylistUlStateful> {
   @override
   void initState() {
     super.initState();
+    widget.reloadTrigger?.addListener(_updateList);
     _updateList();
+  }
+
+  @override
+  void dispose() {
+    widget.reloadTrigger?.removeListener(_updateList);
+    super.dispose();
   }
 
   Future<void> _updateList() async {
@@ -34,13 +43,14 @@ class PlaylistUl extends State<PlaylistUlStateful> {
     final List<Song> songs =
         await DBProvider.db.getAllPlaylistSongs(pl.id);
     if (!mounted) return;
-    Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) =>
             SongUlPlaylistStateless(songs, pl.title, pl.id),
       ),
     );
+    _updateList();
   }
 
   @override
@@ -57,8 +67,7 @@ class PlaylistUl extends State<PlaylistUlStateful> {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  const CreatePlaylistStatefull(title: 'New Playlist'),
+              builder: (context) => const CreatePlaylistStatefull(),
             ),
           );
           _updateList();

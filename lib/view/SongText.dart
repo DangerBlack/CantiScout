@@ -11,13 +11,11 @@ import '../model/Song.dart';
 import '../model/Tag.dart';
 import '../model/Constants.dart';
 import '../model/Chartset.dart';
-import '../model/Choice.dart';
 import '../Database.dart';
+import '../controller/AppLocalizations.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../view/ChoosePlaylist.dart';
 import '../view/EditSongText.dart';
-import '../view/Settings.dart';
-import '../controller/AppLocalizations.dart';
 
 class SongText extends StatefulWidget {
   final Song song;
@@ -46,7 +44,6 @@ class SongTextState extends State<SongText> {
 
   double? previousfSize;
   late ScrollController _controller;
-  List<Choice> choices = [];
 
   SongTextState(this.song);
 
@@ -120,16 +117,48 @@ class SongTextState extends State<SongText> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _runScroller());
   }
 
-  void _select(Choice choice) {
-    if (choice.action != null) choice.action!(context);
-  }
-
   // ── Share / export ─────────────────────────────────────────────────────────
 
-  void _showShareDialog(BuildContext context) {
+  void _showShareSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.text_fields),
+              title: const Text('Condividi testo'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _shareSongText();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.file_download),
+              title: const Text('Esporta .chopro'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _exportChordPro();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.qr_code),
+              title: const Text('QR code'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showQrDialog(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showQrDialog(BuildContext context) {
     final qrData = song.body;
     final tooLarge = qrData.length > 2900;
-
     showDialog(
       context: context,
       builder: (ctx) => Dialog(
@@ -163,26 +192,9 @@ class SongTextState extends State<SongText> {
                   errorCorrectionLevel: QrErrorCorrectLevel.M,
                 ),
               const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton.icon(
-                    icon: const Icon(Icons.text_fields),
-                    label: const Text('Testo'),
-                    onPressed: () {
-                      Navigator.pop(ctx);
-                      _shareSongText();
-                    },
-                  ),
-                  TextButton.icon(
-                    icon: const Icon(Icons.file_download),
-                    label: const Text('File'),
-                    onPressed: () {
-                      Navigator.pop(ctx);
-                      _exportChordPro();
-                    },
-                  ),
-                ],
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(AppLocalizations.of(context).done),
               ),
             ],
           ),
@@ -215,58 +227,46 @@ class SongTextState extends State<SongText> {
 
   @override
   Widget build(BuildContext context) {
-    choices = [
-      Choice(
-        title: AppLocalizations.of(context).settings,
-        icon: Icons.settings,
-        action: (context) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SettingsStateful(
-                    title: AppLocalizations.of(context).settings)),
-          );
-        },
-      ),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: Text(song.title),
         actions: [
-          // Autoscroll toggle
           IconButton(
             icon: Icon(_autoscroll
                 ? Constants.autoscrollIconPause
                 : Constants.autoscrollIcon),
-            tooltip: _autoscroll ? 'Pausa scorrimento' : 'Scorrimento automatico',
+            tooltip:
+                _autoscroll ? 'Pausa scorrimento' : 'Scorrimento automatico',
             onPressed: _toggleAutoscroll,
           ),
-          // Share / QR
           IconButton(
             icon: const Icon(Icons.share),
             tooltip: AppLocalizations.of(context).share ?? 'Condividi',
-            onPressed: () => _showShareDialog(context),
+            onPressed: () => _showShareSheet(context),
           ),
-          // Export .chopro
-          IconButton(
-            icon: const Icon(Icons.file_download),
-            tooltip: 'Esporta .chopro',
-            onPressed: _exportChordPro,
-          ),
-          PopupMenuButton<Choice>(
-            onSelected: _select,
-            itemBuilder: (BuildContext context) {
-              return choices.map((Choice choice) {
-                return PopupMenuItem<Choice>(
-                  value: choice,
-                  child: ListTile(
-                    leading: Icon(choice.icon),
-                    title: Text(choice.title),
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'playlist') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChoosePlaylistStateful(
+                      title: AppLocalizations.of(context).text_title,
+                      song: song,
+                    ),
                   ),
                 );
-              }).toList();
+              }
             },
+            itemBuilder: (context) => [
+              PopupMenuItem<String>(
+                value: 'playlist',
+                child: ListTile(
+                  leading: const Icon(Icons.playlist_add),
+                  title: Text(AppLocalizations.of(context).add_to_playlist),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -502,36 +502,6 @@ class SongTextState extends State<SongText> {
         }).toList(),
       ));
     }
-
-    w.add(const Divider());
-    w.add(Row(children: [
-      Expanded(
-        child: Ink(
-          decoration: ShapeDecoration(
-            color: Theme.of(context).primaryColor,
-            shape: const CircleBorder(),
-          ),
-          child: IconButton(
-            color: Colors.white,
-            icon: const Icon(Icons.playlist_add),
-            iconSize: 30.0,
-            tooltip: AppLocalizations.of(context).add_to_playlist,
-            padding: const EdgeInsets.all(15.0),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChoosePlaylistStateful(
-                    title: AppLocalizations.of(context).text_title,
-                    song: song,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    ]));
 
     w.add(const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)));
 
