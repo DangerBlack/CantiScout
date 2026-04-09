@@ -1,63 +1,59 @@
 import 'package:flutter/material.dart';
-import 'SongUl.dart';
+
 import '../Database.dart';
 import '../model/Song.dart';
+import '../view/SongText.dart';
 
 class SongUlSearchStateful extends StatefulWidget {
-  const SongUlSearchStateful(
-      {Key? key, this.title, this.search, required this.state})
+  final String search;
+
+  const SongUlSearchStateful({Key? key, required this.search})
       : super(key: key);
 
-  final String? title;
-  final String? search;
-  final SongUlSearch state;
-
   @override
-  SongUlSearch createState() => state;
+  State<SongUlSearchStateful> createState() => _SongUlSearchState();
 }
 
-class SongUlSearch extends SongUl {
-  String _search;
-
-  SongUlSearch(this._search) : super() {
-    leadingIcon = Icons.music_note;
-  }
+class _SongUlSearchState extends State<SongUlSearchStateful> {
+  List<Song> _songs = [];
 
   @override
   void initState() {
     super.initState();
-    updateList();
-  }
-
-  Future<void> updateListS(String search) async {
-    final List<Song> lg = await DBProvider.db.getSongs(search);
-    if (mounted) {
-      setState(() => l.list = lg);
-    }
+    _load(widget.search);
   }
 
   @override
-  Future<void> updateList() async {
-    if (l.list.isEmpty) {
-      final List<Song> lg = await DBProvider.db.getSongs(_search);
-      if (mounted) setState(() => l.list = lg);
+  void didUpdateWidget(SongUlSearchStateful oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.search != widget.search) {
+      _load(widget.search);
     }
+  }
+
+  Future<void> _load(String search) async {
+    final list = await DBProvider.db.getSongs(search);
+    if (mounted) setState(() => _songs = list);
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildList();
-  }
-
-  String get search => _search;
-  set search(String v) {
-    _search = v;
-    updateListS(_search);
-  }
-
-  @override
-  void dispose() {
-    l.list = [];
-    super.dispose();
+    return ListView.separated(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: _songs.length,
+      separatorBuilder: (_, __) => const Divider(),
+      itemBuilder: (context, index) {
+        final song = _songs[index];
+        return ListTile(
+          leading: const Icon(Icons.music_note),
+          title: Text(song.title, style: const TextStyle(fontSize: 18.0)),
+          subtitle: Text(song.author ?? ''),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => SongText(song: song)),
+          ),
+        );
+      },
+    );
   }
 }

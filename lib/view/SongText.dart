@@ -495,7 +495,7 @@ class SongTextState extends State<SongText> {
             onPressed: () {
               showSearch(
                 context: context,
-                delegate: CustomSearchDelegate.builder(t.tag),
+                delegate: CustomSearchDelegate(initialQuery: t.tag),
               );
             },
           );
