@@ -493,11 +493,6 @@ class AppLocalizations {
   String get share {
     return Intl.message('Condividi', name: 'share', desc: 'Share action');
   }
-
-  String get random_username {
-    return Intl.message('Genera nome casuale',
-        name: 'random_username', desc: 'Settings: generate random username');
-  }
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

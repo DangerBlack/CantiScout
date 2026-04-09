@@ -1,9 +1,35 @@
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter/material.dart';
-import 'view/Homepage.dart';
-import 'controller/AppLocalizations.dart';
+import 'dart:math';
 
-void main() => runApp(const MyApp());
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'controller/AppLocalizations.dart';
+import 'model/Constants.dart';
+import 'view/Homepage.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await _bootstrapUsername();
+  runApp(const MyApp());
+}
+
+Future<void> _bootstrapUsername() async {
+  final prefs = await SharedPreferences.getInstance();
+  if ((prefs.getString(Constants.sharedUsername) ?? '').isNotEmpty) return;
+  const adjectives = [
+    'Veloce', 'Forte', 'Saggio', 'Coraggioso', 'Agile',
+    'Fedele', 'Furbo', 'Vivace', 'Ardito', 'Pronto',
+  ];
+  const animals = [
+    'Lupo', 'Volpe', 'Aquila', 'Orso', 'Cervo',
+    'Falco', 'Lontra', 'Castoro', 'Lince', 'Gufo',
+  ];
+  final rng = Random();
+  final name = adjectives[rng.nextInt(adjectives.length)] +
+      animals[rng.nextInt(animals.length)];
+  await prefs.setString(Constants.sharedUsername, name);
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

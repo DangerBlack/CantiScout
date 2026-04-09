@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../controller/AppLocalizations.dart';
+import '../model/Constants.dart';
 import '../model/Song.dart';
 import '../view/EditSongText.dart';
-import '../controller/AppLocalizations.dart';
 
 class CreateSongStatefull extends StatefulWidget {
   const CreateSongStatefull({Key? key, this.title}) : super(key: key);
@@ -18,11 +21,15 @@ class CreateSong extends State<CreateSongStatefull> {
 
   final List<bool> _opt = <bool>[false, false, false, false, false];
 
-  void _routeToEditor(BuildContext context, String title) {
+  Future<void> _routeToEditor(BuildContext context, String title) async {
+    final prefs = await SharedPreferences.getInstance();
+    final username = prefs.getString(Constants.sharedUsername);
     final song = Song.create(
       title: title,
       body: '{title: $title}\n\n',
+      username: username,
     );
+    if (!context.mounted) return;
     Navigator.pop(context);
     Navigator.push(
       context,

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,11 +43,7 @@ class Settings extends State<SettingsStateful> {
     final prefs = await SharedPreferences.getInstance();
     final fontSize =
         prefs.getDouble(Constants.sharedDefaultFontSize) ?? Constants.initialFontSize;
-    final username =
-        prefs.getString(Constants.sharedUsername) ?? '';
-
-    // Generate random scout username on first run
-    final resolvedUsername = username.isEmpty ? _generateUsername(prefs) : username;
+    final username = prefs.getString(Constants.sharedUsername) ?? '';
 
     setState(() {
       _fontSize = fontSize;
@@ -63,25 +57,9 @@ class Settings extends State<SettingsStateful> {
       currentColor = pickerColor;
       dropdownValue = prefs.getString(Constants.sharedFontStyle) ??
           Constants.initialFontStyle;
-      _username = resolvedUsername;
-      _usernameController.text = resolvedUsername;
+      _username = username;
+      _usernameController.text = username;
     });
-  }
-
-  String _generateUsername(SharedPreferences prefs) {
-    const adjectives = [
-      'Veloce', 'Forte', 'Saggio', 'Coraggioso', 'Agile',
-      'Fedele', 'Furbo', 'Vivace', 'Ardito', 'Pronto',
-    ];
-    const animals = [
-      'Lupo', 'Volpe', 'Aquila', 'Orso', 'Cervo',
-      'Falco', 'Lontra', 'Castoro', 'Lince', 'Gufo',
-    ];
-    final rng = Random();
-    final name = adjectives[rng.nextInt(adjectives.length)] +
-        animals[rng.nextInt(animals.length)];
-    prefs.setString(Constants.sharedUsername, name);
-    return name;
   }
 
   Future<void> _updatePref(String key, dynamic value) async {
@@ -159,18 +137,6 @@ class Settings extends State<SettingsStateful> {
                 setState(() => _username = value.trim());
                 _updatePref(Constants.sharedUsername, value.trim());
               }
-            },
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.casino),
-            tooltip: AppLocalizations.of(context).random_username,
-            onPressed: () async {
-              final prefs = await SharedPreferences.getInstance();
-              final name = _generateUsername(prefs);
-              setState(() {
-                _username = name;
-                _usernameController.text = name;
-              });
             },
           ),
         ),
