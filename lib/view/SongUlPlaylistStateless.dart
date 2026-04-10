@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
 import '../controller/ChopackController.dart';
+import '../controller/PdfController.dart';
 import '../model/Playlist.dart';
 import '../model/Song.dart';
 import '../view/BleSendView.dart';
@@ -33,18 +33,7 @@ class _SongUlPlaylistStatelessState extends State<SongUlPlaylistStateless> {
     _songs = List.from(widget.initialSongs);
   }
 
-  void _shareSongList(BuildContext context) {
-    final buffer = StringBuffer();
-    buffer.writeln(widget.title);
-    buffer.writeln('---');
-    for (final song in _songs) {
-      buffer.writeln(
-          '• ${song.title}${song.author != null ? ' — ${song.author}' : ''}');
-    }
-    Share.share(buffer.toString());
-  }
-
-  Future<void> _confirmRemove(
+Future<void> _confirmRemove(
       BuildContext context, Song song, int index) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -100,9 +89,20 @@ class _SongUlPlaylistStatelessState extends State<SongUlPlaylistStateless> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.share),
-            tooltip: AppLocalizations.of(context).share ?? 'Share',
-            onPressed: () => _shareSongList(context),
+            icon: const Icon(Icons.picture_as_pdf),
+            tooltip: 'Esporta PDF',
+            onPressed: () async {
+              try {
+                final songs =
+                    await DBProvider.db.getAllPlaylistSongs(widget.playlistId);
+                await PdfController.exportPlaylistToPdf(songs, widget.title);
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Errore export PDF: $e')));
+                }
+              }
+            },
           ),
           IconButton(
             icon: const Icon(Icons.archive),

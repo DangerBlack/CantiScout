@@ -31,6 +31,7 @@ dependencies:
   path: ^1.9.0
   qr_flutter: ^4.1.0
   archive: ^3.6.0
+  pdf: ^3.10.8
   flutter_blue_plus: ^1.35.5
   ble_peripheral: ^2.4.0
   permission_handler: ^11.3.0
