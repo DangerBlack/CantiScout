@@ -313,7 +313,37 @@ class _SongUlStatelessState extends State<SongUlStateless> {
           MaterialPageRoute(builder: (context) => SongText(song: song)),
         ).then((_) => _loadSongs());
       },
+      onLongPress: () => _confirmDelete(context, song),
     );
+  }
+
+  Future<void> _confirmDelete(BuildContext context, Song song) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(AppLocalizations.of(context).ask_remove),
+        content: Text(
+          'Vuoi eliminare definitivamente "${song.title}"?'
+          '\nVerrà rimossa da tutte le playlist.',
+        ),
+        actions: [
+          TextButton(
+            child: Text(AppLocalizations.of(context).undo,
+                style: const TextStyle(color: Colors.grey)),
+            onPressed: () => Navigator.of(ctx).pop(false),
+          ),
+          TextButton(
+            child: Text(AppLocalizations.of(context).ok,
+                style: const TextStyle(color: Colors.red)),
+            onPressed: () => Navigator.of(ctx).pop(true),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await DBProvider.db.deleteSong(song.id);
+      _loadSongs();
+    }
   }
 
   Widget _buildList(BuildContext context) {

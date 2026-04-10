@@ -290,4 +290,11 @@ class DBProvider {
     await db.rawDelete(
         'DELETE FROM PlaylistSong WHERE idPlaylist = ?', [plID]);
   }
+
+  Future<void> deleteSong(String id) async {
+    final db = await database;
+    await db.delete('Tag', where: 'idSong = ?', whereArgs: [id]);
+    await db.delete('PlaylistSong', where: 'idSong = ?', whereArgs: [id]);
+    await db.delete('Song', where: 'id = ?', whereArgs: [id]);
+  }
 }
