@@ -431,7 +431,7 @@ class Settings extends State<SettingsStateful> {
               value: _speed,
               min: 0,
               max: Constants.maxScrollSpeed,
-              divisions: Constants.maxScrollSpeed.toInt(),
+              divisions: (Constants.maxScrollSpeed * 10).toInt(),
               label: _speed.toStringAsFixed(1),
               onChanged: (value) {
                 setState(() => _speed = value);

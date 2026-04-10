@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -71,7 +72,7 @@ class SongTextState extends State<SongText> {
       _autoscroll = newAutoscroll;
       _noteColor = newNoteColor;
       _fontFamily = newFontFamily;
-      _speed = newSpeed;
+      _speed = newSpeed.clamp(0.0, Constants.maxScrollSpeed);
     });
     // Start autoscroll after the first frame so maxScrollExtent is available.
     WidgetsBinding.instance.addPostFrameCallback((_) => _runScroller());
@@ -288,6 +289,7 @@ class SongTextState extends State<SongText> {
                       value: _speed,
                       min: 0,
                       max: Constants.maxScrollSpeed,
+                      divisions: (Constants.maxScrollSpeed * 10).toInt(),
                       onChanged: (value) {
                         setState(() => _speed = value);
                         _runScroller();
@@ -505,16 +507,26 @@ class SongTextState extends State<SongText> {
 
     w.add(const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)));
 
-    return GestureDetector(
-      onScaleStart: (_) => setState(() => previousfSize = fSize),
-      onScaleUpdate: (ScaleUpdateDetails d) {
-        setState(() => fSize = (previousfSize ?? fSize) * d.scale);
+    return NotificationListener<UserScrollNotification>(
+      onNotification: (notification) {
+        // Pause autoscroll when the user manually scrolls
+        if (_autoscroll && notification.direction != ScrollDirection.idle) {
+          setState(() => _autoscroll = false);
+          _controller.jumpTo(_controller.offset);
+        }
+        return false;
       },
-      child: ListView(
-        controller: _controller,
-        shrinkWrap: true,
-        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 48.0, 20.0),
-        children: w,
+      child: GestureDetector(
+        onScaleStart: (_) => setState(() => previousfSize = fSize),
+        onScaleUpdate: (ScaleUpdateDetails d) {
+          setState(() => fSize = (previousfSize ?? fSize) * d.scale);
+        },
+        child: ListView(
+          controller: _controller,
+          shrinkWrap: true,
+          padding: const EdgeInsets.fromLTRB(20.0, 20.0, 48.0, 20.0),
+          children: w,
+        ),
       ),
     );
   }

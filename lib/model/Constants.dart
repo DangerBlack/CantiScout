@@ -24,8 +24,8 @@ class Constants {
   static const double initialAutoscrollSpeed = 3.0;
   static const String initialFontStyle = "Roboto";
   static final int initialColor = Colors.black.value;
-  static const double scrollMultiplier = 25.0;
-  static const double maxScrollSpeed = 10.0;
+  static const double scrollMultiplier = 15.0;
+  static const double maxScrollSpeed = 5.0;
 
   static const IconData autoscrollIcon = Icons.playlist_play;
   static const IconData autoscrollIconPause = Icons.pause;
