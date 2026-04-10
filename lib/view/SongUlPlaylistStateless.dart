@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
 import '../controller/ChopackController.dart';
+import '../model/Playlist.dart';
 import '../model/Song.dart';
 import '../view/BleSendView.dart';
 import '../view/SongText.dart';
@@ -109,7 +110,12 @@ class _SongUlPlaylistStatelessState extends State<SongUlPlaylistStateless> {
             onPressed: () async {
               try {
                 final songs = await DBProvider.db.getAllPlaylistSongs(widget.playlistId);
-                await ChopackController.exportPack(songs, widget.title);
+                final playlist = Playlist(
+                  id: widget.playlistId,
+                  title: widget.title,
+                  time: DateTime.now().toIso8601String(),
+                );
+                await ChopackController.exportPack(songs, widget.title, playlist: playlist);
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(

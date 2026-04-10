@@ -122,7 +122,7 @@ class Settings extends State<SettingsStateful> {
       if (!mounted) return;
       _showLoadingDialog('Lettura del file in corso…');
 
-      final (incoming, tagsMap) = await ChopackController.importPack(path);
+      final (incoming, tagsMap, importedPlaylists) = await ChopackController.importPack(path);
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pop(); // close loading dialog
 
@@ -173,14 +173,17 @@ class Settings extends State<SettingsStateful> {
       if (!mounted) return;
       _showLoadingDialog('Importazione in corso…');
 
+      // idMap: original song ID → locally saved ID (tracks renames/conflicts)
+      final idMap = <String, String>{};
       int imported = 0;
+
       for (final song in newSongs) {
-        final saved =
-            Song.create(title: song.title, author: song.author, body: song.body);
-        await DBProvider.db.newSong(saved);
+        // Preserve original UUID so playlist links survive the import.
+        await DBProvider.db.newSong(song);
         if (tagsMap.containsKey(song.id)) {
-          await ChopackController.saveTags(saved.id, tagsMap[song.id]!);
+          await ChopackController.saveTags(song.id, tagsMap[song.id]!);
         }
+        idMap[song.id] = song.id;
         imported++;
       }
 
@@ -197,6 +200,7 @@ class Settings extends State<SettingsStateful> {
             if (tagsMap.containsKey(song.id)) {
               await ChopackController.saveTags(saved.id, tagsMap[song.id]!);
             }
+            idMap[song.id] = saved.id;
             imported++;
           case _BulkConflictPolicy.replace:
             final existing = await DBProvider.db
@@ -209,9 +213,14 @@ class Settings extends State<SettingsStateful> {
                 await ChopackController.saveTags(
                     existing.id, tagsMap[song.id]!);
               }
+              idMap[song.id] = existing.id;
               imported++;
             }
         }
+      }
+
+      if (importedPlaylists.isNotEmpty) {
+        await ChopackController.savePlaylists(importedPlaylists, idMap);
       }
 
       if (!mounted) return;

@@ -42,7 +42,11 @@ class BleTransferController {
   ///   [4…]  payload      — raw bytes of the gzip stream fragment
   ///
   /// Each [Song] must have its [Song.tags] populated before calling this.
-  static List<Uint8List> buildChunks(List<Song> songs) {
+  /// [playlists] is a list of (playlistTitle, [songIds]) to embed in the payload.
+  static List<Uint8List> buildChunks(
+    List<Song> songs, {
+    List<(String, List<String>)> playlists = const [],
+  }) {
     final json = jsonEncode({
       'version': 2,
       'songs': songs.map((s) => {
@@ -54,6 +58,9 @@ class BleTransferController {
             'tags': s.tags.map((t) => t.tag).toList(),
             'body': s.body,
           }).toList(),
+      'playlists': playlists
+          .map((p) => {'title': p.$1, 'songs': p.$2})
+          .toList(),
     });
 
     final compressed = Uint8List.fromList(
@@ -100,11 +107,13 @@ class BleTransferController {
     return (index, total);
   }
 
-  /// Reassembles [chunkMap] (index → raw packet) into a list of [Song]s.
+  /// Reassembles [chunkMap] (index → raw packet).
   ///
-  /// Each returned [Song] has its [Song.tags] populated.
+  /// Returns `(songs, playlists)` where each [Song] has its [Song.tags]
+  /// populated and `playlists` is a list of (title, [songIds]).
   /// Returns null if any chunk is missing or the payload is malformed.
-  static List<Song>? parseChunks(Map<int, List<int>> chunkMap, int total) {
+  static ({List<Song> songs, List<(String, List<String>)> playlists})?
+      parseChunks(Map<int, List<int>> chunkMap, int total) {
     try {
       final buffer = <int>[];
       for (int i = 0; i < total; i++) {
@@ -115,9 +124,8 @@ class BleTransferController {
 
       final decompressed = GZipDecoder().decodeBytes(buffer);
       final data = jsonDecode(utf8.decode(decompressed)) as Map<String, dynamic>;
-      final list = data['songs'] as List<dynamic>;
 
-      return list.map((entry) {
+      final songs = (data['songs'] as List<dynamic>).map((entry) {
         final m = entry as Map<String, dynamic>;
         final song = Song(
           id: m['id']?.toString().isNotEmpty == true
@@ -137,12 +145,25 @@ class BleTransferController {
                 .toList() ??
             [];
         song.setTags(
-          tagStrings
-              .map((t) => Tag(id: 0, idSong: song.id, tag: t))
-              .toList(),
+          tagStrings.map((t) => Tag(id: 0, idSong: song.id, tag: t)).toList(),
         );
         return song;
       }).toList();
+
+      final playlists = <(String, List<String>)>[];
+      final rawPl = data['playlists'] as List<dynamic>?;
+      if (rawPl != null) {
+        for (final pl in rawPl) {
+          final title = pl['title']?.toString() ?? '';
+          final ids = (pl['songs'] as List<dynamic>?)
+                  ?.map((s) => s.toString())
+                  .toList() ??
+              [];
+          if (title.isNotEmpty) playlists.add((title, ids));
+        }
+      }
+
+      return (songs: songs, playlists: playlists);
     } catch (_) {
       return null;
     }

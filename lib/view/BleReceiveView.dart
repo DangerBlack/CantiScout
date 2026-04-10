@@ -209,10 +209,10 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   // ── Post-receive import ──────────────────────────────────────────────────────
 
   Future<void> _onTransferComplete() async {
-    final songs =
+    final payload =
         BleTransferController.parseChunks(_chunkMap, _totalChunks);
 
-    if (songs == null) {
+    if (payload == null) {
       if (mounted) {
         setState(() {
           _status = _Status.error;
@@ -224,6 +224,12 @@ class _BleReceiveViewState extends State<BleReceiveView> {
     }
 
     await _connectedDevice?.disconnect();
+
+    final songs = payload.songs;
+    final playlists = payload.playlists;
+
+    // idMap: original song ID → locally saved ID (may differ for keepBoth).
+    final idMap = <String, String>{};
 
     // Check for conflicts
     final conflicts = <Song>[];
@@ -245,16 +251,22 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       if (tagStrings.isNotEmpty) {
         await ChopackController.saveTags(song.id, tagStrings);
       }
+      idMap[song.id] = song.id;
     }
     _importedCount = newSongs.length;
 
     if (conflicts.isNotEmpty && mounted) {
       final policy = await _showConflictDialog(conflicts.length);
       if (policy != null) {
-        await _applyConflictPolicy(conflicts, policy);
+        await _applyConflictPolicy(conflicts, policy, idMap);
       } else {
         _skippedCount = conflicts.length;
       }
+    }
+
+    // Create playlists and link songs using the resolved ID map.
+    if (playlists.isNotEmpty) {
+      await ChopackController.savePlaylists(playlists, idMap);
     }
 
     if (mounted) setState(() => _status = _Status.done);
@@ -287,7 +299,10 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   }
 
   Future<void> _applyConflictPolicy(
-      List<Song> conflicts, _ConflictPolicy policy) async {
+    List<Song> conflicts,
+    _ConflictPolicy policy,
+    Map<String, String> idMap,
+  ) async {
     for (final song in conflicts) {
       final tagStrings = song.tags.map((t) => t.tag).toList();
       switch (policy) {
@@ -300,6 +315,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
           if (tagStrings.isNotEmpty) {
             await ChopackController.saveTags(newSong.id, tagStrings);
           }
+          idMap[song.id] = newSong.id;
           _importedCount++;
         case _ConflictPolicy.replaceAll:
           final existing =
@@ -311,6 +327,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
             if (tagStrings.isNotEmpty) {
               await ChopackController.saveTags(existing.id, tagStrings);
             }
+            idMap[song.id] = existing.id;
             _importedCount++;
           }
         case _ConflictPolicy.skip:

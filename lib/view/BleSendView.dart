@@ -141,7 +141,24 @@ class _BleSendViewState extends State<BleSendView> {
       song.setTags(tags);
     }
 
-    final chunks = BleTransferController.buildChunks(songs);
+    // Build playlist data for the payload.
+    final List<(String, List<String>)> playlists;
+    if (!_useLibrary && _chosenPlaylistId != null) {
+      // Single playlist: reference only the songs in this pack
+      playlists = [
+        (_chosenPlaylistName, songs.map((s) => s.id).toList()),
+      ];
+    } else {
+      // Full library: include all playlists from the DB
+      final allPlaylists = await DBProvider.db.getAllPlaylist();
+      playlists = [];
+      for (final pl in allPlaylists) {
+        final plSongs = await DBProvider.db.getAllPlaylistSongs(pl.id);
+        playlists.add((pl.title, plSongs.map((s) => s.id).toList()));
+      }
+    }
+
+    final chunks = BleTransferController.buildChunks(songs, playlists: playlists);
     _totalChunks = chunks.length;
 
     try {

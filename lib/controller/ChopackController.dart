@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,14 +7,14 @@ import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
 import '../Database.dart';
+import '../model/Playlist.dart';
 import '../model/Song.dart';
-import '../model/Tag.dart';
 import 'Utils.dart';
 
 /// Handles `.chopack` export and import.
 ///
 /// A `.chopack` is a ZIP file containing:
-///   - `metadata.json`  — all song metadata + tags (primary source on import)
+///   - `metadata.json`  — all song metadata, tags, and playlists
 ///   - `{title}.chopro` — one ChordPro file per song (human-readable body)
 class ChopackController {
   static const String _kMeta = 'metadata.json';
@@ -23,8 +22,15 @@ class ChopackController {
   // ── Export ──────────────────────────────────────────────────────────────────
 
   /// Build and share a `.chopack` for [songs].
+  ///
   /// [packName] is used as the filename (no extension).
-  static Future<void> exportPack(List<Song> songs, String packName) async {
+  /// [playlist] — when provided, only that playlist is embedded in the pack.
+  ///              When omitted (full-library export), all playlists are included.
+  static Future<void> exportPack(
+    List<Song> songs,
+    String packName, {
+    Playlist? playlist,
+  }) async {
     final archive = Archive();
 
     // Collect tags and build metadata entries
@@ -46,11 +52,35 @@ class ChopackController {
       archive.addFile(ArchiveFile(filename, bodyBytes.length, bodyBytes));
     }
 
+    // Build playlist entries
+    final List<Map<String, dynamic>> playlistsMeta;
+    if (playlist != null) {
+      // Single playlist: reference the songs already in this pack
+      playlistsMeta = [
+        {
+          'title': playlist.title,
+          'songs': songs.map((s) => s.id).toList(),
+        }
+      ];
+    } else {
+      // Full library: include every playlist from the DB
+      final allPlaylists = await DBProvider.db.getAllPlaylist();
+      playlistsMeta = [];
+      for (final pl in allPlaylists) {
+        final plSongs = await DBProvider.db.getAllPlaylistSongs(pl.id);
+        playlistsMeta.add({
+          'title': pl.title,
+          'songs': plSongs.map((s) => s.id).toList(),
+        });
+      }
+    }
+
     // Add metadata.json
     final metaBytes = utf8.encode(jsonEncode({
-      'version': 1,
+      'version': 2,
       'exported': DateTime.now().toIso8601String(),
       'songs': metaSongs,
+      'playlists': playlistsMeta,
     }));
     archive.addFile(ArchiveFile(_kMeta, metaBytes.length, metaBytes));
 
@@ -70,10 +100,14 @@ class ChopackController {
   // ── Import ──────────────────────────────────────────────────────────────────
 
   /// Parse a `.chopack` file at [path].
-  /// Returns `(songs, tagsMap)` where tagsMap is songId → tag strings.
+  ///
+  /// Returns `(songs, tagsMap, playlists)` where:
+  ///   - `tagsMap`   : original songId → tag strings
+  ///   - `playlists` : list of (playlistTitle, [original songIds])
+  ///
   /// Falls back to parsing `.chopro` files if `metadata.json` is absent.
-  static Future<(List<Song>, Map<String, List<String>>)> importPack(
-      String path) async {
+  static Future<(List<Song>, Map<String, List<String>>, List<(String, List<String>)>)>
+      importPack(String path) async {
     final zipBytes = await File(path).readAsBytes();
     final archive = ZipDecoder().decodeBytes(zipBytes);
 
@@ -81,12 +115,13 @@ class ChopackController {
     if (metaFile != null) {
       return _importWithMeta(archive, metaFile);
     } else {
-      return _importFallback(archive);
+      final (songs, tags) = _importFallback(archive);
+      return (songs, tags, <(String, List<String>)>[]);
     }
   }
 
-  static (List<Song>, Map<String, List<String>>) _importWithMeta(
-      Archive archive, ArchiveFile metaFile) {
+  static (List<Song>, Map<String, List<String>>, List<(String, List<String>)>)
+      _importWithMeta(Archive archive, ArchiveFile metaFile) {
     final meta =
         jsonDecode(utf8.decode(metaFile.content as List<int>)) as Map;
     final songs = <Song>[];
@@ -99,7 +134,9 @@ class ChopackController {
           ? utf8.decode(bodyFile.content as List<int>)
           : '';
 
-      final id = entry['id']?.toString() ?? const Uuid().v4();
+      final id = entry['id']?.toString().isNotEmpty == true
+          ? entry['id'].toString()
+          : const Uuid().v4();
       songs.add(Song(
         id: id,
         title: entry['title']?.toString() ?? '',
@@ -118,7 +155,21 @@ class ChopackController {
       if (tags != null && tags.isNotEmpty) tagsMap[id] = tags;
     }
 
-    return (songs, tagsMap);
+    // Parse playlists
+    final playlists = <(String, List<String>)>[];
+    final rawPlaylists = meta['playlists'] as List<dynamic>?;
+    if (rawPlaylists != null) {
+      for (final pl in rawPlaylists) {
+        final title = pl['title']?.toString() ?? '';
+        final songIds = (pl['songs'] as List<dynamic>?)
+                ?.map((s) => s.toString())
+                .toList() ??
+            [];
+        if (title.isNotEmpty) playlists.add((title, songIds));
+      }
+    }
+
+    return (songs, tagsMap, playlists);
   }
 
   static (List<Song>, Map<String, List<String>>) _importFallback(
@@ -134,14 +185,36 @@ class ChopackController {
     return (songs, {});
   }
 
+  // ── Playlist persistence ─────────────────────────────────────────────────────
+
+  /// Create playlists from import data and link songs.
+  ///
+  /// [idMap] maps original song IDs (from the pack) → locally assigned IDs
+  /// (which may differ when a song was saved with a new UUID on conflict).
+  static Future<void> savePlaylists(
+    List<(String, List<String>)> playlists,
+    Map<String, String> idMap,
+  ) async {
+    for (final (title, songIds) in playlists) {
+      final existing = await DBProvider.db.hasPlaylist(title);
+      final plId = existing.isNotEmpty
+          ? existing.first.id
+          : await DBProvider.db.newPlaylist(title);
+
+      for (final origId in songIds) {
+        final localId = idMap[origId];
+        if (localId != null) {
+          await DBProvider.db.newSongPlaylistRaw(plId, localId);
+        }
+      }
+    }
+  }
+
   // ── Tag persistence ─────────────────────────────────────────────────────────
 
   /// Persist imported tags for a song that was just inserted/updated.
   static Future<void> saveTags(String songId, List<String> tags) async {
     await DBProvider.db.deleteTagsBySongId(songId);
-    // Insert without an explicit id so SQLite auto-assigns the rowid.
-    // Using newTag(id: 0) would cause every tag after the first to overwrite
-    // id=0 via the hasTag/updateTag path instead of creating a new row.
     final db = await DBProvider.db.database;
     for (final tag in tags) {
       await db.insert('Tag', {'idSong': songId, 'tag': tag});
