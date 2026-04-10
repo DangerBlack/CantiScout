@@ -135,6 +135,12 @@ class _BleSendViewState extends State<BleSendView> {
   Future<void> _beginTransfer(List<Song> songs) async {
     if (mounted) setState(() => _songCount = songs.length);
 
+    // Populate tags on each song so they are included in the transfer payload.
+    for (final song in songs) {
+      final tags = await DBProvider.db.getTagsBySongId(song.id);
+      song.setTags(tags);
+    }
+
     final chunks = BleTransferController.buildChunks(songs);
     _totalChunks = chunks.length;
 

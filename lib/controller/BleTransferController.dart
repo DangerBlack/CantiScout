@@ -2,7 +2,11 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:archive/archive.dart';
+import 'package:uuid/uuid.dart';
+
 import '../model/Song.dart';
+import '../model/Tag.dart';
 
 /// UUIDs and wire-protocol helpers for BLE song transfer.
 class BleTransferController {
@@ -28,25 +32,41 @@ class BleTransferController {
 
   /// Serialise [songs] into fixed-size binary chunks ready for BLE NOTIFY.
   ///
+  /// Wire format (v2):
+  ///   Payload = gzip( UTF-8 JSON matching chopack metadata format with
+  ///             inlined `body` and `tags` fields )
+  ///
   /// Chunk layout:
   ///   [0-1] chunk index  — uint16 big-endian
   ///   [2-3] total chunks — uint16 big-endian
-  ///   [4…]  payload      — UTF-8 JSON fragment
+  ///   [4…]  payload      — raw bytes of the gzip stream fragment
+  ///
+  /// Each [Song] must have its [Song.tags] populated before calling this.
   static List<Uint8List> buildChunks(List<Song> songs) {
-    final jsonBytes = Uint8List.fromList(
-      utf8.encode(jsonEncode({
-        'version': 1,
-        'songs': songs.map((s) => s.toMap()).toList(),
-      })),
+    final json = jsonEncode({
+      'version': 2,
+      'songs': songs.map((s) => {
+            'id': s.id,
+            'title': s.title,
+            'author': s.author ?? '',
+            'time': s.time,
+            'status': s.status,
+            'tags': s.tags.map((t) => t.tag).toList(),
+            'body': s.body,
+          }).toList(),
+    });
+
+    final compressed = Uint8List.fromList(
+      GZipEncoder().encode(Uint8List.fromList(utf8.encode(json)))!,
     );
 
-    final total = (jsonBytes.length / kChunkPayloadSize).ceil();
+    final total = (compressed.length / kChunkPayloadSize).ceil();
     final chunks = <Uint8List>[];
 
     for (int i = 0; i < total; i++) {
       final start = i * kChunkPayloadSize;
-      final end = min(start + kChunkPayloadSize, jsonBytes.length);
-      final payload = jsonBytes.sublist(start, end);
+      final end = min(start + kChunkPayloadSize, compressed.length);
+      final payload = compressed.sublist(start, end);
 
       final chunk = Uint8List(4 + payload.length);
       chunk[0] = (i >> 8) & 0xFF;
@@ -81,7 +101,9 @@ class BleTransferController {
   }
 
   /// Reassembles [chunkMap] (index → raw packet) into a list of [Song]s.
-  /// Returns null if any chunk is missing or the JSON is malformed.
+  ///
+  /// Each returned [Song] has its [Song.tags] populated.
+  /// Returns null if any chunk is missing or the payload is malformed.
   static List<Song>? parseChunks(Map<int, List<int>> chunkMap, int total) {
     try {
       final buffer = <int>[];
@@ -90,12 +112,37 @@ class BleTransferController {
         if (c == null) return null;
         buffer.addAll(c.sublist(4)); // skip 4-byte header
       }
-      final data =
-          jsonDecode(utf8.decode(buffer)) as Map<String, dynamic>;
+
+      final decompressed = GZipDecoder().decodeBytes(buffer);
+      final data = jsonDecode(utf8.decode(decompressed)) as Map<String, dynamic>;
       final list = data['songs'] as List<dynamic>;
-      return list
-          .map((s) => Song.fromMap(s as Map<String, dynamic>))
-          .toList();
+
+      return list.map((entry) {
+        final m = entry as Map<String, dynamic>;
+        final song = Song(
+          id: m['id']?.toString().isNotEmpty == true
+              ? m['id'].toString()
+              : const Uuid().v4(),
+          title: m['title']?.toString() ?? '',
+          author: m['author'] != null && m['author'].toString().isNotEmpty
+              ? m['author'].toString()
+              : null,
+          time: m['time']?.toString() ?? DateTime.now().toIso8601String(),
+          body: m['body']?.toString() ?? '',
+          status: int.tryParse(m['status']?.toString() ?? '0') ?? 0,
+        );
+        final tagStrings = (m['tags'] as List<dynamic>?)
+                ?.map((t) => t.toString())
+                .where((t) => t.isNotEmpty)
+                .toList() ??
+            [];
+        song.setTags(
+          tagStrings
+              .map((t) => Tag(id: 0, idSong: song.id, tag: t))
+              .toList(),
+        );
+        return song;
+      }).toList();
     } catch (_) {
       return null;
     }

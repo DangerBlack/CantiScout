@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../Database.dart';
 import '../controller/BleTransferController.dart';
+import '../controller/ChopackController.dart';
 import '../model/Song.dart';
 
 enum _Status { idle, scanning, deviceList, connecting, receiving, done, error }
@@ -237,10 +238,13 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       }
     }
 
-    // Import non-conflicting songs immediately
+    // Import non-conflicting songs, preserving original IDs and tags.
     for (final song in newSongs) {
-      await DBProvider.db.newSong(
-          Song.create(title: song.title, author: song.author, body: song.body));
+      await DBProvider.db.newSong(song);
+      final tagStrings = song.tags.map((t) => t.tag).toList();
+      if (tagStrings.isNotEmpty) {
+        await ChopackController.saveTags(song.id, tagStrings);
+      }
     }
     _importedCount = newSongs.length;
 
@@ -285,12 +289,17 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   Future<void> _applyConflictPolicy(
       List<Song> conflicts, _ConflictPolicy policy) async {
     for (final song in conflicts) {
+      final tagStrings = song.tags.map((t) => t.tag).toList();
       switch (policy) {
         case _ConflictPolicy.keepBoth:
-          await DBProvider.db.newSong(Song.create(
+          final newSong = Song.create(
               title: '${song.title} (2)',
               author: song.author,
-              body: song.body));
+              body: song.body);
+          await DBProvider.db.newSong(newSong);
+          if (tagStrings.isNotEmpty) {
+            await ChopackController.saveTags(newSong.id, tagStrings);
+          }
           _importedCount++;
         case _ConflictPolicy.replaceAll:
           final existing =
@@ -299,6 +308,9 @@ class _BleReceiveViewState extends State<BleReceiveView> {
             existing.body = song.body;
             existing.author = song.author;
             await DBProvider.db.updateSong(existing);
+            if (tagStrings.isNotEmpty) {
+              await ChopackController.saveTags(existing.id, tagStrings);
+            }
             _importedCount++;
           }
         case _ConflictPolicy.skip:
