@@ -1,0 +1,23 @@
+PODS:
+  - ble_peripheral (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - ble_peripheral (from `.symlinks/plugins/ble_peripheral/darwin`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  ble_peripheral:
+    :path: ".symlinks/plugins/ble_peripheral/darwin"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  ble_peripheral: e80b0809599f5406e5d321c12a6dbc07ecdab8bd
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+
+COCOAPODS: 1.16.2

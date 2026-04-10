@@ -35,6 +35,10 @@ dependencies:
   ble_peripheral: ^2.4.0
   permission_handler: ^11.3.0
 
+dependency_overrides:
+  ble_peripheral:
+    path: packages/ble_peripheral
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
