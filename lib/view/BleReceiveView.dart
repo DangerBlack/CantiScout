@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -25,9 +26,11 @@ class _BleReceiveViewState extends State<BleReceiveView> {
 
   // Scan
   final List<ScanResult> _scanResults = [];
+  StreamSubscription? _scanSubscription;
 
   // Transfer
   BluetoothDevice? _connectedDevice;
+  StreamSubscription? _dataSubscription;
   double _progress = 0.0;
   int _receivedChunks = 0;
   int _totalChunks = 0;
@@ -42,6 +45,8 @@ class _BleReceiveViewState extends State<BleReceiveView> {
 
   @override
   void dispose() {
+    _scanSubscription?.cancel();
+    _dataSubscription?.cancel();
     FlutterBluePlus.stopScan();
     _connectedDevice?.disconnect();
     super.dispose();
@@ -78,7 +83,9 @@ class _BleReceiveViewState extends State<BleReceiveView> {
 
     _scanResults.clear();
 
-    FlutterBluePlus.onScanResults.listen((results) {
+    // Cancel any previous scan subscription before creating a new one.
+    await _scanSubscription?.cancel();
+    _scanSubscription = FlutterBluePlus.onScanResults.listen((results) {
       if (!mounted) return;
       setState(() {
         for (final r in results) {
@@ -106,14 +113,22 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   // ── Connect & receive ───────────────────────────────────────────────────────
 
   Future<void> _connectToDevice(BluetoothDevice device) async {
+    // Stop scan and cancel its subscription before connecting.
+    await _scanSubscription?.cancel();
+    _scanSubscription = null;
     await FlutterBluePlus.stopScan();
     if (mounted) setState(() => _status = _Status.connecting);
 
     try {
-      await device.connect(timeout: const Duration(seconds: 15));
+      // mtu: null — skip the automatic MTU request inside connect(); we do it
+      // explicitly below so there is only one MTU negotiation in the log.
+      await device.connect(
+        timeout: const Duration(seconds: 15),
+        mtu: null,
+      );
       _connectedDevice = device;
 
-      // Request larger MTU on Android for faster transfer
+      // Request larger MTU on Android for faster transfer.
       if (Platform.isAndroid) {
         await device.requestMtu(512);
       }
@@ -153,7 +168,9 @@ class _BleReceiveViewState extends State<BleReceiveView> {
 
       await dataChar.setNotifyValue(true);
 
-      dataChar.onValueReceived.listen((value) {
+      // Cancel any previous data subscription before creating a new one.
+      await _dataSubscription?.cancel();
+      _dataSubscription = dataChar.onValueReceived.listen((value) {
         if (BleTransferController.isDonePacket(value)) {
           _onTransferComplete();
           return;
@@ -181,7 +198,8 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       if (mounted) {
         setState(() {
           _status = _Status.error;
-          _errorMessage = 'Errore di connessione: $e';
+          _errorMessage = 'Errore di connessione: $e\n\n'
+              'Prova a disattivare e riattivare il Bluetooth, poi riprova.';
         });
       }
     }
@@ -460,26 +478,28 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   }
 
   Widget _buildDone() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(Icons.check_circle, size: 72, color: Colors.green),
-        const SizedBox(height: 24),
-        Text(
-          'Ricezione completata!',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const SizedBox(height: 8),
-        Text('Importate: $_importedCount canzoni'),
-        if (_skippedCount > 0)
-          Text('Saltate: $_skippedCount canzoni',
-              style: TextStyle(color: Colors.grey[600])),
-        const SizedBox(height: 32),
-        ElevatedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Chiudi'),
-        ),
-      ],
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.check_circle, size: 72, color: Colors.green),
+          const SizedBox(height: 24),
+          Text(
+            'Ricezione completata!',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          Text('Importate: $_importedCount canzoni'),
+          if (_skippedCount > 0)
+            Text('Saltate: $_skippedCount canzoni',
+                style: TextStyle(color: Colors.grey[600])),
+          const SizedBox(height: 32),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Chiudi'),
+          ),
+        ],
+      ),
     );
   }
 

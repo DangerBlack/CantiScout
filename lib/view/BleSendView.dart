@@ -168,7 +168,17 @@ class _BleSendViewState extends State<BleSendView> {
                 CharacteristicProperties.read.index,
               ],
               permissions: [AttributePermissions.readable.index],
-              descriptors: [],
+              // CCCD (0x2902) is required for the receiver to enable
+              // notifications via setNotifyValue(true).
+              descriptors: [
+                BleDescriptor(
+                  uuid: '00002902-0000-1000-8000-00805F9B34FB',
+                  permissions: [
+                    AttributePermissions.readable.index,
+                    AttributePermissions.writeable.index,
+                  ],
+                ),
+              ],
             ),
             BleCharacteristic(
               uuid: BleTransferController.kControlCharUuid,
@@ -180,23 +190,23 @@ class _BleSendViewState extends State<BleSendView> {
         ),
       );
 
-      String? connectedDevice;
-
+      // ble_peripheral calls createBond() on every connecting device, so the
+      // subscription-change callback may fire late or not at all while bonding
+      // is in progress. Instead, grab the deviceId straight from the write
+      // request that carries the START command — it is always available.
       BlePeripheral.setCharacteristicSubscriptionChangeCallback(
         (String deviceId, String charId, bool isSubscribed, String? name) {
-          if (isSubscribed) {
-            connectedDevice = deviceId;
-            if (mounted) setState(() => _status = _Status.connected);
-          }
+          // Only used for UI state; not relied upon for knowing the target device.
+          if (isSubscribed && mounted) setState(() => _status = _Status.connected);
         },
       );
 
-      // WriteRequestCallback is synchronous — spawn async work separately
+      // WriteRequestCallback is synchronous — spawn async work separately.
       BlePeripheral.setWriteRequestCallback(
           (String deviceId, String charId, int offset, Uint8List? value) {
         final cmd = utf8.decode(value ?? Uint8List(0));
         if (cmd == BleTransferController.kCommandStart) {
-          _sendChunks(chunks, connectedDevice);
+          _sendChunks(chunks, deviceId);
         }
         return null;
       });
@@ -220,21 +230,24 @@ class _BleSendViewState extends State<BleSendView> {
   Future<void> _sendChunks(List<Uint8List> chunks, String? deviceId) async {
     if (mounted) setState(() => _status = _Status.sending);
 
+    // ble_peripheral's auto-bond may leave the device in a transitional state
+    // immediately after the write callback. Broadcasting (deviceId: null) is
+    // safe for a 1-to-1 transfer and avoids "Device not found" errors that
+    // occur when the native connected-devices map isn't ready yet.
+    Future<void> notify(Uint8List value) =>
+        BlePeripheral.updateCharacteristic(
+          characteristicId: BleTransferController.kDataCharUuid,
+          value: value,
+          deviceId: null,
+        );
+
     for (int i = 0; i < chunks.length; i++) {
       try {
-        await BlePeripheral.updateCharacteristic(
-          characteristicId: BleTransferController.kDataCharUuid,
-          value: chunks[i],
-          deviceId: deviceId,
-        );
+        await notify(chunks[i]);
       } catch (_) {
         await Future.delayed(const Duration(milliseconds: 50));
         try {
-          await BlePeripheral.updateCharacteristic(
-            characteristicId: BleTransferController.kDataCharUuid,
-            value: chunks[i],
-            deviceId: deviceId,
-          );
+          await notify(chunks[i]);
         } catch (e) {
           if (mounted) {
             setState(() {
@@ -256,11 +269,7 @@ class _BleSendViewState extends State<BleSendView> {
       await Future.delayed(const Duration(milliseconds: 15));
     }
 
-    await BlePeripheral.updateCharacteristic(
-      characteristicId: BleTransferController.kDataCharUuid,
-      value: BleTransferController.buildDonePacket(),
-      deviceId: deviceId,
-    );
+    await notify(BleTransferController.buildDonePacket());
 
     await BlePeripheral.stopAdvertising();
     if (mounted) setState(() => _status = _Status.done);
@@ -406,23 +415,25 @@ class _BleSendViewState extends State<BleSendView> {
   }
 
   Widget _buildDone() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(Icons.check_circle, size: 72, color: Colors.green),
-        const SizedBox(height: 24),
-        Text(
-          'Trasferimento completato!',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const SizedBox(height: 8),
-        Text('$_songCount canzoni inviate.'),
-        const SizedBox(height: 32),
-        ElevatedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Chiudi'),
-        ),
-      ],
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.check_circle, size: 72, color: Colors.green),
+          const SizedBox(height: 24),
+          Text(
+            'Trasferimento completato!',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          Text('$_songCount canzoni inviate.'),
+          const SizedBox(height: 32),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Chiudi'),
+          ),
+        ],
+      ),
     );
   }
 
