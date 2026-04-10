@@ -95,37 +95,31 @@ class _SongUlStatelessState extends State<SongUlStateless> {
       builder: (BuildContext ctx) {
         return AlertDialog(
           title: Text(AppLocalizations.of(context).create_dialog_title),
-          content: SizedBox(
-            height: 200,
-            width: 200,
-            child: ListView(
-              children: [
-                Text(AppLocalizations.of(context).create_dialog_body),
-                const Text(''),
-                Text(
-                  AppLocalizations.of(context).create_dialog_body_sample,
-                  style: const TextStyle(fontStyle: FontStyle.italic),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(AppLocalizations.of(context).create_dialog_body),
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context).create_dialog_body_sample,
+                style: const TextStyle(fontStyle: FontStyle.italic),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('${AppLocalizations.of(context).create_dialog_body_more} '),
+                    const Text(
+                      'ChordPro',
+                      style: TextStyle(decoration: TextDecoration.underline),
+                    ),
+                  ],
                 ),
-                TextButton(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${AppLocalizations.of(context).create_dialog_body_more} ',
-                        style: const TextStyle(fontSize: 17),
-                      ),
-                      const Text(
-                        'ChordPro',
-                        style: TextStyle(
-                            fontSize: 17,
-                            decoration: TextDecoration.underline),
-                      ),
-                    ],
-                  ),
-                  onPressed: () => Utils.launchURL(Constants.urlChordPro),
-                ),
-              ],
-            ),
+                onPressed: () => Utils.launchURL(Constants.urlChordPro),
+              ),
+            ],
           ),
           actions: [
             TextButton(

@@ -2,6 +2,18 @@
     package="danielebaschieri.eu.cantiscout">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Required for url_launcher on Android 11+ to resolve http/https intents -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+    </queries>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- BLE — legacy (Android ≤ 11) -->
