@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../model/Song.dart';
 import '../model/Tag.dart';
 import '../model/Constants.dart';
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
+import '../controller/SongValidator.dart';
 import '../controller/Utils.dart';
 
 class EditSongText extends StatefulWidget {
@@ -22,6 +25,9 @@ class EditSongTextState extends State<EditSongText> {
 
   late Song song;
 
+  Timer? _debounceTimer;
+  List<ValidationIssue> _validationIssues = [];
+
   // Flat list of all current tag strings (scope + custom)
   List<String> _tags = [];
 
@@ -35,7 +41,19 @@ class EditSongTextState extends State<EditSongText> {
     super.initState();
     song = widget.song;
     _bodyController.text = song.body;
+    _validationIssues = SongValidator.validate(song.body);
+    _bodyController.addListener(_onBodyChanged);
     _loadTags();
+  }
+
+  void _onBodyChanged() {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      setState(() {
+        _validationIssues = SongValidator.validate(_bodyController.text);
+      });
+    });
   }
 
   Future<void> _loadTags() async {
@@ -182,6 +200,47 @@ class EditSongTextState extends State<EditSongText> {
           ),
         ),
 
+        // ── Validation panel ──────────────────────────────────────────────────
+        if (_validationIssues.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.amber.shade50,
+              border: Border.all(color: Colors.amber.shade400),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.warning_amber_rounded,
+                        size: 16, color: Colors.amber.shade700),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Problemi di formattazione',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.amber.shade900,
+                          fontSize: 13),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                ..._validationIssues.map((issue) => Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        'Riga ${issue.line}: ${issue.message}',
+                        style: TextStyle(
+                            fontSize: 12, color: Colors.amber.shade900),
+                      ),
+                    )),
+              ],
+            ),
+          ),
+
         const Divider(),
 
         // ── Tags section ───────────────────────────────────────────────────────
@@ -264,6 +323,7 @@ class EditSongTextState extends State<EditSongText> {
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _bodyController.dispose();
     _tagInputController.dispose();
     super.dispose();
