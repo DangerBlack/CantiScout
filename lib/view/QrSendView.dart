@@ -5,23 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../Database.dart';
-import '../controller/FountainCodec.dart';
 import '../controller/QrTransferController.dart';
+import '../controller/ReedSolomonCodec.dart';
 import '../model/Song.dart';
 
 enum _Status { loading, sending, error }
 
-/// Displays an animated QR fountain-code sequence for a playlist or song list.
+/// Displays an animated QR Reed-Solomon frame sequence for a playlist or song list.
 ///
 /// The sender loops the QR frames continuously. Receivers running
 /// [QrReceiveView] scan as many frames as needed and reconstruct the payload
-/// once they have collected enough unique symbols.
+/// once they have collected k unique shards out of n.
 class QrSendView extends StatefulWidget {
-  /// Pre-selected playlist ID — load songs from DB when set.
   final int? playlistId;
   final String? playlistName;
-
-  /// Explicit song list — used when a single song is shared from [SongText].
   final List<Song>? songs;
 
   const QrSendView({
@@ -39,7 +36,7 @@ class _QrSendViewState extends State<QrSendView> {
   _Status _status = _Status.loading;
   String _errorMessage = '';
 
-  FountainEncoder? _encoder;
+  List<RsFrame>? _frames;
   String _currentQrData = '';
   int _frameIndex = 0;
   int _songCount = 0;
@@ -57,8 +54,6 @@ class _QrSendViewState extends State<QrSendView> {
     super.dispose();
   }
 
-  // ── Payload construction ────────────────────────────────────────────────────
-
   Future<void> _buildPayload() async {
     try {
       List<Song> songs;
@@ -67,20 +62,15 @@ class _QrSendViewState extends State<QrSendView> {
       if (widget.songs != null) {
         songs = widget.songs!;
       } else if (widget.playlistId != null) {
-        songs =
-            await DBProvider.db.getAllPlaylistSongs(widget.playlistId!);
+        songs = await DBProvider.db.getAllPlaylistSongs(widget.playlistId!);
         playlists = [
-          (
-            widget.playlistName ?? '',
-            songs.map((s) => s.id).toList(),
-          )
+          (widget.playlistName ?? '', songs.map((s) => s.id).toList())
         ];
       } else {
         songs = await DBProvider.db.getAllSongs();
         final allPlaylists = await DBProvider.db.getAllPlaylist();
         for (final pl in allPlaylists) {
-          final plSongs =
-              await DBProvider.db.getAllPlaylistSongs(pl.id);
+          final plSongs = await DBProvider.db.getAllPlaylistSongs(pl.id);
           playlists.add((pl.title, plSongs.map((s) => s.id).toList()));
         }
       }
@@ -95,7 +85,6 @@ class _QrSendViewState extends State<QrSendView> {
         return;
       }
 
-      // Load tags for each song (required for the payload).
       for (final song in songs) {
         final tags = await DBProvider.db.getTagsBySongId(song.id);
         song.setTags(tags);
@@ -106,15 +95,15 @@ class _QrSendViewState extends State<QrSendView> {
       final Uint8List payload =
           QrTransferController.buildPayload(songs, playlists: playlists);
 
-      _encoder = FountainEncoder(payload);
+      final encoder = RsEncoder(payload);
+      _frames = encoder.encode();
       _songCount = songs.length;
 
-      // Generate first frame immediately, then start the timer.
       _advanceFrame();
       setState(() => _status = _Status.sending);
 
       _timer = Timer.periodic(
-        const Duration(milliseconds: 333), // 3 fps
+        const Duration(milliseconds: 333),
         (_) {
           if (mounted) _advanceFrame();
         },
@@ -130,14 +119,13 @@ class _QrSendViewState extends State<QrSendView> {
   }
 
   void _advanceFrame() {
-    final frame = _encoder!.next();
+    if (_frames == null || _frames!.isEmpty) return;
+    final frame = _frames![_frameIndex % _frames!.length];
     setState(() {
       _currentQrData = frame.toQrData();
       _frameIndex++;
     });
   }
-
-  // ── UI ──────────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -193,9 +181,6 @@ class _QrSendViewState extends State<QrSendView> {
 
   Widget _buildSending(BuildContext context) {
     final qrSize = MediaQuery.of(context).size.width - 48;
-    final enc = _encoder!;
-    final numBlocks = enc.numBlocks;
-    final cycleFrame = ((_frameIndex - 1) % numBlocks) + 1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -220,16 +205,22 @@ class _QrSendViewState extends State<QrSendView> {
           ),
         ),
         const SizedBox(height: 16),
-        Text(
-          'Frame $cycleFrame / $numBlocks',
-          style: TextStyle(
-            color: Colors.grey[500],
-            fontSize: 13,
-            fontFeatures: const [FontFeature.tabularFigures()],
+        if (_frames != null) ...[
+          Text(
+            'Frame ${_frameIndex % _frames!.length + 1} / ${_frames!.length}',
+            style: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 13,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        LinearProgressIndicator(value: cycleFrame / numBlocks),
+          const SizedBox(height: 4),
+          LinearProgressIndicator(
+            value: _frames!.isNotEmpty
+                ? (_frameIndex % _frames!.length + 1) / _frames!.length
+                : 0,
+          ),
+        ],
         const SizedBox(height: 16),
         Text(
           'La sequenza si ripete continuamente.\n'

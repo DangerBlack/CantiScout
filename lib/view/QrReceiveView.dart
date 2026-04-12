@@ -5,17 +5,17 @@ import 'package:permission_handler/permission_handler.dart';
 import '../Database.dart';
 import '../controller/ChopackController.dart';
 import '../controller/ConflictDialog.dart';
-import '../controller/FountainCodec.dart';
 import '../controller/QrTransferController.dart';
+import '../controller/ReedSolomonCodec.dart';
 import '../model/Song.dart';
 
 enum _QrStatus { requesting, scanning, importing, done, error }
 
-/// Receives an animated fountain-code QR sequence broadcast by [QrSendView].
+/// Receives an animated Reed-Solomon QR sequence broadcast by [QrSendView].
 ///
 /// Opens the device camera in continuous scan mode and feeds each unique
-/// QR frame into [FountainDecoder]. Once enough unique symbols have been
-/// collected the payload is reconstructed and imported automatically.
+/// QR shard into [RsDecoder]. Once k unique shards have been collected
+/// the payload is reconstructed and imported automatically.
 class QrReceiveView extends StatefulWidget {
   const QrReceiveView({Key? key}) : super(key: key);
 
@@ -27,11 +27,12 @@ class _QrReceiveViewState extends State<QrReceiveView> {
   _QrStatus _status = _QrStatus.requesting;
 
   MobileScannerController? _scannerController;
-  FountainDecoder? _decoder;
+  RsDecoder? _decoder;
 
-  final Set<int> _seenSeeds = {};
-  int _decodedBlocks = 0;  // source blocks recovered by belief propagation
-  int _totalBlocks = 0;
+  final Set<int> _seenShards = {};
+  int _receivedShards = 0;
+  int _neededShards = 0;
+  int _totalShards = 0;
 
   int _importedCount = 0;
   int _skippedCount = 0;
@@ -48,8 +49,6 @@ class _QrReceiveViewState extends State<QrReceiveView> {
     _scannerController?.dispose();
     super.dispose();
   }
-
-  // ── Permissions ─────────────────────────────────────────────────────────────
 
   Future<void> _requestPermission() async {
     final status = await Permission.camera.request();
@@ -68,8 +67,6 @@ class _QrReceiveViewState extends State<QrReceiveView> {
     }
   }
 
-  // ── QR detection ─────────────────────────────────────────────────────────────
-
   void _onDetect(BarcodeCapture capture) {
     if (_status != _QrStatus.scanning) return;
     for (final barcode in capture.barcodes) {
@@ -80,28 +77,27 @@ class _QrReceiveViewState extends State<QrReceiveView> {
   }
 
   void _processQrData(String qrData) {
-    final frame = FountainFrame.fromQrData(qrData);
+    final frame = RsFrame.fromQrData(qrData);
     if (frame == null) return;
 
-    // Skip duplicate seeds (same symbol received twice).
-    if (!_seenSeeds.add(frame.seed)) return;
+    if (!_seenShards.add(frame.shardIndex)) return;
 
-    // Initialise decoder from the first valid frame.
-    _decoder ??= FountainDecoder(
-      numBlocks: frame.numBlocks,
+    _decoder ??= RsDecoder(
+      n: frame.numBlocks,
+      k: frame.minBlocks,
       blockSize: frame.data.length,
       payloadSize: frame.payloadSize,
     );
 
-    // Reject frames that belong to a different stream.
-    if (frame.numBlocks != _decoder!.numBlocks) return;
+    if (frame.numBlocks != _decoder!.n) return;
 
     final complete = _decoder!.addFrame(frame);
 
     if (mounted) {
       setState(() {
-        _decodedBlocks = _decoder!.decodedCount;
-        _totalBlocks = frame.numBlocks;
+        _receivedShards = _decoder!.receivedCount;
+        _neededShards = _decoder!.k;
+        _totalShards = frame.numBlocks;
       });
     }
 
@@ -110,8 +106,6 @@ class _QrReceiveViewState extends State<QrReceiveView> {
       _importPayload();
     }
   }
-
-  // ── Import ───────────────────────────────────────────────────────────────────
 
   Future<void> _importPayload() async {
     if (!mounted) return;
@@ -191,9 +185,7 @@ class _QrReceiveViewState extends State<QrReceiveView> {
       switch (policy) {
         case ConflictPolicy.keepBoth:
           final newSong = Song.create(
-              title: '${song.title} (2)',
-              author: song.author,
-              body: song.body);
+              title: '${song.title} (2)', author: song.author, body: song.body);
           await DBProvider.db.newSong(newSong);
           if (tagStrings.isNotEmpty) {
             await ChopackController.saveTags(newSong.id, tagStrings);
@@ -218,8 +210,6 @@ class _QrReceiveViewState extends State<QrReceiveView> {
       }
     }
   }
-
-  // ── UI ───────────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +257,6 @@ class _QrReceiveViewState extends State<QrReceiveView> {
                 controller: _scannerController!,
                 onDetect: _onDetect,
               ),
-              // Overlay with scanning guide
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -287,20 +276,21 @@ class _QrReceiveViewState extends State<QrReceiveView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                _totalBlocks == 0
+                _neededShards == 0
                     ? 'Punta la fotocamera sul QR animato'
-                    : 'Decodificati $_decodedBlocks / $_totalBlocks blocchi',
+                    : 'Shards: $_receivedShards / $_neededShards (di $_totalShards total)',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: 8),
               LinearProgressIndicator(
-                value: _totalBlocks > 0 ? _decodedBlocks / _totalBlocks : null,
+                value:
+                    _neededShards > 0 ? _receivedShards / _neededShards : null,
               ),
-              if (_totalBlocks > 0) ...[
+              if (_neededShards > 0) ...[
                 const SizedBox(height: 4),
                 Text(
-                  'Puoi unirti in qualsiasi momento — la sequenza si ripete.',
+                  'Ogni $_neededShards shard basta per ricostruire i dati.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
