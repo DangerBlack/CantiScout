@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../Database.dart';
+import '../controller/AppLocalizations.dart';
 import '../controller/QrTransferController.dart';
 import '../controller/ReedSolomonCodec.dart';
 import '../model/Song.dart';
@@ -80,7 +81,7 @@ class _QrSendViewState extends State<QrSendView> {
       if (songs.isEmpty) {
         setState(() {
           _status = _Status.error;
-          _errorMessage = 'Nessuna canzone da condividere.';
+          _errorMessage = AppLocalizations.of(context).no_songs_to_share;
         });
         return;
       }
@@ -129,7 +130,8 @@ class _QrSendViewState extends State<QrSendView> {
 
   @override
   Widget build(BuildContext context) {
-    final title = widget.playlistName ?? 'Condividi via QR';
+    final loc = AppLocalizations.of(context);
+    final title = widget.playlistName ?? loc.share_via_qr_default_title;
     return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: SafeArea(
@@ -142,15 +144,16 @@ class _QrSendViewState extends State<QrSendView> {
   }
 
   Widget _buildBody(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     switch (_status) {
       case _Status.loading:
-        return const Center(
+        return Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 16),
-              Text('Preparazione…'),
+              Text(loc.qr_preparing),
             ],
           ),
         );
@@ -171,7 +174,7 @@ class _QrSendViewState extends State<QrSendView> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Chiudi'),
+                child: Text(loc.shut_down),
               ),
             ],
           ),
@@ -180,18 +183,19 @@ class _QrSendViewState extends State<QrSendView> {
   }
 
   Widget _buildSending(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final qrSize = MediaQuery.of(context).size.width - 48;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          '$_songCount ${_songCount == 1 ? 'canzone' : 'canzoni'}',
+          loc.qr_song_count(_songCount),
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
         Text(
-          'Punta la fotocamera su questo schermo',
+          loc.qr_point_camera,
           style: TextStyle(color: Colors.grey[600]),
           textAlign: TextAlign.center,
         ),
@@ -207,7 +211,8 @@ class _QrSendViewState extends State<QrSendView> {
         const SizedBox(height: 16),
         if (_frames != null) ...[
           Text(
-            'Frame ${_frameIndex % _frames!.length + 1} / ${_frames!.length}',
+            loc.qr_frame_display(
+                _frameIndex % _frames!.length + 1, _frames!.length),
             style: TextStyle(
               color: Colors.grey[500],
               fontSize: 13,
@@ -223,8 +228,7 @@ class _QrSendViewState extends State<QrSendView> {
         ],
         const SizedBox(height: 16),
         Text(
-          'La sequenza si ripete continuamente.\n'
-          'I riceventi possono unirsi in qualsiasi momento.',
+          loc.qr_footer_text,
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.grey[500], fontSize: 12),
         ),

@@ -7,6 +7,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../Database.dart';
+import '../controller/AppLocalizations.dart';
 import '../controller/BleTransferController.dart';
 import '../controller/ChopackController.dart';
 import '../controller/ConflictDialog.dart';
@@ -89,7 +90,8 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       if (!mounted) return;
       setState(() {
         for (final r in results) {
-          if (!_scanResults.any((e) => e.device.remoteId == r.device.remoteId)) {
+          if (!_scanResults
+              .any((e) => e.device.remoteId == r.device.remoteId)) {
             _scanResults.add(r);
           }
         }
@@ -209,8 +211,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   // ── Post-receive import ──────────────────────────────────────────────────────
 
   Future<void> _onTransferComplete() async {
-    final payload =
-        BleTransferController.parseChunks(_chunkMap, _totalChunks);
+    final payload = BleTransferController.parseChunks(_chunkMap, _totalChunks);
 
     if (payload == null) {
       if (mounted) {
@@ -256,7 +257,8 @@ class _BleReceiveViewState extends State<BleReceiveView> {
     _importedCount = newSongs.length;
 
     if (conflicts.isNotEmpty && mounted) {
-      final policy = await showBulkConflictDialog(context, conflictCount: conflicts.length);
+      final policy = await showBulkConflictDialog(context,
+          conflictCount: conflicts.length);
       if (policy != null) {
         await _applyConflictPolicy(conflicts, policy, idMap);
       } else {
@@ -282,9 +284,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       switch (policy) {
         case ConflictPolicy.keepBoth:
           final newSong = Song.create(
-              title: '${song.title} (2)',
-              author: song.author,
-              body: song.body);
+              title: '${song.title} (2)', author: song.author, body: song.body);
           await DBProvider.db.newSong(newSong);
           if (tagStrings.isNotEmpty) {
             await ChopackController.saveTags(newSong.id, tagStrings);
@@ -315,7 +315,8 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Ricevi canzoni')),
+      appBar:
+          AppBar(title: Text(AppLocalizations.of(context).receive_songs_title)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -345,6 +346,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   }
 
   Widget _buildIdle() {
+    final loc = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -365,7 +367,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
           const SizedBox(height: 32),
           ElevatedButton.icon(
             icon: const Icon(Icons.search),
-            label: const Text('Cerca dispositivi'),
+            label: Text(loc.search_devices),
             onPressed: _startScan,
           ),
         ],
@@ -380,7 +382,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
         children: [
           const CircularProgressIndicator(),
           const SizedBox(height: 24),
-          const Text('Ricerca dispositivi in corso…'),
+          Text(AppLocalizations.of(context).searching_devices),
           const SizedBox(height: 8),
           Text(
             'Assicurati che "${BleTransferController.kDeviceName}" stia trasmettendo.',
@@ -408,7 +410,8 @@ class _BleReceiveViewState extends State<BleReceiveView> {
             child: Column(
               children: [
                 const SizedBox(height: 32),
-                Icon(Icons.bluetooth_disabled, size: 64, color: Colors.grey[400]),
+                Icon(Icons.bluetooth_disabled,
+                    size: 64, color: Colors.grey[400]),
                 const SizedBox(height: 12),
                 Text(
                   'Nessun dispositivo CantScout trovato.\nAssicurati che l\'altro dispositivo stia inviando.',
@@ -438,7 +441,8 @@ class _BleReceiveViewState extends State<BleReceiveView> {
                 return ListTile(
                   leading: const Icon(Icons.bluetooth, color: Colors.blue),
                   title: Text(name),
-                  subtitle: Text('Segnale: $rssi dBm'),
+                  subtitle:
+                      Text(AppLocalizations.of(context).signal_strength(rssi)),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _connectToDevice(r.device),
                 );
@@ -450,7 +454,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
             padding: const EdgeInsets.only(top: 8),
             child: TextButton.icon(
               icon: const Icon(Icons.refresh),
-              label: const Text('Cerca di nuovo'),
+              label: Text(AppLocalizations.of(context).search_again),
               onPressed: _startScan,
             ),
           ),
@@ -481,6 +485,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   }
 
   Widget _buildDone() {
+    final loc = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -492,14 +497,14 @@ class _BleReceiveViewState extends State<BleReceiveView> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
-          Text('Importate: $_importedCount canzoni'),
+          Text(loc.qr_imported_count(_importedCount)),
           if (_skippedCount > 0)
-            Text('Saltate: $_skippedCount canzoni',
+            Text(loc.ble_skipped_count(_skippedCount),
                 style: TextStyle(color: Colors.grey[600])),
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Chiudi'),
+            child: Text(loc.shut_down),
           ),
         ],
       ),
@@ -520,6 +525,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   }
 
   Widget _buildError() {
+    final loc = AppLocalizations.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -533,7 +539,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
         const SizedBox(height: 32),
         ElevatedButton(
           onPressed: () => setState(() => _status = _Status.idle),
-          child: const Text('Riprova'),
+          child: Text(loc.try_again),
         ),
       ],
     );

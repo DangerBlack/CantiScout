@@ -7,13 +7,13 @@
   },
   "password_changed": "Password changed",
   "@password_changed": {
-    "description": "Account: Password Cambiata",
+    "description": "Account: Password changed",
     "type": "text",
     "placeholders": {}
   },
   "password_changed_success": "The password has been changed correctly.",
   "@password_changed_success": {
-    "description": "Account: Password Cambiata",
+    "description": "Account: Password changed",
     "type": "text",
     "placeholders": {}
   },
@@ -43,13 +43,13 @@
   },
   "confirmed": "(confirmation)",
   "@confirmed": {
-    "description": "Account: confiermed",
+    "description": "Account: confirmed",
     "type": "text",
     "placeholders": {}
   },
   "undo": "CANCEL",
   "@undo": {
-    "description": "Account: annulla",
+    "description": "Account: cancel",
     "type": "text",
     "placeholders": {}
   },
@@ -79,7 +79,7 @@
   },
   "choose_playlist": "Choose a playlist",
   "@choose_playlist": {
-    "description": "ChoosePlaylist: Choose platlist",
+    "description": "ChoosePlaylist: Choose playlist",
     "type": "text",
     "placeholders": {}
   },
@@ -91,11 +91,11 @@
   },
   "songs": "tracks",
   "@songs": {
-    "description": "ChoosePlaylist: song",
+    "description": "ChoosePlaylist: songs",
     "type": "text",
     "placeholders": {}
   },
-  "no_playlist": "There are no playlists yet ...",
+  "no_playlist": "There are no playlists yet...",
   "@no_playlist": {
     "description": "ChoosePlaylist: No playlist yet...",
     "type": "text",
@@ -107,7 +107,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "playlist_name": "Plylist name",
+  "playlist_name": "Playlist name",
   "@playlist_name": {
     "description": "CreatePlaylist: Playlist name",
     "type": "text",
@@ -133,13 +133,13 @@
   },
   "church": "Church",
   "@church": {
-    "description": "CreateSong: Chiesa",
+    "description": "CreateSong: Church",
     "type": "text",
     "placeholders": {}
   },
   "lc": "L / C",
   "@lc": {
-    "description": "CreateSong: l/c",
+    "description": "CreateSong: L/C",
     "type": "text",
     "placeholders": {}
   },
@@ -157,7 +157,7 @@
   },
   "other": "Other",
   "@other": {
-    "description": "CreateSong: Altro",
+    "description": "CreateSong: Other",
     "type": "text",
     "placeholders": {}
   },
@@ -180,28 +180,28 @@
     "placeholders": {}
   },
   "error_upload_song_missing_chord": "Error: Cannot load the song, no chord",
-    "@error_upload_song_missing_chord": {
-      "description": "EditSongText: Unable to load song",
-      "type": "text",
-      "placeholders": {}
-    },
-    "error_upload_song_parentesis": "Error: Cannot load song, square brackets not balanced",
-    "@error_upload_song_parentesis": {
-      "description": "EditSongText: Unable to load song",
-      "type": "text",
-      "placeholders": {}
-    },
-    "error_upload_song_graph_parentesis": "Error: Cannot load song, graph brackets not balanced",
-    "@error_upload_song_graph_parentesis": {
-      "description": "EditSongText: Unable to load song",
-      "type": "text",
-      "placeholders": {}
-    },
-    "error_upload_song_malformed": "Error: Cannot load song, format is wrong",
-    "@error_upload_song_malformed": {
-      "description": "EditSongText: Unable to load song",
-      "type": "text",
-      "placeholders": {}
+  "@error_upload_song_missing_chord": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "error_upload_song_parentesis": "Error: Cannot load song, square brackets not balanced",
+  "@error_upload_song_parentesis": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "error_upload_song_graph_parentesis": "Error: Cannot load song, graph brackets not balanced",
+  "@error_upload_song_graph_parentesis": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
+  },
+  "error_upload_song_malformed": "Error: Cannot load song, format is wrong",
+  "@error_upload_song_malformed": {
+    "description": "EditSongText: Unable to load song",
+    "type": "text",
+    "placeholders": {}
   },
   "unable_to_save": "Unable to Save",
   "@unable_to_save": {
@@ -210,52 +210,52 @@
     "placeholders": {}
   },
   "dialog_confirm": "Confirm",
-    "@dialog_confirm": {
-      "description": "EditSongText: Confirm",
-      "type": "text",
-      "placeholders": {}
-    },
-    "dialog_cancel": "Cancel",
-    "@dialog_cancel": {
-      "description": "EditSongText: Cancel",
-      "type": "text",
-      "placeholders": {}
-    },
-    "upload_dialog_title": "Confirm the edit?",
-    "@upload_dialog_title": {
-      "description": "EditSongText: Confermi le modifiche",
-      "type": "text",
-      "placeholders": {}
-    },
-    "upload_dialog_body": "You are editing this song for all Canti Scout users, are you sure you have edited the text and chords correctly?\nHave you followed the ChordPro standard?\nNot to have made spelling mistakes?",
-    "@upload_dialog_body": {
-      "description": "EditSongText: Confermi le modifiche",
-      "type": "text",
-      "placeholders": {}
-    },
+  "@dialog_confirm": {
+    "description": "EditSongText: Confirm",
+    "type": "text",
+    "placeholders": {}
+  },
+  "dialog_cancel": "Cancel",
+  "@dialog_cancel": {
+    "description": "EditSongText: Cancel",
+    "type": "text",
+    "placeholders": {}
+  },
+  "upload_dialog_title": "Confirm the edit?",
+  "@upload_dialog_title": {
+    "description": "EditSongText: Confirm the modifications",
+    "type": "text",
+    "placeholders": {}
+  },
+  "upload_dialog_body": "You are editing this song for all Canti Scout users, are you sure you have edited the text and chords correctly?\nHave you followed the ChordPro standard?\nNot to have made spelling mistakes?",
+  "@upload_dialog_body": {
+    "description": "EditSongText: Confirm the modifications",
+    "type": "text",
+    "placeholders": {}
+  },
   "create_dialog_title": "You are going to create a new song!",
-    "@create_dialog_title": {
-      "description": "SongUlStateless: Stai creando",
-      "type": "text",
-      "placeholders": {}
-    },
-    "create_dialog_body": "Remember that the songs will be visible to all users.\nThe songs must be written in the ChordPro format.\nFor example:",
-    "@create_dialog_body": {
-      "description": "SongUlStateless: info",
-      "type": "text",
-      "placeholders": {}
-    },
-    "create_dialog_body_sample": "[Do]Camminerò, [La-]camminerò",
-    "@create_dialog_body_sample": {
-      "description": "SongUlStateless: Sample",
-      "type": "text",
-      "placeholders": {}
-    },
-    "create_dialog_body_more": "Find more on: ",
-    "@create_dialog_body_more": {
-      "description": "SongUlStateless: More",
-      "type": "text",
-      "placeholders": {}
+  "@create_dialog_title": {
+    "description": "SongUlStateless: You are creating",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_dialog_body": "Remember that the songs will be visible to all users.\nThe songs must be written in the ChordPro format.\nFor example:",
+  "@create_dialog_body": {
+    "description": "SongUlStateless: info",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_dialog_body_sample": "[Do]Camminerò, [La-]camminerò",
+  "@create_dialog_body_sample": {
+    "description": "SongUlStateless: Sample",
+    "type": "text",
+    "placeholders": {}
+  },
+  "create_dialog_body_more": "Find more on: ",
+  "@create_dialog_body_more": {
+    "description": "SongUlStateless: More",
+    "type": "text",
+    "placeholders": {}
   },
   "save": "Save",
   "@save": {
@@ -271,7 +271,7 @@
   },
   "sync": "Synchronize",
   "@sync": {
-    "description": "Homepage: Syncronize",
+    "description": "Homepage: Synchronize",
     "type": "text",
     "placeholders": {}
   },
@@ -289,7 +289,7 @@
   },
   "guide": "Guide",
   "@guide": {
-    "description": "Homepage: Guida",
+    "description": "Homepage: Guide",
     "type": "text",
     "placeholders": {}
   },
@@ -307,13 +307,13 @@
   },
   "songs_book": "Songsbook",
   "@songs_book": {
-    "description": "Homepage: Soongs book",
+    "description": "Homepage: Songs book",
     "type": "text",
     "placeholders": {}
   },
   "songs_book_desc": "Read the lyrics of all the songs!",
   "@songs_book_desc": {
-    "description": "Homepage: Soongs book desc",
+    "description": "Homepage: Songs book desc",
     "type": "text",
     "placeholders": {}
   },
@@ -361,7 +361,7 @@
   },
   "create_account": "Create an account",
   "@create_account": {
-    "description": "LoginSignUpPage: crea",
+    "description": "LoginSignUpPage: create",
     "type": "text",
     "placeholders": {}
   },
@@ -463,7 +463,7 @@
   },
   "auto_scroll": "Autoscroll",
   "@auto_scroll": {
-    "description": "Settings: Autoscorrimento",
+    "description": "Settings: Autoscroll",
     "type": "text",
     "placeholders": {}
   },
@@ -491,7 +491,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "multimedia": "Average charge",
+  "multimedia": "Load media",
   "@multimedia": {
     "description": "SongText: load multimedia",
     "type": "text",
@@ -535,7 +535,7 @@
   },
   "do_you_want_to_remove": "Do you want to remove \"###\" from the playlist:",
   "@do_you_want_to_remove": {
-    "description": "SongUlPlylist: Do you want to remove \"###\" from playlist: do not remove ### ",
+    "description": "SongUlPlylist: Do you want to remove \"###\" from playlist: do not remove ###",
     "type": "text",
     "placeholders": {}
   },
@@ -545,7 +545,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "add": "add",
+  "add": "Add",
   "@add": {
     "description": "SongUlStateless: add",
     "type": "text",
@@ -571,6 +571,12 @@
   },
   "hello": "Hello",
   "@hello": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "share": "Share",
+  "@share": {
+    "description": "Share action",
     "type": "text",
     "placeholders": {}
   },
@@ -699,5 +705,212 @@
     "placeholders": {
       "title": {}
     }
+  },
+  "share_via_qr_default_title": "Share via QR",
+  "@share_via_qr_default_title": {
+    "description": "QrSendView: Default title for share via QR",
+    "type": "text",
+    "placeholders": {}
+  },
+  "qr_preparing": "Preparing…",
+  "@qr_preparing": {
+    "description": "QrSendView: Loading indicator text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "qr_song_count": "{count} songs",
+  "@qr_song_count": {
+    "description": "QrSendView: Song count with singular/plural. Use '{count}' placeholder.",
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "qr_point_camera": "Point the camera at this screen",
+  "@qr_point_camera": {
+    "description": "QrSendView: Instruction to point camera at screen",
+    "type": "text",
+    "placeholders": {}
+  },
+  "qr_frame_display": "Frame {current} / {total}",
+  "@qr_frame_display": {
+    "description": "QrSendView: Frame counter display. Use '{current}' and '{total}' placeholders.",
+    "type": "text",
+    "placeholders": {
+      "current": {},
+      "total": {}
+    }
+  },
+  "qr_footer_text": "The sequence repeats continuously.\nReceivers can join at any time.",
+  "@qr_footer_text": {
+    "description": "QrSendView: Footer explaining continuous loop",
+    "type": "text",
+    "placeholders": {}
+  },
+  "no_songs_to_share": "No songs to share.",
+  "@no_songs_to_share": {
+    "description": "QrSendView: Error when no songs to share",
+    "type": "text",
+    "placeholders": {}
+  },
+  "receive_via_qr": "Receive via QR",
+  "@receive_via_qr": {
+    "description": "QrReceiveView: App bar title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "qr_importing": "Importing…",
+  "@qr_importing": {
+    "description": "QrReceiveView: Importing progress text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "qr_imported_count": "Imported: {count} songs",
+  "@qr_imported_count": {
+    "description": "QrReceiveView: Imported songs count. Use '{count}' placeholder.",
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "open_settings": "Open settings",
+  "@open_settings": {
+    "description": "QrReceiveView: Open Settings button for camera permission",
+    "type": "text",
+    "placeholders": {}
+  },
+  "shut_down": "Close",
+  "@shut_down": {
+    "description": "Generic: Close button",
+    "type": "text",
+    "placeholders": {}
+  },
+  "send_songs_title": "Send songs",
+  "@send_songs_title": {
+    "description": "BleSendView: App bar title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "what_to_send": "What do you want to send?",
+  "@what_to_send": {
+    "description": "BleSendView: What to send instruction",
+    "type": "text",
+    "placeholders": {}
+  },
+  "full_library_option": "Full library",
+  "@full_library_option": {
+    "description": "BleSendView: Full library option",
+    "type": "text",
+    "placeholders": {}
+  },
+  "playlist_option": "Playlist",
+  "@playlist_option": {
+    "description": "BleSendView: Playlist option title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "start_sending": "Start sending",
+  "@start_sending": {
+    "description": "BleSendView: Start sending button",
+    "type": "text",
+    "placeholders": {}
+  },
+  "ble_ready_count": "{count} songs ready",
+  "@ble_ready_count": {
+    "description": "BleSendView: Songs ready to send. Use '{count}' placeholder.",
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "ble_sent_count": "{count} songs sent.",
+  "@ble_sent_count": {
+    "description": "BleSendView: Songs sent confirmation. Use '{count}' placeholder.",
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "try_again": "Try again",
+  "@try_again": {
+    "description": "Generic: Try again button",
+    "type": "text",
+    "placeholders": {}
+  },
+  "receive_songs_title": "Receive songs",
+  "@receive_songs_title": {
+    "description": "BleReceiveView: App bar title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "search_devices": "Search for devices",
+  "@search_devices": {
+    "description": "BleReceiveView: Search devices button",
+    "type": "text",
+    "placeholders": {}
+  },
+  "searching_devices": "Searching for devices…",
+  "@searching_devices": {
+    "description": "BleReceiveView: Searching devices progress text",
+    "type": "text",
+    "placeholders": {}
+  },
+  "signal_strength": "Signal: {rssi} dBm",
+  "@signal_strength": {
+    "description": "BleReceiveView: Signal strength display. Use '{rssi}' placeholder.",
+    "type": "text",
+    "placeholders": {
+      "rssi": {}
+    }
+  },
+  "search_again": "Search again",
+  "@search_again": {
+    "description": "BleReceiveView: Search again button",
+    "type": "text",
+    "placeholders": {}
+  },
+  "ble_skipped_count": "Skipped: {count} songs",
+  "@ble_skipped_count": {
+    "description": "BleReceiveView: Skipped songs count. Use '{count}' placeholder.",
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "scan_qr": "Scan QR",
+  "@scan_qr": {
+    "description": "Settings: Scan QR button title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "export_pdf": "Export PDF",
+  "@export_pdf": {
+    "description": "SongUlPlaylistStateless: Export PDF menu option",
+    "type": "text",
+    "placeholders": {}
+  },
+  "export_chopack": "Export .chopack",
+  "@export_chopack": {
+    "description": "SongUlPlaylistStateless: Export .chopack menu option",
+    "type": "text",
+    "placeholders": {}
+  },
+  "share_via_qr_menu": "Share via QR",
+  "@share_via_qr_menu": {
+    "description": "SongUlPlaylistStateless: Share via QR menu option",
+    "type": "text",
+    "placeholders": {}
+  },
+  "share_text": "Share text",
+  "@share_text": {
+    "description": "SongText: Share text menu option",
+    "type": "text",
+    "placeholders": {}
+  },
+  "export_chopro": "Export .chopro",
+  "@export_chopro": {
+    "description": "SongText: Export .chopro menu option",
+    "type": "text",
+    "placeholders": {}
   }
 }

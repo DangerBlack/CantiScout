@@ -3,6 +3,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../Database.dart';
+import '../controller/AppLocalizations.dart';
 import '../controller/ChopackController.dart';
 import '../controller/ConflictDialog.dart';
 import '../controller/QrTransferController.dart';
@@ -214,7 +215,7 @@ class _QrReceiveViewState extends State<QrReceiveView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Ricevi via QR')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).receive_via_qr)),
       body: SafeArea(child: _buildBody(context)),
     );
   }
@@ -228,13 +229,13 @@ class _QrReceiveViewState extends State<QrReceiveView> {
         return _buildScanning(context);
 
       case _QrStatus.importing:
-        return const Center(
+        return Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 16),
-              Text('Importazione in corso…'),
+              Text(AppLocalizations.of(context).qr_importing),
             ],
           ),
         );
@@ -303,6 +304,7 @@ class _QrReceiveViewState extends State<QrReceiveView> {
   }
 
   Widget _buildDone(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -314,16 +316,16 @@ class _QrReceiveViewState extends State<QrReceiveView> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
-          Text('Importate: $_importedCount canzoni'),
+          Text(loc.qr_imported_count(_importedCount)),
           if (_skippedCount > 0)
             Text(
-              'Saltate: $_skippedCount canzoni',
+              loc.ble_skipped_count(_skippedCount),
               style: TextStyle(color: Colors.grey[600]),
             ),
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Chiudi'),
+            child: Text(loc.shut_down),
           ),
         ],
       ),
@@ -331,6 +333,7 @@ class _QrReceiveViewState extends State<QrReceiveView> {
   }
 
   Widget _buildError(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -349,12 +352,12 @@ class _QrReceiveViewState extends State<QrReceiveView> {
                 _errorMessage.contains('fotocamera'))
               ElevatedButton(
                 onPressed: () => openAppSettings(),
-                child: const Text('Apri impostazioni'),
+                child: Text(loc.open_settings),
               )
             else
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Chiudi'),
+                child: Text(loc.shut_down),
               ),
           ],
         ),

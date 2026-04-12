@@ -15,8 +15,7 @@ class SongUlPlaylistStateless extends StatefulWidget {
   final String title;
   final int playlistId;
 
-  const SongUlPlaylistStateless(
-      this.initialSongs, this.title, this.playlistId,
+  const SongUlPlaylistStateless(this.initialSongs, this.title, this.playlistId,
       {Key? key})
       : super(key: key);
 
@@ -34,7 +33,7 @@ class _SongUlPlaylistStatelessState extends State<SongUlPlaylistStateless> {
     _songs = List.from(widget.initialSongs);
   }
 
-Future<void> _confirmRemove(
+  Future<void> _confirmRemove(
       BuildContext context, Song song, int index) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -69,6 +68,7 @@ Future<void> _confirmRemove(
   }
 
   void _showShareSheet(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       builder: (ctx) => SafeArea(
@@ -77,7 +77,7 @@ Future<void> _confirmRemove(
           children: [
             ListTile(
               leading: const Icon(Icons.picture_as_pdf),
-              title: const Text('Esporta PDF'),
+              title: Text(loc.export_pdf),
               onTap: () async {
                 Navigator.pop(ctx);
                 try {
@@ -94,7 +94,7 @@ Future<void> _confirmRemove(
             ),
             ListTile(
               leading: const Icon(Icons.archive),
-              title: const Text('Esporta .chopack'),
+              title: Text(loc.export_chopack),
               onTap: () async {
                 Navigator.pop(ctx);
                 try {
@@ -133,7 +133,7 @@ Future<void> _confirmRemove(
             ),
             ListTile(
               leading: const Icon(Icons.qr_code),
-              title: const Text('Condividi via QR'),
+              title: Text(loc.share_via_qr_menu),
               onTap: () {
                 Navigator.pop(ctx);
                 Navigator.push(
@@ -170,13 +170,14 @@ Future<void> _confirmRemove(
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
-            tooltip: 'Condividi',
+            tooltip: loc.share,
             onPressed: () => _showShareSheet(context),
           ),
         ],

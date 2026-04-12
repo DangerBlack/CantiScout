@@ -4,10 +4,12 @@ import 'dart:typed_data';
 
 import 'package:ble_peripheral/ble_peripheral.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart' hide CharacteristicProperties;
+import 'package:flutter_blue_plus/flutter_blue_plus.dart'
+    hide CharacteristicProperties;
 import 'package:permission_handler/permission_handler.dart';
 
 import '../Database.dart';
+import '../controller/AppLocalizations.dart';
 import '../controller/BleTransferController.dart';
 import '../model/Playlist.dart';
 import '../model/Song.dart';
@@ -92,8 +94,7 @@ class _BleSendViewState extends State<BleSendView> {
       Permission.bluetoothConnect,
       Permission.bluetoothScan,
     ].request();
-    return statuses.values
-        .every((s) => s.isGranted || s.isLimited);
+    return statuses.values.every((s) => s.isGranted || s.isLimited);
   }
 
   // ── Transfer orchestration ──────────────────────────────────────────────────
@@ -114,8 +115,7 @@ class _BleSendViewState extends State<BleSendView> {
 
     List<Song> songs;
     if (!_useLibrary && _chosenPlaylistId != null) {
-      songs =
-          await DBProvider.db.getAllPlaylistSongs(_chosenPlaylistId!);
+      songs = await DBProvider.db.getAllPlaylistSongs(_chosenPlaylistId!);
     } else {
       songs = await DBProvider.db.getAllSongs();
     }
@@ -158,7 +158,8 @@ class _BleSendViewState extends State<BleSendView> {
       }
     }
 
-    final chunks = BleTransferController.buildChunks(songs, playlists: playlists);
+    final chunks =
+        BleTransferController.buildChunks(songs, playlists: playlists);
     _totalChunks = chunks.length;
 
     try {
@@ -220,7 +221,8 @@ class _BleSendViewState extends State<BleSendView> {
       BlePeripheral.setCharacteristicSubscriptionChangeCallback(
         (String deviceId, String charId, bool isSubscribed, String? name) {
           // Only used for UI state; not relied upon for knowing the target device.
-          if (isSubscribed && mounted) setState(() => _status = _Status.connected);
+          if (isSubscribed && mounted)
+            setState(() => _status = _Status.connected);
         },
       );
 
@@ -257,8 +259,7 @@ class _BleSendViewState extends State<BleSendView> {
     // immediately after the write callback. Broadcasting (deviceId: null) is
     // safe for a 1-to-1 transfer and avoids "Device not found" errors that
     // occur when the native connected-devices map isn't ready yet.
-    Future<void> notify(Uint8List value) =>
-        BlePeripheral.updateCharacteristic(
+    Future<void> notify(Uint8List value) => BlePeripheral.updateCharacteristic(
           characteristicId: BleTransferController.kDataCharUuid,
           value: value,
           deviceId: null,
@@ -303,7 +304,8 @@ class _BleSendViewState extends State<BleSendView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Invia canzoni')),
+      appBar:
+          AppBar(title: Text(AppLocalizations.of(context).send_songs_title)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -333,20 +335,20 @@ class _BleSendViewState extends State<BleSendView> {
   }
 
   Widget _buildScopeSelector(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Cosa vuoi inviare?',
-            style: Theme.of(context).textTheme.titleLarge),
+        Text(loc.what_to_send, style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 24),
         RadioListTile<bool>(
-          title: const Text('Libreria completa'),
+          title: Text(loc.full_library_option),
           value: true,
           groupValue: _useLibrary,
           onChanged: (v) => setState(() => _useLibrary = true),
         ),
         RadioListTile<bool>(
-          title: const Text('Playlist'),
+          title: Text(loc.playlist_option),
           value: false,
           groupValue: _useLibrary,
           onChanged: _playlists.isEmpty
@@ -381,15 +383,17 @@ class _BleSendViewState extends State<BleSendView> {
         const SizedBox(height: 32),
         ElevatedButton.icon(
           icon: const Icon(Icons.bluetooth),
-          label: const Text('Avvia invio'),
-          onPressed:
-              (!_useLibrary && _chosenPlaylistId == null) ? null : _onStartPressed,
+          label: Text(loc.start_sending),
+          onPressed: (!_useLibrary && _chosenPlaylistId == null)
+              ? null
+              : _onStartPressed,
         ),
       ],
     );
   }
 
   Widget _buildAdvertising() {
+    final loc = AppLocalizations.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -407,11 +411,10 @@ class _BleSendViewState extends State<BleSendView> {
           style: TextStyle(color: Colors.grey[600]),
         ),
         const SizedBox(height: 32),
-        Text('$_songCount canzoni pronte',
+        Text(loc.ble_ready_count(_songCount),
             style: Theme.of(context).textTheme.bodyLarge),
         if (_chosenPlaylistName.isNotEmpty)
-          Text(_chosenPlaylistName,
-              style: TextStyle(color: Colors.grey[600])),
+          Text(_chosenPlaylistName, style: TextStyle(color: Colors.grey[600])),
       ],
     );
   }
@@ -438,6 +441,7 @@ class _BleSendViewState extends State<BleSendView> {
   }
 
   Widget _buildDone() {
+    final loc = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -449,11 +453,11 @@ class _BleSendViewState extends State<BleSendView> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
-          Text('$_songCount canzoni inviate.'),
+          Text(loc.ble_sent_count(_songCount)),
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Chiudi'),
+            child: Text(loc.shut_down),
           ),
         ],
       ),
@@ -474,6 +478,7 @@ class _BleSendViewState extends State<BleSendView> {
   }
 
   Widget _buildError() {
+    final loc = AppLocalizations.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -487,7 +492,7 @@ class _BleSendViewState extends State<BleSendView> {
         const SizedBox(height: 32),
         ElevatedButton(
           onPressed: () => setState(() => _status = _Status.scope),
-          child: const Text('Riprova'),
+          child: Text(loc.try_again),
         ),
       ],
     );

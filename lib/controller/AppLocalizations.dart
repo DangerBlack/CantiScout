@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 
 import '../l10n/messages_all.dart';
 
-
 //https://proandroiddev.com/flutter-localization-step-by-step-30f95d06018d
 class AppLocalizations {
   static Future<AppLocalizations> load(Locale locale) {
@@ -166,25 +165,29 @@ class AppLocalizations {
   }
 
   String get error_upload_song_missing_chord {
-    return Intl.message('Errore: Impossibile caricare la canzone, nessun accordo',
+    return Intl.message(
+        'Errore: Impossibile caricare la canzone, nessun accordo',
         name: 'error_upload_song_missing_chord',
         desc: 'EditSongText: Unable to load song');
   }
 
   String get error_upload_song_parentesis {
-    return Intl.message('Errore: Impossibile caricare la canzone, parentesi quadre non bilanciate',
+    return Intl.message(
+        'Errore: Impossibile caricare la canzone, parentesi quadre non bilanciate',
         name: 'error_upload_song_parentesis',
         desc: 'EditSongText: Unable to load song');
   }
 
   String get error_upload_song_graph_parentesis {
-    return Intl.message('Errore: Impossibile caricare la canzone, parentesi graffe non bilanciate',
+    return Intl.message(
+        'Errore: Impossibile caricare la canzone, parentesi graffe non bilanciate',
         name: 'error_upload_song_graph_parentesis',
         desc: 'EditSongText: Unable to load song');
   }
 
   String get error_upload_song_malformed {
-    return Intl.message('Errore: Impossibile caricare la canzone, formattazione errata',
+    return Intl.message(
+        'Errore: Impossibile caricare la canzone, formattazione errata',
         name: 'error_upload_song_malformed',
         desc: 'EditSongText: Unable to load song');
   }
@@ -206,12 +209,15 @@ class AppLocalizations {
 
   String get upload_dialog_title {
     return Intl.message('Confermi le modifiche?',
-        name: 'upload_dialog_title', desc: 'EditSongText: Confermi le modifiche');
+        name: 'upload_dialog_title',
+        desc: 'EditSongText: Confermi le modifiche');
   }
 
   String get upload_dialog_body {
-    return Intl.message('Stai modificando questa canzone per tutti gli utenti di Canti Scout, sei sicuro di aver modificato correttamente il testo e gli accordi?\nDi aver seguito lo standard ChordPro?\nDi non aver fatto errori ortografici?',
-        name: 'upload_dialog_body', desc: 'EditSongText: Confermi le modifiche');
+    return Intl.message(
+        'Stai modificando questa canzone per tutti gli utenti di Canti Scout, sei sicuro di aver modificato correttamente il testo e gli accordi?\nDi aver seguito lo standard ChordPro?\nDi non aver fatto errori ortografici?',
+        name: 'upload_dialog_body',
+        desc: 'EditSongText: Confermi le modifiche');
   }
 
   String get create_dialog_title {
@@ -220,8 +226,10 @@ class AppLocalizations {
   }
 
   String get create_dialog_body {
-    return Intl.message('Ricordati che le canzoni saranno visibili a tutti gli utenti.\nLe canzoni vanno scritte nel formato ChordPro.\nAd esempio:',
-        name: 'create_dialog_body', desc: 'SongUlStateless: info');
+    return Intl.message(
+        'Ricordati che le canzoni saranno visibili a tutti gli utenti.\nLe canzoni vanno scritte nel formato ChordPro.\nAd esempio:',
+        name: 'create_dialog_body',
+        desc: 'SongUlStateless: info');
   }
 
   String get create_dialog_body_sample {
@@ -233,7 +241,6 @@ class AppLocalizations {
     return Intl.message('Scopri di più su: ',
         name: 'create_dialog_body_more', desc: 'SongUlStateless: More');
   }
-
 
   String get save {
     return Intl.message('Salva', name: 'save', desc: 'EditSongText: save');
@@ -475,15 +482,18 @@ class AppLocalizations {
   }
 
   String get i_accept_the {
-    return Intl.message('Io accetto i', name: 'i_accept_the', desc: 'LoginSignupPage: i_accept_the');
+    return Intl.message('Io accetto i',
+        name: 'i_accept_the', desc: 'LoginSignupPage: i_accept_the');
   }
 
   String get therm_of_service {
-    return Intl.message('Termini di servizio', name: 'therm_of_service', desc: 'LoginSignupPage: therm_of_service');
+    return Intl.message('Termini di servizio',
+        name: 'therm_of_service', desc: 'LoginSignupPage: therm_of_service');
   }
 
   String get please_accept {
-    return Intl.message('Ti prego di accettare i termini di servizio', name: 'please_accept', desc: 'LoginSignupPage: please_accept');
+    return Intl.message('Ti prego di accettare i termini di servizio',
+        name: 'please_accept', desc: 'LoginSignupPage: please_accept');
   }
 
   String get hello {
@@ -609,6 +619,186 @@ class AppLocalizations {
         name: 'confirm_delete_song',
         args: [title],
         desc: 'SongUlStateless: Delete song confirmation body');
+  }
+
+  // QR-related strings
+  String get receive_via_qr {
+    return Intl.message('Ricevi via QR',
+        name: 'receive_via_qr', desc: 'QrReceiveView: App bar title');
+  }
+
+  String get qr_importing {
+    return Intl.message('Importazione in corso…',
+        name: 'qr_importing', desc: 'QrReceiveView: Importing progress text');
+  }
+
+  String qr_imported_count(int count) {
+    return Intl.message('Importate: {$count} canzoni',
+        name: 'qr_imported_count',
+        args: [count],
+        desc: 'QrReceiveView: Imported songs count');
+  }
+
+  String qr_song_count(int count) {
+    return Intl.message('{$count} canzoni',
+        name: 'qr_song_count', args: [count], desc: 'QrSendView: Song count');
+  }
+
+  String get qr_point_camera {
+    return Intl.message('Punta la fotocamera su questo schermo',
+        name: 'qr_point_camera',
+        desc: 'QrSendView: Instruction to point camera at screen');
+  }
+
+  String qr_frame_display(int current, int total) {
+    return Intl.message('Frame {$current} / {$total}',
+        name: 'qr_frame_display',
+        args: [current, total],
+        desc: 'QrSendView: Frame counter display');
+  }
+
+  String get qr_footer_text {
+    return Intl.message(
+        'La sequenza si ripete continuamente.\nI riceventi possono unirsi in qualsiasi momento.',
+        name: 'qr_footer_text',
+        desc: 'QrSendView: Footer explaining continuous loop');
+  }
+
+  String get no_songs_to_share {
+    return Intl.message('Nessuna canzone da condividere.',
+        name: 'no_songs_to_share',
+        desc: 'QrSendView: Error when no songs to share');
+  }
+
+  // Ble-related strings
+  String get receive_songs_title {
+    return Intl.message('Ricevi canzoni',
+        name: 'receive_songs_title', desc: 'BleReceiveView: App bar title');
+  }
+
+  String get search_devices {
+    return Intl.message('Cerca dispositivi',
+        name: 'search_devices', desc: 'BleReceiveView: Search devices button');
+  }
+
+  String get searching_devices {
+    return Intl.message('Ricerca dispositivi in corso…',
+        name: 'searching_devices',
+        desc: 'BleReceiveView: Searching devices progress text');
+  }
+
+  String signal_strength(int rssi) {
+    return Intl.message('Segnale: {$rssi} dBm',
+        name: 'signal_strength',
+        args: [rssi],
+        desc: 'BleReceiveView: Signal strength display');
+  }
+
+  String get search_again {
+    return Intl.message('Cerca di nuovo',
+        name: 'search_again', desc: 'BleReceiveView: Search again button');
+  }
+
+  String ble_skipped_count(int count) {
+    return Intl.message('Saltate: {$count} canzoni',
+        name: 'ble_skipped_count',
+        args: [count],
+        desc: 'BleReceiveView: Skipped songs count');
+  }
+
+  String get shut_down {
+    return Intl.message('Chiudi',
+        name: 'shut_down', desc: 'Generic: Close button');
+  }
+
+  String get try_again {
+    return Intl.message('Riprova',
+        name: 'try_again', desc: 'Generic: Try again button');
+  }
+
+  String get send_songs_title {
+    return Intl.message('Invia canzoni',
+        name: 'send_songs_title', desc: 'BleSendView: App bar title');
+  }
+
+  String get what_to_send {
+    return Intl.message('Cosa vuoi inviare?',
+        name: 'what_to_send', desc: 'BleSendView: What to send instruction');
+  }
+
+  String get full_library_option {
+    return Intl.message('Libreria completa',
+        name: 'full_library_option', desc: 'BleSendView: Full library option');
+  }
+
+  String get playlist_option {
+    return Intl.message('Playlist',
+        name: 'playlist_option', desc: 'BleSendView: Playlist option title');
+  }
+
+  String get start_sending {
+    return Intl.message('Avvia invio',
+        name: 'start_sending', desc: 'BleSendView: Start sending button');
+  }
+
+  String ble_ready_count(int count) {
+    return Intl.message('{$count} canzoni pronte',
+        name: 'ble_ready_count',
+        args: [count],
+        desc: 'BleSendView: Songs ready to send');
+  }
+
+  String ble_sent_count(int count) {
+    return Intl.message('{$count} canzoni inviate.',
+        name: 'ble_sent_count',
+        args: [count],
+        desc: 'BleSendView: Songs sent confirmation');
+  }
+
+  String get open_settings {
+    return Intl.message('Apri impostazioni',
+        name: 'open_settings',
+        desc: 'QrReceiveView: Open Settings button for camera permission');
+  }
+
+  String get share_via_qr_default_title {
+    return Intl.message('Condividi via QR',
+        name: 'share_via_qr_default_title',
+        desc: 'QrSendView: Default title for share via QR');
+  }
+
+  String get qr_preparing {
+    return Intl.message('Preparazione…',
+        name: 'qr_preparing', desc: 'QrSendView: Loading indicator text');
+  }
+
+  // Export-related strings
+  String get share_text {
+    return Intl.message('Condividi testo',
+        name: 'share_text', desc: 'SongText: Share text menu option');
+  }
+
+  String get export_chopro {
+    return Intl.message('Esporta .chopro',
+        name: 'export_chopro', desc: 'SongText: Export .chopro menu option');
+  }
+
+  String get export_pdf {
+    return Intl.message('Esporta PDF',
+        name: 'export_pdf',
+        desc: 'SongUlPlaylistStateless: Export PDF menu option');
+  }
+
+  String get export_chopack {
+    return Intl.message('Esporta .chopack',
+        name: 'export_chopack',
+        desc: 'SongUlPlaylistStateless: Export .chopack menu option');
+  }
+
+  String get share_via_qr_menu {
+    return Intl.message('Condividi via QR',
+        name: 'share_via_qr_menu',
+        desc: 'SongUlPlaylistStateless: Share via QR menu option');
   }
 }
 

@@ -62,12 +62,12 @@ class SongTextState extends State<SongText> {
     final prefs = await SharedPreferences.getInstance();
     final newFSize = prefs.getDouble(Constants.sharedDefaultFontSize) ??
         Constants.initialFontSize;
-    final newAutoscroll =
-        prefs.getBool(Constants.sharedAutoscroll) ?? Constants.initialAutoscroll;
-    final newNoteColor =
-        Color(prefs.getInt(Constants.sharedFontColor) ?? Constants.initialColor);
-    final newFontFamily =
-        prefs.getString(Constants.sharedFontStyle) ?? Constants.initialFontStyle;
+    final newAutoscroll = prefs.getBool(Constants.sharedAutoscroll) ??
+        Constants.initialAutoscroll;
+    final newNoteColor = Color(
+        prefs.getInt(Constants.sharedFontColor) ?? Constants.initialColor);
+    final newFontFamily = prefs.getString(Constants.sharedFontStyle) ??
+        Constants.initialFontStyle;
     final newSpeed = prefs.getDouble(Constants.sharedAutoscrollSpeed) ??
         Constants.initialAutoscrollSpeed;
 
@@ -126,6 +126,7 @@ class SongTextState extends State<SongText> {
   // ── Share / export ─────────────────────────────────────────────────────────
 
   void _showShareSheet(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       builder: (ctx) => SafeArea(
@@ -134,7 +135,7 @@ class SongTextState extends State<SongText> {
           children: [
             ListTile(
               leading: const Icon(Icons.text_fields),
-              title: const Text('Condividi testo'),
+              title: Text(loc.share_text),
               onTap: () {
                 Navigator.pop(ctx);
                 _shareSongText();
@@ -142,7 +143,7 @@ class SongTextState extends State<SongText> {
             ),
             ListTile(
               leading: const Icon(Icons.file_download),
-              title: const Text('Esporta .chopro'),
+              title: Text(loc.export_chopro),
               onTap: () {
                 Navigator.pop(ctx);
                 _exportChordPro();
@@ -162,8 +163,7 @@ class SongTextState extends State<SongText> {
   }
 
   Future<void> _exportChordPro() async {
-    final safeTitle =
-        song.title.replaceAll(RegExp(r'[^\w\s\-]'), '_').trim();
+    final safeTitle = song.title.replaceAll(RegExp(r'[^\w\s\-]'), '_').trim();
     // Write to a real temp file so the OS respects the .chopro extension.
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/$safeTitle.chopro');
@@ -277,8 +277,7 @@ class SongTextState extends State<SongText> {
     return sum;
   }
 
-  String _space(
-      String text, String chords, String chord, String prevChord) {
+  String _space(String text, String chords, String chord, String prevChord) {
     double sum = _sumSpace(text, Charset.getFont(_fontFamily));
     double def = _sumSpace(prevChord, Charset.getFontBold(_fontFamily));
     sum -= def;
@@ -536,11 +535,22 @@ class SongTextState extends State<SongText> {
       final k = m.group(1)!.trim().toLowerCase();
       final v = (m.group(2) ?? '').trim();
       switch (k) {
-        case 'key': songKey = v; break;
-        case 'capo': songCapo = v; break;
-        case 'subtitle': case 'st': songSubtitle = v; break;
-        case 'tempo': songTempo = v; break;
-        case 'time': songTime = v; break;
+        case 'key':
+          songKey = v;
+          break;
+        case 'capo':
+          songCapo = v;
+          break;
+        case 'subtitle':
+        case 'st':
+          songSubtitle = v;
+          break;
+        case 'tempo':
+          songTempo = v;
+          break;
+        case 'time':
+          songTime = v;
+          break;
       }
     }
 
@@ -568,15 +578,13 @@ class SongTextState extends State<SongText> {
                 child: Text(
                   'Canzone con problemi di formattazione — tocca per modificare',
                   style: TextStyle(
-                      fontSize: fSize * 0.85,
-                      color: Colors.amber.shade900),
+                      fontSize: fSize * 0.85, color: Colors.amber.shade900),
                 ),
               ),
               GestureDetector(
-                onTap: () =>
-                    setState(() => _validationBannerDismissed = true),
-                child: Icon(Icons.close,
-                    size: 18, color: Colors.amber.shade700),
+                onTap: () => setState(() => _validationBannerDismissed = true),
+                child:
+                    Icon(Icons.close, size: 18, color: Colors.amber.shade700),
               ),
             ],
           ),
