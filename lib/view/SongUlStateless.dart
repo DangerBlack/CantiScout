@@ -67,16 +67,8 @@ class _SongUlStatelessState extends State<SongUlStateless> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.content_paste),
-              title: const Text('Incolla ChordPro'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _showPasteDialog(context);
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.file_open),
-              title: const Text('Importa da file (.cho / .chopro)'),
+              title: Text(AppLocalizations.of(context).import_from_file),
               onTap: () {
                 Navigator.pop(ctx);
                 _importFromFile(context);
@@ -143,47 +135,6 @@ class _SongUlStatelessState extends State<SongUlStateless> {
     );
   }
 
-  // ── Paste ChordPro ──────────────────────────────────────────────────────────
-
-  void _showPasteDialog(BuildContext context) {
-    final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Incolla ChordPro'),
-        content: SizedBox(
-          width: double.maxFinite,
-          height: 300,
-          child: TextField(
-            controller: controller,
-            maxLines: null,
-            expands: true,
-            keyboardType: TextInputType.multiline,
-            decoration: const InputDecoration(
-              hintText:
-                  '{title: Nome canzone}\n{author: Autore}\n\n[C]Testo...',
-              border: OutlineInputBorder(),
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('ANNULLA'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final text = controller.text;
-              Navigator.pop(ctx);
-              await _importChordPro(context, text);
-            },
-            child: const Text('IMPORTA'),
-          ),
-        ],
-      ),
-    );
-  }
-
   // ── Import from file ────────────────────────────────────────────────────────
 
   Future<void> _importFromFile(BuildContext context) async {
@@ -200,8 +151,7 @@ class _SongUlStatelessState extends State<SongUlStateless> {
           !lower.endsWith('.txt')) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Seleziona un file .chopro, .cho o .txt')),
+          SnackBar(content: Text(AppLocalizations.of(context).select_chordpro_file)),
         );
         return;
       }
@@ -211,7 +161,7 @@ class _SongUlStatelessState extends State<SongUlStateless> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Errore importazione: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context).import_error(e.toString()))),
       );
     }
   }
@@ -242,8 +192,8 @@ class _SongUlStatelessState extends State<SongUlStateless> {
           await DBProvider.db.newSong(copy);
           await _loadSongs();
           if (mounted) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('"${copy.title}" importata!')));
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(AppLocalizations.of(context).song_imported(copy.title))));
           }
         case ConflictPolicy.replace:
           existing.body = song.body;
@@ -251,8 +201,8 @@ class _SongUlStatelessState extends State<SongUlStateless> {
           await DBProvider.db.updateSong(existing);
           await _loadSongs();
           if (mounted) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('"${existing.title}" aggiornata!')));
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(AppLocalizations.of(context).song_updated(existing.title))));
           }
         case ConflictPolicy.skip:
           break;
@@ -262,7 +212,7 @@ class _SongUlStatelessState extends State<SongUlStateless> {
       await _loadSongs();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('"${song.title}" importata!')),
+          SnackBar(content: Text(AppLocalizations.of(context).song_imported(song.title))),
         );
       }
     }
@@ -290,10 +240,7 @@ class _SongUlStatelessState extends State<SongUlStateless> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(AppLocalizations.of(context).ask_remove),
-        content: Text(
-          'Vuoi eliminare definitivamente "${song.title}"?'
-          '\nVerrà rimossa da tutte le playlist.',
-        ),
+        content: Text(AppLocalizations.of(context).confirm_delete_song(song.title)),
         actions: [
           TextButton(
             child: Text(AppLocalizations.of(context).undo,
@@ -325,7 +272,7 @@ class _SongUlStatelessState extends State<SongUlStateless> {
               const Icon(Icons.music_off, size: 64, color: Colors.grey),
               const SizedBox(height: 16),
               Text(
-                'Nessuna canzone.\nPremi + per aggiungerne una.',
+                AppLocalizations.of(context).no_songs_hint,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.grey[600], fontSize: 16),
               ),

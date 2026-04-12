@@ -573,5 +573,131 @@
   "@hello": {
     "type": "text",
     "placeholders": {}
+  },
+  "library_section": "LIBRARY",
+  "@library_section": {
+    "description": "Settings: Library section header",
+    "type": "text",
+    "placeholders": {}
+  },
+  "import_collection": "Import collection (.chopack)",
+  "@import_collection": {
+    "description": "Settings: Import collection button",
+    "type": "text",
+    "placeholders": {}
+  },
+  "export_library": "Export library (.chopack)",
+  "@export_library": {
+    "description": "Settings: Export library button",
+    "type": "text",
+    "placeholders": {}
+  },
+  "send_bluetooth": "Send via Bluetooth",
+  "@send_bluetooth": {
+    "description": "Settings: Send via Bluetooth button",
+    "type": "text",
+    "placeholders": {}
+  },
+  "receive_bluetooth": "Receive via Bluetooth",
+  "@receive_bluetooth": {
+    "description": "Settings: Receive via Bluetooth button",
+    "type": "text",
+    "placeholders": {}
+  },
+  "select_chopack_file": "Select a .chopack file",
+  "@select_chopack_file": {
+    "description": "Settings: Wrong file type snackbar",
+    "type": "text",
+    "placeholders": {}
+  },
+  "reading_file": "Reading file…",
+  "@reading_file": {
+    "description": "Settings: Loading dialog — reading file",
+    "type": "text",
+    "placeholders": {}
+  },
+  "no_songs_in_file": "No songs found in the file.",
+  "@no_songs_in_file": {
+    "description": "Settings: No songs found in file",
+    "type": "text",
+    "placeholders": {}
+  },
+  "importing_in_progress": "Importing…",
+  "@importing_in_progress": {
+    "description": "Settings: Loading dialog — importing",
+    "type": "text",
+    "placeholders": {}
+  },
+  "no_songs_to_export": "No songs to export.",
+  "@no_songs_to_export": {
+    "description": "Settings: No songs to export",
+    "type": "text",
+    "placeholders": {}
+  },
+  "songs_imported": "{count} songs imported!",
+  "@songs_imported": {
+    "description": "Settings: Songs imported count",
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "import_error": "Import error: {error}",
+  "@import_error": {
+    "description": "Settings/SongUlStateless: Import error snackbar",
+    "type": "text",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "export_error": "Export error: {error}",
+  "@export_error": {
+    "description": "Settings: Export error snackbar",
+    "type": "text",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "import_from_file": "Import from file (.cho / .chopro)",
+  "@import_from_file": {
+    "description": "SongUlStateless: Import from file menu item",
+    "type": "text",
+    "placeholders": {}
+  },
+  "select_chordpro_file": "Select a .chopro, .cho or .txt file",
+  "@select_chordpro_file": {
+    "description": "SongUlStateless: Wrong file type snackbar",
+    "type": "text",
+    "placeholders": {}
+  },
+  "no_songs_hint": "No songs.\nPress + to add one.",
+  "@no_songs_hint": {
+    "description": "SongUlStateless: Empty state message",
+    "type": "text",
+    "placeholders": {}
+  },
+  "song_imported": "\"{title}\" imported!",
+  "@song_imported": {
+    "description": "SongUlStateless: Song imported success snackbar",
+    "type": "text",
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "song_updated": "\"{title}\" updated!",
+  "@song_updated": {
+    "description": "SongUlStateless: Song updated success snackbar",
+    "type": "text",
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "confirm_delete_song": "Do you want to permanently delete \"{title}\"?\nIt will be removed from all playlists.",
+  "@confirm_delete_song": {
+    "description": "SongUlStateless: Delete song confirmation body",
+    "type": "text",
+    "placeholders": {
+      "title": {}
+    }
   }
 }

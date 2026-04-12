@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:path_provider/path_provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -149,62 +148,7 @@ class SongTextState extends State<SongText> {
                 _exportChordPro();
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.qr_code),
-              title: const Text('QR code'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _showQrDialog(context);
-              },
-            ),
           ],
-        ),
-      ),
-    );
-  }
-
-  void _showQrDialog(BuildContext context) {
-    final qrData = song.body;
-    final tooLarge = qrData.length > 2900;
-    showDialog(
-      context: context,
-      builder: (ctx) => Dialog(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(song.title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center),
-              if (song.author != null)
-                Text(song.author!,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              if (tooLarge)
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Canzone troppo lunga per il QR code.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  ),
-                )
-              else
-                QrImageView(
-                  data: qrData,
-                  version: QrVersions.auto,
-                  size: 260,
-                  errorCorrectionLevel: QrErrorCorrectLevel.M,
-                ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(AppLocalizations.of(context).done),
-              ),
-            ],
-          ),
         ),
       ),
     );

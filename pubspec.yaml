@@ -29,7 +29,6 @@ dependencies:
   uuid: ^4.5.1
   file_picker: ^11.0.2
   path: ^1.9.0
-  qr_flutter: ^4.1.0
   archive: ^4.0.9
   pdf: ^3.10.8
   flutter_blue_plus: ^2.2.1

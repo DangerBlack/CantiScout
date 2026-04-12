@@ -106,13 +106,13 @@ class Settings extends State<SettingsStateful> {
       if (!path.toLowerCase().endsWith('.chopack')) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Seleziona un file .chopack')),
+          SnackBar(content: Text(AppLocalizations.of(context).select_chopack_file)),
         );
         return;
       }
 
       if (!mounted) return;
-      _showLoadingDialog('Lettura del file in corso…');
+      _showLoadingDialog(AppLocalizations.of(context).reading_file);
 
       final (incoming, tagsMap, importedPlaylists) = await ChopackController.importPack(path);
       if (!mounted) return;
@@ -120,7 +120,7 @@ class Settings extends State<SettingsStateful> {
 
       if (incoming.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Nessuna canzone trovata nel file.')),
+          SnackBar(content: Text(AppLocalizations.of(context).no_songs_in_file)),
         );
         return;
       }
@@ -144,7 +144,7 @@ class Settings extends State<SettingsStateful> {
       }
 
       if (!mounted) return;
-      _showLoadingDialog('Importazione in corso…');
+      _showLoadingDialog(AppLocalizations.of(context).importing_in_progress);
 
       // idMap: original song ID → locally saved ID (tracks renames/conflicts)
       final idMap = <String, String>{};
@@ -201,14 +201,14 @@ class Settings extends State<SettingsStateful> {
 
       widget.onImportComplete?.call();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$imported canzoni importate!')),
+        SnackBar(content: Text(AppLocalizations.of(context).songs_imported(imported))),
       );
     } catch (e) {
       // Close any open loading dialog before showing the error.
       if (mounted) {
         Navigator.of(context, rootNavigator: true).maybePop();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Errore importazione: $e')),
+          SnackBar(content: Text(AppLocalizations.of(context).import_error(e.toString()))),
         );
       }
     }
@@ -222,7 +222,7 @@ class Settings extends State<SettingsStateful> {
       if (!mounted) return;
       if (songs.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Nessuna canzone da esportare.')),
+          SnackBar(content: Text(AppLocalizations.of(context).no_songs_to_export)),
         );
         return;
       }
@@ -230,7 +230,7 @@ class Settings extends State<SettingsStateful> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Errore esportazione: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context).export_error(e.toString()))),
       );
     }
   }
@@ -280,22 +280,23 @@ class Settings extends State<SettingsStateful> {
       body: ListView(children: [
         // ── Libreria ──────────────────────────────────────────────────────────
         ListTile(
-          title: Text('LIBRERIA', style: _titleFontStyle),
+          title: Text(AppLocalizations.of(context).library_section,
+              style: _titleFontStyle),
         ),
         ListTile(
           leading: const Icon(Icons.file_upload),
-          title: const Text('Importa raccolta (.chopack)'),
+          title: Text(AppLocalizations.of(context).import_collection),
           onTap: _importChopack,
         ),
         ListTile(
           leading: const Icon(Icons.archive),
-          title: const Text('Esporta libreria (.chopack)'),
+          title: Text(AppLocalizations.of(context).export_library),
           onTap: _exportChopack,
         ),
         const Divider(),
         ListTile(
           leading: const Icon(Icons.bluetooth),
-          title: const Text('Invia via Bluetooth'),
+          title: Text(AppLocalizations.of(context).send_bluetooth),
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const BleSendView()),
@@ -303,7 +304,7 @@ class Settings extends State<SettingsStateful> {
         ),
         ListTile(
           leading: const Icon(Icons.bluetooth_searching),
-          title: const Text('Ricevi via Bluetooth'),
+          title: Text(AppLocalizations.of(context).receive_bluetooth),
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const BleReceiveView()),

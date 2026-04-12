@@ -493,6 +493,123 @@ class AppLocalizations {
   String get share {
     return Intl.message('Condividi', name: 'share', desc: 'Share action');
   }
+
+  // ── Library / import section (Settings) ──────────────────────────────────────
+
+  String get library_section {
+    return Intl.message('LIBRERIA',
+        name: 'library_section', desc: 'Settings: Library section header');
+  }
+
+  String get import_collection {
+    return Intl.message('Importa raccolta (.chopack)',
+        name: 'import_collection', desc: 'Settings: Import collection button');
+  }
+
+  String get export_library {
+    return Intl.message('Esporta libreria (.chopack)',
+        name: 'export_library', desc: 'Settings: Export library button');
+  }
+
+  String get send_bluetooth {
+    return Intl.message('Invia via Bluetooth',
+        name: 'send_bluetooth', desc: 'Settings: Send via Bluetooth button');
+  }
+
+  String get receive_bluetooth {
+    return Intl.message('Ricevi via Bluetooth',
+        name: 'receive_bluetooth',
+        desc: 'Settings: Receive via Bluetooth button');
+  }
+
+  String get select_chopack_file {
+    return Intl.message('Seleziona un file .chopack',
+        name: 'select_chopack_file',
+        desc: 'Settings: Wrong file type snackbar');
+  }
+
+  String get reading_file {
+    return Intl.message('Lettura del file in corso\u2026',
+        name: 'reading_file', desc: 'Settings: Loading dialog — reading file');
+  }
+
+  String get no_songs_in_file {
+    return Intl.message('Nessuna canzone trovata nel file.',
+        name: 'no_songs_in_file', desc: 'Settings: No songs found in file');
+  }
+
+  String get importing_in_progress {
+    return Intl.message('Importazione in corso\u2026',
+        name: 'importing_in_progress',
+        desc: 'Settings: Loading dialog — importing');
+  }
+
+  String get no_songs_to_export {
+    return Intl.message('Nessuna canzone da esportare.',
+        name: 'no_songs_to_export', desc: 'Settings: No songs to export');
+  }
+
+  String songs_imported(int count) {
+    return Intl.message('$count canzoni importate!',
+        name: 'songs_imported',
+        args: [count],
+        desc: 'Settings: Songs imported count');
+  }
+
+  String import_error(String error) {
+    return Intl.message('Errore importazione: $error',
+        name: 'import_error',
+        args: [error],
+        desc: 'Settings/SongUlStateless: Import error snackbar');
+  }
+
+  String export_error(String error) {
+    return Intl.message('Errore esportazione: $error',
+        name: 'export_error',
+        args: [error],
+        desc: 'Settings: Export error snackbar');
+  }
+
+  // ── ChordPro import (SongUlStateless) ────────────────────────────────────────
+
+  String get import_from_file {
+    return Intl.message('Importa da file (.cho / .chopro)',
+        name: 'import_from_file',
+        desc: 'SongUlStateless: Import from file menu item');
+  }
+
+  String get select_chordpro_file {
+    return Intl.message('Seleziona un file .chopro, .cho o .txt',
+        name: 'select_chordpro_file',
+        desc: 'SongUlStateless: Wrong file type snackbar');
+  }
+
+  String get no_songs_hint {
+    return Intl.message('Nessuna canzone.\nPremi + per aggiungerne una.',
+        name: 'no_songs_hint', desc: 'SongUlStateless: Empty state message');
+  }
+
+  String song_imported(String title) {
+    return Intl.message('"$title" importata!',
+        name: 'song_imported',
+        args: [title],
+        desc: 'SongUlStateless: Song imported success snackbar');
+  }
+
+  String song_updated(String title) {
+    return Intl.message('"$title" aggiornata!',
+        name: 'song_updated',
+        args: [title],
+        desc: 'SongUlStateless: Song updated success snackbar');
+  }
+
+  String confirm_delete_song(String title) {
+    return Intl.message(
+        'Vuoi eliminare definitivamente "$title"?\nVerrà rimossa da tutte le playlist.',
+        name: 'confirm_delete_song',
+        args: [title],
+        desc: 'SongUlStateless: Delete song confirmation body');
+  }
 }
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
