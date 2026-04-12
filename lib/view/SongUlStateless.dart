@@ -187,7 +187,7 @@ class _SongUlStatelessState extends State<SongUlStateless> {
 
   Future<void> _importFromFile(BuildContext context) async {
     try {
-      final result = await FilePicker.platform.pickFiles(
+      final result = await FilePicker.pickFiles(
         type: FileType.any,
       );
       if (result == null || result.files.isEmpty) return;

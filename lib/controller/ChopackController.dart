@@ -85,7 +85,7 @@ class ChopackController {
     archive.addFile(ArchiveFile(_kMeta, metaBytes.length, metaBytes));
 
     // Write ZIP to temp file and share
-    final zipBytes = ZipEncoder().encode(archive)!;
+    final zipBytes = ZipEncoder().encode(archive);
     final dir = await getTemporaryDirectory();
     final safeName = packName.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_').trim();
     final file = File('${dir.path}/$safeName.chopack');

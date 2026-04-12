@@ -23,7 +23,7 @@ class Constants {
   static const bool initialAutoscroll = false;
   static const double initialAutoscrollSpeed = 3.0;
   static const String initialFontStyle = "Roboto";
-  static final int initialColor = Colors.black.value;
+  static final int initialColor = Colors.black.toARGB32();
   static const double scrollMultiplier = 15.0;
   static const double maxScrollSpeed = 5.0;
 

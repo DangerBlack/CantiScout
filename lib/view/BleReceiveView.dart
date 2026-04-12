@@ -124,6 +124,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       // mtu: null — skip the automatic MTU request inside connect(); we do it
       // explicitly below so there is only one MTU negotiation in the log.
       await device.connect(
+        license: License.free,
         timeout: const Duration(seconds: 15),
         mtu: null,
       );

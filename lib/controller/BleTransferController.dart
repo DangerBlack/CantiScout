@@ -64,7 +64,7 @@ class BleTransferController {
     });
 
     final compressed = Uint8List.fromList(
-      GZipEncoder().encode(Uint8List.fromList(utf8.encode(json)))!,
+      GZipEncoder().encode(Uint8List.fromList(utf8.encode(json))),
     );
 
     final total = (compressed.length / kChunkPayloadSize).ceil();

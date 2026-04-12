@@ -40,7 +40,7 @@ class Utils {
     } else if (value is double) {
       await prefs.setDouble(key, value);
     } else if (value is Color) {
-      await prefs.setInt(key, value.value);
+      await prefs.setInt(key, value.toARGB32());
     } else if (value is String) {
       await prefs.setString(key, value);
     }

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -107,7 +105,7 @@ class Settings extends State<SettingsStateful> {
 
   Future<void> _importChopack() async {
     try {
-      final result = await FilePicker.platform.pickFiles(type: FileType.any);
+      final result = await FilePicker.pickFiles(type: FileType.any);
       if (result == null || result.files.isEmpty) return;
       final path = result.files.single.path;
       if (path == null) return;
@@ -280,7 +278,7 @@ class Settings extends State<SettingsStateful> {
             child: Text(AppLocalizations.of(context).done),
             onPressed: () {
               setState(() => currentColor = pickerColor);
-              _updatePref(Constants.sharedFontColor, currentColor.value);
+              _updatePref(Constants.sharedFontColor, currentColor.toARGB32());
               Navigator.of(context).pop();
             },
           ),
@@ -292,8 +290,8 @@ class Settings extends State<SettingsStateful> {
   List<DropdownMenuItem<String>> _buildFontList() {
     return Charset.getFonts()
         .map((f) => DropdownMenuItem<String>(
-              value: f as String,
-              child: Text(f as String, style: TextStyle(fontFamily: f as String)),
+              value: f,
+              child: Text(f, style: TextStyle(fontFamily: f)),
             ))
         .toList();
   }
