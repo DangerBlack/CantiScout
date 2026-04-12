@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -5,8 +6,10 @@ import 'package:flutter/material.dart';
 
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
+import '../controller/ChopackController.dart';
 import '../controller/ConflictDialog.dart';
 import '../controller/CustomSearchDelegate.dart';
+import '../controller/IncomingFileService.dart';
 import '../controller/Utils.dart';
 import '../model/Constants.dart';
 import '../model/Song.dart';
@@ -30,16 +33,20 @@ class SongUlStateless extends StatefulWidget {
 class _SongUlStatelessState extends State<SongUlStateless> {
   final _biggerFont = const TextStyle(fontSize: 18.0);
   List<Song> _songs = [];
+  StreamSubscription<String>? _fileSubscription;
 
   @override
   void initState() {
     super.initState();
     widget.reloadTrigger?.addListener(_loadSongs);
     _loadSongs();
+    _fileSubscription =
+        IncomingFileService.instance.fileStream.listen(_ingestPath);
   }
 
   @override
   void dispose() {
+    _fileSubscription?.cancel();
     widget.reloadTrigger?.removeListener(_loadSongs);
     super.dispose();
   }
@@ -47,6 +54,159 @@ class _SongUlStatelessState extends State<SongUlStateless> {
   Future<void> _loadSongs() async {
     final list = await DBProvider.db.getAllSongs();
     if (mounted) setState(() => _songs = list);
+  }
+
+  // ── OS file-open ingestion ──────────────────────────────────────────────────
+
+  Future<void> _ingestPath(String path) async {
+    if (!mounted) return;
+    final lower = path.toLowerCase();
+    if (lower.endsWith('.chopack')) {
+      await _ingestChopack(path);
+    } else if (lower.endsWith('.cho') ||
+        lower.endsWith('.chopro') ||
+        lower.endsWith('.txt')) {
+      try {
+        final text = await File(path).readAsString();
+        if (!mounted) return;
+        await _importChordPro(context, text);
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text(AppLocalizations.of(context).import_error(e.toString()))));
+      }
+    }
+  }
+
+  Future<void> _ingestChopack(String path) async {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          content: Row(children: [
+            const CircularProgressIndicator(),
+            const SizedBox(width: 20),
+            Expanded(
+                child: Text(AppLocalizations.of(context).reading_file)),
+          ]),
+        ),
+      ),
+    );
+
+    try {
+      final (incoming, tagsMap, importedPlaylists) =
+          await ChopackController.importPack(path);
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+
+      if (incoming.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context).no_songs_in_file)));
+        return;
+      }
+
+      final newSongs = <Song>[];
+      final conflicts = <Song>[];
+      for (final song in incoming) {
+        final existing =
+            await DBProvider.db.getSongByTitleAuthor(song.title, song.author);
+        (existing != null ? conflicts : newSongs).add(song);
+      }
+
+      ConflictPolicy policy = ConflictPolicy.skip;
+      if (conflicts.isNotEmpty && mounted) {
+        final chosen = await showBulkConflictDialog(
+          context,
+          conflictCount: conflicts.length,
+          newCount: newSongs.length,
+        );
+        if (chosen != null) policy = chosen;
+      }
+
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => PopScope(
+          canPop: false,
+          child: AlertDialog(
+            content: Row(children: [
+              const CircularProgressIndicator(),
+              const SizedBox(width: 20),
+              Expanded(
+                  child:
+                      Text(AppLocalizations.of(context).importing_in_progress)),
+            ]),
+          ),
+        ),
+      );
+
+      final idMap = <String, String>{};
+      int imported = 0;
+
+      for (final song in newSongs) {
+        await DBProvider.db.newSong(song);
+        if (tagsMap.containsKey(song.id)) {
+          await ChopackController.saveTags(song.id, tagsMap[song.id]!);
+        }
+        idMap[song.id] = song.id;
+        imported++;
+      }
+
+      for (final song in conflicts) {
+        switch (policy) {
+          case ConflictPolicy.skip:
+            break;
+          case ConflictPolicy.keepBoth:
+            final saved = Song.create(
+                title: '${song.title} (2)',
+                author: song.author,
+                body: song.body);
+            await DBProvider.db.newSong(saved);
+            if (tagsMap.containsKey(song.id)) {
+              await ChopackController.saveTags(saved.id, tagsMap[song.id]!);
+            }
+            idMap[song.id] = saved.id;
+            imported++;
+          case ConflictPolicy.replace:
+            final existing = await DBProvider.db
+                .getSongByTitleAuthor(song.title, song.author);
+            if (existing != null) {
+              existing.body = song.body;
+              existing.author = song.author;
+              await DBProvider.db.updateSong(existing);
+              if (tagsMap.containsKey(song.id)) {
+                await ChopackController.saveTags(
+                    existing.id, tagsMap[song.id]!);
+              }
+              idMap[song.id] = existing.id;
+              imported++;
+            }
+        }
+      }
+
+      if (importedPlaylists.isNotEmpty) {
+        await ChopackController.savePlaylists(importedPlaylists, idMap);
+      }
+
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+      await _loadSongs();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text(AppLocalizations.of(context).songs_imported(imported))));
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).maybePop();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                AppLocalizations.of(context).import_error(e.toString()))));
+      }
+    }
   }
 
   // ── FAB bottom sheet ────────────────────────────────────────────────────────

@@ -5,12 +5,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'controller/AppLocalizations.dart';
+import 'controller/IncomingFileService.dart';
 import 'model/Constants.dart';
 import 'view/Homepage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _bootstrapUsername();
+  IncomingFileService.instance.init();
   runApp(const MyApp());
 }
 
