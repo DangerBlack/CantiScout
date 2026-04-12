@@ -6,13 +6,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
 import '../controller/ChopackController.dart';
+import '../controller/ConflictDialog.dart';
 import '../model/Chartset.dart';
 import '../model/Constants.dart';
 import '../model/Song.dart';
 import '../view/BleReceiveView.dart';
 import '../view/BleSendView.dart';
-
-enum _BulkConflictPolicy { skip, keepBoth, replace }
 
 class SettingsStateful extends StatefulWidget {
   const SettingsStateful({Key? key, this.title, this.onImportComplete})
@@ -34,9 +33,6 @@ class Settings extends State<SettingsStateful> {
   bool _autoscroll = false;
   String dropdownValue = 'Roboto';
   double _speed = Constants.initialAutoscrollSpeed;
-  double _fontSize = Constants.initialFontSize;
-  String _username = '';
-
   late TextEditingController _fontSizeController;
   late TextEditingController _usernameController;
 
@@ -56,7 +52,6 @@ class Settings extends State<SettingsStateful> {
     final username = prefs.getString(Constants.sharedUsername) ?? '';
 
     setState(() {
-      _fontSize = fontSize;
       _speed = prefs.getDouble(Constants.sharedAutoscrollSpeed) ??
           Constants.initialAutoscrollSpeed;
       _fontSizeController.text = fontSize.toString();
@@ -67,7 +62,6 @@ class Settings extends State<SettingsStateful> {
       currentColor = pickerColor;
       dropdownValue = prefs.getString(Constants.sharedFontStyle) ??
           Constants.initialFontStyle;
-      _username = username;
       _usernameController.text = username;
     });
   }
@@ -139,31 +133,12 @@ class Settings extends State<SettingsStateful> {
         (existing != null ? conflicts : newSongs).add(song);
       }
 
-      _BulkConflictPolicy policy = _BulkConflictPolicy.skip;
+      ConflictPolicy policy = ConflictPolicy.skip;
       if (conflicts.isNotEmpty && mounted) {
-        final chosen = await showDialog<_BulkConflictPolicy>(
-          context: context,
-          barrierDismissible: false,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Canzoni già presenti'),
-            content: Text(
-                '${newSongs.length} nuove, ${conflicts.length} già presenti.\n'
-                'Cosa fare con i duplicati?'),
-            actions: [
-              TextButton(
-                  onPressed: () =>
-                      Navigator.pop(ctx, _BulkConflictPolicy.skip),
-                  child: const Text('SALTA')),
-              TextButton(
-                  onPressed: () =>
-                      Navigator.pop(ctx, _BulkConflictPolicy.keepBoth),
-                  child: const Text('MANTIENI ENTRAMBE')),
-              TextButton(
-                  onPressed: () =>
-                      Navigator.pop(ctx, _BulkConflictPolicy.replace),
-                  child: const Text('SOSTITUISCI')),
-            ],
-          ),
+        final chosen = await showBulkConflictDialog(
+          context,
+          conflictCount: conflicts.length,
+          newCount: newSongs.length,
         );
         if (chosen != null) policy = chosen;
       }
@@ -187,9 +162,9 @@ class Settings extends State<SettingsStateful> {
 
       for (final song in conflicts) {
         switch (policy) {
-          case _BulkConflictPolicy.skip:
+          case ConflictPolicy.skip:
             break;
-          case _BulkConflictPolicy.keepBoth:
+          case ConflictPolicy.keepBoth:
             final saved = Song.create(
                 title: '${song.title} (2)',
                 author: song.author,
@@ -200,7 +175,7 @@ class Settings extends State<SettingsStateful> {
             }
             idMap[song.id] = saved.id;
             imported++;
-          case _BulkConflictPolicy.replace:
+          case ConflictPolicy.replace:
             final existing = await DBProvider.db
                 .getSongByTitleAuthor(song.title, song.author);
             if (existing != null) {
@@ -352,13 +327,11 @@ class Settings extends State<SettingsStateful> {
             ),
             onChanged: (value) {
               if (value.trim().isNotEmpty) {
-                _username = value.trim();
                 _updatePref(Constants.sharedUsername, value.trim());
               }
             },
             onSubmitted: (value) {
               if (value.trim().isNotEmpty) {
-                setState(() => _username = value.trim());
                 _updatePref(Constants.sharedUsername, value.trim());
               }
             },
@@ -383,7 +356,6 @@ class Settings extends State<SettingsStateful> {
             onChanged: (value) {
               final d = double.tryParse(value);
               if (d != null) {
-                setState(() => _fontSize = d);
                 _updatePref(Constants.sharedDefaultFontSize, d);
               }
             },

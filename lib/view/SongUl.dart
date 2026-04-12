@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../model/Song.dart';
-import '../model/SongList.dart';
 import '../view/SongText.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../Database.dart';
@@ -17,18 +16,18 @@ class SongUlStateful extends StatefulWidget {
 class SongUl extends State<SongUlStateful> {
   IconData leadingIcon = Icons.album;
   final _biggerFont = const TextStyle(fontSize: 18.0);
-  SongList l = SongList();
+  List<Song> _songs = [];
 
   @override
   void initState() {
     super.initState();
-    updateList();
+    _loadSongs();
   }
 
-  Future<void> updateList() async {
+  Future<void> _loadSongs() async {
     final List<Song> lg = await DBProvider.db.getAllSongs();
     if (mounted) {
-      setState(() => l.list = lg);
+      setState(() => _songs = lg);
     }
   }
 
@@ -70,9 +69,9 @@ class SongUl extends State<SongUlStateful> {
   Widget buildList() {
     return ListView.separated(
       padding: const EdgeInsets.all(16.0),
-      itemCount: l.list.length,
+      itemCount: _songs.length,
       separatorBuilder: (_, __) => const Divider(),
-      itemBuilder: (context, index) => _buildSongRow(l.list[index]),
+      itemBuilder: (context, index) => _buildSongRow(_songs[index]),
     );
   }
 }

@@ -9,11 +9,10 @@ import 'package:permission_handler/permission_handler.dart';
 import '../Database.dart';
 import '../controller/BleTransferController.dart';
 import '../controller/ChopackController.dart';
+import '../controller/ConflictDialog.dart';
 import '../model/Song.dart';
 
 enum _Status { idle, scanning, deviceList, connecting, receiving, done, error }
-
-enum _ConflictPolicy { skip, keepBoth, replaceAll }
 
 class BleReceiveView extends StatefulWidget {
   const BleReceiveView({Key? key}) : super(key: key);
@@ -257,7 +256,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
     _importedCount = newSongs.length;
 
     if (conflicts.isNotEmpty && mounted) {
-      final policy = await _showConflictDialog(conflicts.length);
+      final policy = await showBulkConflictDialog(context, conflictCount: conflicts.length);
       if (policy != null) {
         await _applyConflictPolicy(conflicts, policy, idMap);
       } else {
@@ -273,41 +272,15 @@ class _BleReceiveViewState extends State<BleReceiveView> {
     if (mounted) setState(() => _status = _Status.done);
   }
 
-  Future<_ConflictPolicy?> _showConflictDialog(int count) async {
-    return showDialog<_ConflictPolicy>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Canzoni già presenti'),
-        content: Text(
-            '$count ${count == 1 ? 'canzone è già presente' : 'canzoni sono già presenti'} nella libreria.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, null),
-            child: const Text('SALTA'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, _ConflictPolicy.keepBoth),
-            child: const Text('MANTIENI ENTRAMBE'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, _ConflictPolicy.replaceAll),
-            child: const Text('SOSTITUISCI'),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<void> _applyConflictPolicy(
     List<Song> conflicts,
-    _ConflictPolicy policy,
+    ConflictPolicy policy,
     Map<String, String> idMap,
   ) async {
     for (final song in conflicts) {
       final tagStrings = song.tags.map((t) => t.tag).toList();
       switch (policy) {
-        case _ConflictPolicy.keepBoth:
+        case ConflictPolicy.keepBoth:
           final newSong = Song.create(
               title: '${song.title} (2)',
               author: song.author,
@@ -318,7 +291,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
           }
           idMap[song.id] = newSong.id;
           _importedCount++;
-        case _ConflictPolicy.replaceAll:
+        case ConflictPolicy.replace:
           final existing =
               await DBProvider.db.getSongByTitleAuthor(song.title, song.author);
           if (existing != null) {
@@ -331,7 +304,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
             idMap[song.id] = existing.id;
             _importedCount++;
           }
-        case _ConflictPolicy.skip:
+        case ConflictPolicy.skip:
           _skippedCount++;
       }
     }

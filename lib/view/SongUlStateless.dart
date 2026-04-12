@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../Database.dart';
 import '../controller/AppLocalizations.dart';
+import '../controller/ConflictDialog.dart';
 import '../controller/CustomSearchDelegate.dart';
 import '../controller/Utils.dart';
 import '../model/Constants.dart';
@@ -226,7 +227,36 @@ class _SongUlStatelessState extends State<SongUlStateless> {
     if (!mounted) return;
 
     if (existing != null) {
-      await _showConflictDialog(context, song, existing);
+      final policy = await showSingleConflictDialog(context, song);
+      if (!mounted || policy == null) return;
+      switch (policy) {
+        case ConflictPolicy.keepBoth:
+          final copy = Song(
+            id: song.id,
+            title: '${song.title} (2)',
+            author: song.author,
+            time: song.time,
+            body: song.body,
+            status: song.status,
+          );
+          await DBProvider.db.newSong(copy);
+          await _loadSongs();
+          if (mounted) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('"${copy.title}" importata!')));
+          }
+        case ConflictPolicy.replace:
+          existing.body = song.body;
+          existing.author = song.author;
+          await DBProvider.db.updateSong(existing);
+          await _loadSongs();
+          if (mounted) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('"${existing.title}" aggiornata!')));
+          }
+        case ConflictPolicy.skip:
+          break;
+      }
     } else {
       await DBProvider.db.newSong(song);
       await _loadSongs();
@@ -236,62 +266,6 @@ class _SongUlStatelessState extends State<SongUlStateless> {
         );
       }
     }
-  }
-
-  Future<void> _showConflictDialog(
-      BuildContext context, Song newSong, Song existingSong) async {
-    await showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Canzone già esistente'),
-        content: Text('"${existingSong.title}"'
-            '${existingSong.author != null ? ' di ${existingSong.author}' : ''}'
-            ' è già presente. Cosa vuoi fare?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('ANNULLA'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              final copy = Song(
-                id: newSong.id,
-                title: '${newSong.title} (2)',
-                author: newSong.author,
-                time: newSong.time,
-                body: newSong.body,
-                status: newSong.status,
-              );
-              await DBProvider.db.newSong(copy);
-              await _loadSongs();
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('"${copy.title}" importata!')),
-                );
-              }
-            },
-            child: const Text('MANTIENI ENTRAMBE'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              existingSong.body = newSong.body;
-              existingSong.author = newSong.author;
-              await DBProvider.db.updateSong(existingSong);
-              await _loadSongs();
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text('"${existingSong.title}" aggiornata!')),
-                );
-              }
-            },
-            child: const Text('SOSTITUISCI'),
-          ),
-        ],
-      ),
-    );
   }
 
   // ── List UI ─────────────────────────────────────────────────────────────────

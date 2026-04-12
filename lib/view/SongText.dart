@@ -29,10 +29,10 @@ class SongText extends StatefulWidget {
 }
 
 class SongTextState extends State<SongText> {
-  final RegExp expChord = RegExp(r'\[([^\]]*)\]');
-  final RegExp expComment = RegExp(r'.*\{(.*)\}.*');
-  final RegExp expCommentL = RegExp(r'.*\{([a-zA-Z0-9_ ]*):(.*)\}.*');
-  final RegExp expInlineChorus =
+  static final RegExp expChord = RegExp(r'\[([^\]]*)\]');
+  static final RegExp expComment = RegExp(r'.*\{(.*)\}.*');
+  static final RegExp expCommentL = RegExp(r'.*\{([a-zA-Z0-9_ ]*):(.*)\}.*');
+  static final RegExp expInlineChorus =
       RegExp(r'.*\{(soc|start_of_chorus)\}(.*)\{(eoc|end_of_chorus)\}.*');
   // Matches bare directives (no colon) with optional attributes, e.g. {sov label="Strofa 1"}
   // \s* allows a space after { (e.g. { soc} found in some song bodies)

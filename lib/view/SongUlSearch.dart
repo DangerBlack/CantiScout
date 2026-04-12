@@ -20,18 +20,18 @@ class _SongUlSearchState extends State<SongUlSearchStateful> {
   @override
   void initState() {
     super.initState();
-    _load(widget.search);
+    _loadSongs(widget.search);
   }
 
   @override
   void didUpdateWidget(SongUlSearchStateful oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.search != widget.search) {
-      _load(widget.search);
+      _loadSongs(widget.search);
     }
   }
 
-  Future<void> _load(String search) async {
+  Future<void> _loadSongs(String search) async {
     final list = await DBProvider.db.getSongs(search);
     if (mounted) setState(() => _songs = list);
   }
