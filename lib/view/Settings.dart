@@ -12,6 +12,7 @@ import '../model/Constants.dart';
 import '../model/Song.dart';
 import '../view/BleReceiveView.dart';
 import '../view/BleSendView.dart';
+import '../view/QrReceiveView.dart';
 
 class SettingsStateful extends StatefulWidget {
   const SettingsStateful({Key? key, this.title, this.onImportComplete})
@@ -308,6 +309,14 @@ class Settings extends State<SettingsStateful> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const BleReceiveView()),
+          ).then((_) => widget.onImportComplete?.call()),
+        ),
+        ListTile(
+          leading: const Icon(Icons.qr_code_scanner),
+          title: const Text('Scansiona QR'),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const QrReceiveView()),
           ).then((_) => widget.onImportComplete?.call()),
         ),
         const Divider(),

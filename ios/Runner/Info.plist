@@ -105,6 +105,8 @@
 			</dict>
 		</dict>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Utilizziamo la fotocamera per ricevere canzoni tramite QR code animato.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Utilizziamo il Bluetooth per trasferire canzoni con altri dispositivi.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>

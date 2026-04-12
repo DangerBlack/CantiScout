@@ -7,6 +7,7 @@ import '../controller/PdfController.dart';
 import '../model/Playlist.dart';
 import '../model/Song.dart';
 import '../view/BleSendView.dart';
+import '../view/QrSendView.dart';
 import '../view/SongText.dart';
 
 class SongUlPlaylistStateless extends StatefulWidget {
@@ -67,6 +68,91 @@ Future<void> _confirmRemove(
     }
   }
 
+  void _showShareSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.picture_as_pdf),
+              title: const Text('Esporta PDF'),
+              onTap: () async {
+                Navigator.pop(ctx);
+                try {
+                  final songs = await DBProvider.db
+                      .getAllPlaylistSongs(widget.playlistId);
+                  await PdfController.exportPlaylistToPdf(songs, widget.title);
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Errore export PDF: $e')));
+                  }
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.archive),
+              title: const Text('Esporta .chopack'),
+              onTap: () async {
+                Navigator.pop(ctx);
+                try {
+                  final songs = await DBProvider.db
+                      .getAllPlaylistSongs(widget.playlistId);
+                  final playlist = Playlist(
+                    id: widget.playlistId,
+                    title: widget.title,
+                    time: DateTime.now().toIso8601String(),
+                  );
+                  await ChopackController.exportPack(songs, widget.title,
+                      playlist: playlist);
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Errore esportazione: $e')));
+                  }
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.bluetooth),
+              title: const Text('Invia via Bluetooth'),
+              onTap: () {
+                Navigator.pop(ctx);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BleSendView(
+                      playlistId: widget.playlistId,
+                      playlistName: widget.title,
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.qr_code),
+              title: const Text('Condividi via QR'),
+              onTap: () {
+                Navigator.pop(ctx);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => QrSendView(
+                      playlistId: widget.playlistId,
+                      playlistName: widget.title,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildRow(BuildContext context, Song song, int index) {
     return ListTile(
       leading: const Icon(Icons.music_note),
@@ -89,55 +175,9 @@ Future<void> _confirmRemove(
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.picture_as_pdf),
-            tooltip: 'Esporta PDF',
-            onPressed: () async {
-              try {
-                final songs =
-                    await DBProvider.db.getAllPlaylistSongs(widget.playlistId);
-                await PdfController.exportPlaylistToPdf(songs, widget.title);
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Errore export PDF: $e')));
-                }
-              }
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.archive),
-            tooltip: 'Esporta playlist (.chopack)',
-            onPressed: () async {
-              try {
-                final songs = await DBProvider.db.getAllPlaylistSongs(widget.playlistId);
-                final playlist = Playlist(
-                  id: widget.playlistId,
-                  title: widget.title,
-                  time: DateTime.now().toIso8601String(),
-                );
-                await ChopackController.exportPack(songs, widget.title, playlist: playlist);
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Errore esportazione: $e')));
-                }
-              }
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.bluetooth),
-            tooltip: 'Invia via Bluetooth',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => BleSendView(
-                    playlistId: widget.playlistId,
-                    playlistName: widget.title,
-                  ),
-                ),
-              );
-            },
+            icon: const Icon(Icons.share),
+            tooltip: 'Condividi',
+            onPressed: () => _showShareSheet(context),
           ),
         ],
       ),
