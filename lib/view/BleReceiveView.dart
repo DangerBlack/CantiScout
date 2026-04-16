@@ -90,8 +90,9 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       if (!mounted) return;
       setState(() {
         for (final r in results) {
-          if (!_scanResults
-              .any((e) => e.device.remoteId == r.device.remoteId)) {
+          if (!_scanResults.any(
+            (e) => e.device.remoteId == r.device.remoteId,
+          )) {
             _scanResults.add(r);
           }
         }
@@ -201,7 +202,8 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       if (mounted) {
         setState(() {
           _status = _Status.error;
-          _errorMessage = 'Errore di connessione: $e\n\n'
+          _errorMessage =
+              'Errore di connessione: $e\n\n'
               'Prova a disattivare e riattivare il Bluetooth, poi riprova.';
         });
       }
@@ -236,8 +238,10 @@ class _BleReceiveViewState extends State<BleReceiveView> {
     final conflicts = <Song>[];
     final newSongs = <Song>[];
     for (final song in songs) {
-      final existing =
-          await DBProvider.db.getSongByTitleAuthor(song.title, song.author);
+      final existing = await DBProvider.db.getSongByTitleAuthor(
+        song.title,
+        song.author,
+      );
       if (existing != null) {
         conflicts.add(song);
       } else {
@@ -257,8 +261,10 @@ class _BleReceiveViewState extends State<BleReceiveView> {
     _importedCount = newSongs.length;
 
     if (conflicts.isNotEmpty && mounted) {
-      final policy = await showBulkConflictDialog(context,
-          conflictCount: conflicts.length);
+      final policy = await showBulkConflictDialog(
+        context,
+        conflictCount: conflicts.length,
+      );
       if (policy != null) {
         await _applyConflictPolicy(conflicts, policy, idMap);
       } else {
@@ -284,7 +290,10 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       switch (policy) {
         case ConflictPolicy.keepBoth:
           final newSong = Song.create(
-              title: '${song.title} (2)', author: song.author, body: song.body);
+            title: '${song.title} (2)',
+            author: song.author,
+            body: song.body,
+          );
           await DBProvider.db.newSong(newSong);
           if (tagStrings.isNotEmpty) {
             await ChopackController.saveTags(newSong.id, tagStrings);
@@ -292,8 +301,10 @@ class _BleReceiveViewState extends State<BleReceiveView> {
           idMap[song.id] = newSong.id;
           _importedCount++;
         case ConflictPolicy.replace:
-          final existing =
-              await DBProvider.db.getSongByTitleAuthor(song.title, song.author);
+          final existing = await DBProvider.db.getSongByTitleAuthor(
+            song.title,
+            song.author,
+          );
           if (existing != null) {
             existing.body = song.body;
             existing.author = song.author;
@@ -315,8 +326,9 @@ class _BleReceiveViewState extends State<BleReceiveView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(title: Text(AppLocalizations.of(context).receive_songs_title)),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).receive_songs_title),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -410,8 +422,11 @@ class _BleReceiveViewState extends State<BleReceiveView> {
             child: Column(
               children: [
                 const SizedBox(height: 32),
-                Icon(Icons.bluetooth_disabled,
-                    size: 64, color: Colors.grey[400]),
+                Icon(
+                  Icons.bluetooth_disabled,
+                  size: 64,
+                  color: Colors.grey[400],
+                ),
                 const SizedBox(height: 12),
                 Text(
                   'Nessun dispositivo CantScout trovato.\nAssicurati che l\'altro dispositivo stia inviando.',
@@ -441,8 +456,9 @@ class _BleReceiveViewState extends State<BleReceiveView> {
                 return ListTile(
                   leading: const Icon(Icons.bluetooth, color: Colors.blue),
                   title: Text(name),
-                  subtitle:
-                      Text(AppLocalizations.of(context).signal_strength(rssi)),
+                  subtitle: Text(
+                    AppLocalizations.of(context).signal_strength(rssi),
+                  ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _connectToDevice(r.device),
                 );
@@ -499,8 +515,10 @@ class _BleReceiveViewState extends State<BleReceiveView> {
           const SizedBox(height: 8),
           Text(loc.qr_imported_count(_importedCount)),
           if (_skippedCount > 0)
-            Text(loc.ble_skipped_count(_skippedCount),
-                style: TextStyle(color: Colors.grey[600])),
+            Text(
+              loc.ble_skipped_count(_skippedCount),
+              style: TextStyle(color: Colors.grey[600]),
+            ),
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
@@ -526,22 +544,24 @@ class _BleReceiveViewState extends State<BleReceiveView> {
 
   Widget _buildError() {
     final loc = AppLocalizations.of(context);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(Icons.error_outline, size: 72, color: Colors.red),
-        const SizedBox(height: 16),
-        Text(
-          _errorMessage,
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.red),
-        ),
-        const SizedBox(height: 32),
-        ElevatedButton(
-          onPressed: () => setState(() => _status = _Status.idle),
-          child: Text(loc.try_again),
-        ),
-      ],
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.error_outline, size: 72, color: Colors.red),
+          const SizedBox(height: 16),
+          Text(
+            _errorMessage,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red),
+          ),
+          const SizedBox(height: 32),
+          ElevatedButton(
+            onPressed: () => setState(() => _status = _Status.idle),
+            child: Text(loc.try_again),
+          ),
+        ],
+      ),
     );
   }
 }
