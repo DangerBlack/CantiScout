@@ -143,14 +143,11 @@ class _BleReceiveViewState extends State<BleReceiveView> {
       BluetoothCharacteristic? controlChar;
 
       for (final service in services) {
-        if (service.uuid.toString().toUpperCase() ==
-            BleTransferController.kServiceUuid.toUpperCase()) {
+        if (service.uuid == Guid(BleTransferController.kServiceUuid)) {
           for (final char in service.characteristics) {
-            final uuid = char.uuid.toString().toUpperCase();
-            if (uuid == BleTransferController.kDataCharUuid.toUpperCase()) {
+            if (char.uuid == Guid(BleTransferController.kDataCharUuid)) {
               dataChar = char;
-            } else if (uuid ==
-                BleTransferController.kControlCharUuid.toUpperCase()) {
+            } else if (char.uuid == Guid(BleTransferController.kControlCharUuid)) {
               controlChar = char;
             }
           }
