@@ -1,7 +1,7 @@
 import UIKit
 import Flutter
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
     private let channelName = "cantiscout/file_intent"
 
