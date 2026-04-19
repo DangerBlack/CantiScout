@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn ChordPro format - the standard for writing songs with chords and lyrics. Complete beginner's guide with examples.">
+  <meta name="theme-color" content="#2D3079">
+  <title>ChordPro Guide – CantiScout</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg">
+</head>
+<body>
+
+  <header>
+    <nav>
+      <a href="index.html" class="logo">
+        <img src="assets/images/logo.svg" alt="CantiScout Logo">
+        CantiScout
+      </a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html#features">Features</a></li>
+        <li><a href="chordpro.html">ChordPro</a></li>
+        <li><a href="index.html#download">Download</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="page-content">
+    <h1>What is ChordPro?</h1>
+    <p class="page-subtitle">The universal format for songs with chords and lyrics</p>
+
+    <section>
+      <h2>Why ChordPro?</h2>
+      <p>ChordPro is a simple text format that has been the standard for songbooks for over 30 years. It was designed to be:</p>
+      <ul>
+        <li><strong>Human-readable:</strong> you can read and edit it in any text editor</li>
+        <li><strong>Compact:</strong> a complete song fits in a few kilobytes</li>
+        <li><strong>Universal:</strong> supported by hundreds of apps and websites</li>
+        <li><strong>Offline-friendly:</strong> no special software needed to view or edit</li>
+        <li><strong>Print-ready:</strong> easily converted to PDF or paper songbooks</li>
+      </ul>
+      <p>When you write a song in ChordPro, you're creating a file that will work forever — even if apps come and go.</p>
+    </section>
+
+    <section>
+      <h2>Basic Syntax</h2>
+      <p>ChordPro uses two main elements:</p>
+
+      <h3>1. Directives (Metadata)</h3>
+      <p>Directives are enclosed in curly braces and provide information about the song:</p>
+
+      <pre class="code-example"><span class="directive">{title: Scouting for boys (Pronti a servire)}</span>
+<span class="directive">{subtitle: Traditional Scout Song}</span>
+<span class="directive">{key: C}</span>
+<span class="directive">{capo: 2}</span>
+<span class="directive">{time: 4/4}</span>
+<span class="directive">{tempo: Moderate}</span></pre>
+
+      <p><strong>Common directives:</strong></p>
+      <ul>
+        <li><code>{title: Song Name}</code> — the song title (shorthand: <code>{t:}</code>)</li>
+        <li><code>{subtitle: Subtitle}</code> — optional subtitle or alternate name (shorthand: <code>{st:}</code>)</li>
+        <li><code>{key: G}</code> — original key of the song</li>
+        <li><code>{capo: 2}</code> — capo position (fret number)</li>
+        <li><code>{time: 4/4}</code> — time signature</li>
+        <li><code>{tempo: 120}</code> — tempo in BPM</li>
+        <li><code>{artist: Name}</code> — original artist or composer</li>
+        <li><code>{copyright: © 2025}</code> — copyright information</li>
+      </ul>
+
+      <h3>2. Chords and Lyrics</h3>
+      <p>Chords are placed <strong>inline</strong> using square brackets, right before the syllable where they change:</p>
+
+      <pre class="code-example"><span class="chord">[Do]</span>Eravamo <span class="chord">[Sol]</span>ragazzi ancora<span class="chord">[La-]</span>
+con il tempo<span class="chord">[Fa]</span> aperto da<span class="chord">[Sol]</span>vanti</pre>
+
+      <p>Both Italian chord names (<code>Do</code>, <code>Re</code>, <code>Sol</code>, <code>La-</code>, <code>Fa</code>) and English names (<code>C</code>, <code>D</code>, <code>G</code>, <code>Am</code>, <code>F</code>) are supported.</p>
+    </section>
+
+    <section>
+      <h2>Song Structure</h2>
+      <p>Organize your song into sections using section directives:</p>
+
+      <pre class="code-example"><span class="directive">{start_of_verse}</span>
+<span class="chord">[Do]</span>Eravamo <span class="chord">[Sol]</span>ragazzi ancora<span class="chord">[La-]</span>
+con il tempo<span class="chord">[Fa]</span> aperto da<span class="chord">[Sol]</span>vanti
+i giorni più lunghi coi calzoni corti,
+a caccia di vento i semplici canti.
+<span class="directive">{end_of_verse}</span>
+
+<span class="directive">{soc}</span>
+<span class="chord">[Do]</span>Va più in<span class="chord">[Sol]</span> su, più<span class="chord">[La-]</span> in là <span class="chord">[Fa]</span> cont<span class="chord">[Sol]</span>ro vento
+è lotta dura ma tendi lo spago
+se sta a cuore a noi non è vana
+speranza cambierà: oltre la siepe va.
+<span class="directive">{eoc}</span></pre>
+
+      <p><strong>Section types:</strong></p>
+      <ul>
+        <li><code>{start_of_verse}</code> / <code>{end_of_verse}</code> — standard verse (shorthand: <code>{sov}</code> / <code>{eov}</code>)</li>
+        <li><code>{start_of_chorus}</code> / <code>{end_of_chorus}</code> — chorus or refrain (shorthand: <code>{soc}</code> / <code>{eoc}</code>)</li>
+        <li><code>{start_of_bridge}</code> / <code>{end_of_bridge}</code> — bridge section (shorthand: <code>{sob}</code> / <code>{eob}</code>)</li>
+        <li><code>{start_of_intro}</code> / <code>{end_of_intro}</code> — introduction</li>
+        <li><code>{start_of_outro}</code> / <code>{end_of_outro}</code> — outro or ending</li>
+        <li><code>{start_of_solo}</code> / <code>{end_of_solo}</code> — instrumental solo</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Complete Example</h2>
+      <p>Here's a classic Italian Scout song in ChordPro format:</p>
+
+      <pre class="code-example"><span class="directive">{t:Scouting for boys (Pronti a servire)}</span>
+<span class="directive">{key: C}</span>
+<span class="directive">{time: 4/4}</span>
+
+<span class="directive">{start_of_verse}</span>
+<span class="chord">[Do]</span>Eravamo <span class="chord">[Sol]</span>ragazzi ancora<span class="chord">[La-]</span>
+con il tempo<span class="chord">[Fa]</span> aperto da<span class="chord">[Sol]</span>vanti
+i giorni più lunghi coi calzoni corti,
+a caccia di vento i semplici canti.
+La carta e la colla insieme, incrociare due canne più forti:
+legate allo spago le nostre speranze,
+nei nostri aquiloni i sogni mai morti.
+<span class="directive">{end_of_verse}</span>
+
+<span class="directive">{soc}</span>
+<span class="chord">[Do]</span>Va più in<span class="chord">[Sol]</span> su, più<span class="chord">[La-]</span> in là <span class="chord">[Fa]</span> cont<span class="chord">[Sol]</span>ro vento
+è lotta dura ma tendi lo spago
+se sta a cuore a noi non è vana
+speranza cambierà: oltre la siepe va.
+<span class="directive">{eoc}</span></pre>
+
+      <p>Chords go inline with lyrics using square brackets. The shorthand <code>{t:}</code> works like <code>{title:}</code>, and <code>{soc}</code>/<code>{eoc}</code> are short for start/end of chorus.</p>
+    </section>
+
+    <section>
+      <h2>Advanced Features</h2>
+
+      <h3>Shorthand Directives</h3>
+      <p>Many directives have short aliases for faster typing:</p>
+      <pre class="code-example"><span class="directive">{t:Song Title}</span>        <span class="comment-text">→ same as {title:Song Title}</span>
+<span class="directive">{st:Subtitle}</span>         <span class="comment-text">→ same as {subtitle:Subtitle}</span>
+<span class="directive">{soc}</span> / <span class="directive">{eoc}</span>         <span class="comment-text">→ start/end of chorus</span>
+<span class="directive">{sov}</span> / <span class="directive">{eov}</span>         <span class="comment-text">→ start/end of verse</span>
+<span class="directive">{sob}</span> / <span class="directive">{eob}</span>         <span class="comment-text">→ start/end of bridge</span>
+<span class="directive">{c:A note here}</span>       <span class="comment-text">→ same as {comment:A note here}</span></pre>
+
+      <h3>Transposition</h3>
+      <p>CantiScout can automatically transpose songs. Just set the key and capo, and the app handles the rest — useful for adapting songs to different vocal ranges.</p>
+
+      <h3>Comments</h3>
+      <p>Add performance notes that are displayed separately from the lyrics:</p>
+      <pre class="code-example"><span class="directive">{comment: Play this section softly}</span>
+<span class="directive">{comment: Repeat chorus twice}</span></pre>
+    </section>
+
+    <section>
+      <h2>Tips for Beginners</h2>
+      <ul>
+        <li><strong>Start simple:</strong> just add a title and inline chords. Add other directives later.</li>
+        <li><strong>Place chords right before the syllable:</strong> <code>[Sol]rag</code> means Sol changes on "rag".</li>
+        <li><strong>Keep it clean:</strong> no need to hyphenate syllables, just write naturally.</li>
+        <li><strong>Be consistent:</strong> use the same section naming throughout your songbook.</li>
+        <li><strong>Test in the app:</strong> preview your songs to ensure chords align correctly.</li>
+        <li><strong>Keep backups:</strong> export your songs regularly as .chopack files.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Resources</h2>
+      <ul>
+        <li>
+          <a href="https://www.chordpro.org/" target="_blank" rel="noopener noreferrer">
+            Official ChordPro Specification
+          </a> — complete documentation and format reference
+        </li>
+        <li>
+          <a href="https://github.com/ChordPro" target="_blank" rel="noopener noreferrer">
+            ChordPro on GitHub
+          </a> — open-source tools and libraries
+        </li>
+        <li>
+          <a href="index.html#download">Download CantiScout</a> — start writing songs today
+        </li>
+      </ul>
+    </section>
+
+    <div class="cta-box">
+      <h3>Ready to start?</h3>
+      <p>Download CantiScout and begin writing your songs in ChordPro format. The app includes a built-in editor with live preview, so you can see how your songs look as you type.</p>
+      <a href="index.html#download" class="btn btn-primary" style="margin-top: 0.75rem;">Get CantiScout</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>CantiScout</h4>
+          <p>Free, open-source mobile songbook for Scout groups and anyone who sings together outdoors.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="chordpro.html">ChordPro Guide</a></li>
+            <li><a href="index.html#download">Download</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="https://github.com/DangerBlack/CantiScout" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 CantiScout Contributors. MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      hamburger.classList.toggle('active', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen);
+    });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', false);
+      });
+    });
+  </script>
+
+</body>
+</html>

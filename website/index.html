@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CantiScout - A mobile songbook built for places where the internet doesn't reach. Offline-first, Bluetooth sharing, ChordPro support.">
+  <meta name="theme-color" content="#2D3079">
+  <meta property="og:title" content="CantiScout – Your Offline Songbook">
+  <meta property="og:description" content="Free, open-source mobile songbook for Scout groups. Bluetooth sharing, ChordPro format, PDF export – no internet needed.">
+  <meta property="og:image" content="assets/images/logo.svg">
+  <title>CantiScout – Your Offline Songbook</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg">
+</head>
+<body>
+
+  <header>
+    <nav>
+      <a href="index.html" class="logo">
+        <img src="assets/images/logo.svg" alt="CantiScout Logo">
+        CantiScout
+      </a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="chordpro.html">ChordPro</a></li>
+        <li><a href="#screenshots">Screenshots</a></li>
+        <li><a href="#download">Download</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <img src="assets/images/logo.svg" alt="CantiScout Logo" class="hero-logo">
+      <h1>A mobile songbook built for places where the internet doesn't reach</h1>
+      <p>Free, open-source app for Scout groups and anyone who sings together outdoors. No server, no account, no connectivity required.</p>
+      <div class="hero-buttons">
+        <a href="#download" class="btn btn-primary">Get the App</a>
+        <a href="chordpro.html" class="btn btn-outline">Learn ChordPro</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="section-title">Everything you need for outdoor singing</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🏕️</div>
+          <h3>100% Offline</h3>
+          <p>The entire library lives on your device. No internet connection required. Perfect for mountain tops, cliff campsites, and forest clearings.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📡</div>
+          <h3>Bluetooth Sharing</h3>
+          <p>Songs travel between devices over Bluetooth Low Energy. No Wi-Fi, no hotspot, no cables. Share your entire library with nearby devices.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎸</div>
+          <h3>ChordPro Support</h3>
+          <p>Write and edit songs in standard ChordPro format. Chords render above lyrics at any font size. Perfect for beginners and experienced players alike.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📦</div>
+          <h3>.chopack Bundles</h3>
+          <p>ZIP-based format carries songs, tags, and playlists together. Share via messaging apps, email, or USB when Bluetooth isn't practical.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Smart Search</h3>
+          <p>Full-text search finds songs by title, author, or lyric fragment. Organize with playlists and tags by context: mass, campfire, evening song.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <h3>PDF Export</h3>
+          <p>Export playlists as print-ready PDF carnets. Share single songs as scannable QR codes. Multiple monospace fonts and adjustable sizes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ChordPro -->
+  <section id="chordpro" class="chordpro-section">
+    <div class="container">
+      <h2 class="section-title">What is ChordPro?</h2>
+      <p class="section-intro">
+        A simple text format that embeds chords inline with lyrics using square brackets.
+        The standard for songbooks for decades — human-readable, easy to type, works offline.
+      </p>
+
+      <pre class="code-example"><span class="directive">{t:Scouting for boys (Pronti a servire)}</span>
+<span class="directive">{key: C}</span>
+
+<span class="directive">{start_of_verse}</span>
+<span class="chord">[Do]</span>Eravamo <span class="chord">[Sol]</span>ragazzi ancora<span class="chord">[La-]</span>
+con il tempo<span class="chord">[Fa]</span> aperto da<span class="chord">[Sol]</span>vanti
+<span class="directive">{end_of_verse}</span>
+
+<span class="directive">{soc}</span>
+<span class="chord">[Do]</span>Va più in<span class="chord">[Sol]</span> su, più<span class="chord">[La-]</span> in là <span class="chord">[Fa]</span> cont<span class="chord">[Sol]</span>ro vento
+è lotta dura ma tendi lo spago
+<span class="directive">{eoc}</span></pre>
+
+      <ul class="chordpro-keyfeatures">
+        <li><strong>Directives</strong> like <code>{title}</code>, <code>{key}</code>, <code>{capo}</code> define song metadata</li>
+        <li><strong>Chords</strong> go inline with <code>[brackets]</code> right before the syllable where they change</li>
+        <li><strong>Sections</strong> use <code>{start_of_verse}</code>, <code>{soc}</code>/<code>{eoc}</code>, <code>{start_of_bridge}</code></li>
+        <li><strong>Plain text</strong> — anyone can read or edit it, even without the app</li>
+      </ul>
+
+      <p style="margin-top: 1.5rem;">
+        <a href="chordpro.html" style="color: var(--primary-green); font-weight: 600;">
+          Full ChordPro guide →
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Screenshots -->
+  <section id="screenshots" class="screenshots">
+    <h2 class="section-title">See CantiScout in Action</h2>
+    <p class="section-intro">Everything you need around the campfire, right in your pocket.</p>
+
+    <div class="carousel-wrapper">
+      <button class="carousel-btn carousel-prev" aria-label="Previous">&#8249;</button>
+
+      <div class="carousel-track">
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-01-home.jpg" alt="Song Library">
+          </div>
+          <p class="carousel-label">Song Library</p>
+        </div>
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-02-editor.jpg" alt="ChordPro Editor">
+          </div>
+          <p class="carousel-label">ChordPro Editor</p>
+        </div>
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-03-viewer.jpg" alt="Song Viewer">
+          </div>
+          <p class="carousel-label">Song Viewer</p>
+        </div>
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-03-viewer-share.jpg" alt="Share Song">
+          </div>
+          <p class="carousel-label">Share Song</p>
+        </div>
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-04-bluetooth.jpg" alt="Bluetooth Sharing">
+          </div>
+          <p class="carousel-label">Bluetooth Sharing</p>
+        </div>
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-05-playlists.jpg" alt="Playlists">
+          </div>
+          <p class="carousel-label">Playlists</p>
+        </div>
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-05-playlist-share.jpg" alt="Share Playlist">
+          </div>
+          <p class="carousel-label">Share Playlist</p>
+        </div>
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-06-settings-top.jpg" alt="Settings">
+          </div>
+          <p class="carousel-label">Settings</p>
+        </div>
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-06-settings-bottom.jpg" alt="More Settings">
+          </div>
+          <p class="carousel-label">More Settings</p>
+        </div>
+        <div class="carousel-slide">
+          <div class="carousel-card">
+            <img src="assets/gallery/screenshot-07-share-qr-code.jpg" alt="QR Code Share">
+          </div>
+          <p class="carousel-label">QR Code Share</p>
+        </div>
+      </div>
+
+      <button class="carousel-btn carousel-next" aria-label="Next">&#8250;</button>
+    </div>
+
+    <div class="carousel-dots" aria-label="Slide indicators"></div>
+  </section>
+
+  <!-- Download -->
+  <section id="download" class="download">
+    <div class="container">
+      <h2>Ready to sing?</h2>
+      <p>CantiScout is free and open-source. Download it today and start building your offline songbook.</p>
+      <div class="download-badges">
+        <a href="https://play.google.com/store/apps/details?id=danielebaschieri.eu.cantiscout"
+           class="download-badge"
+           target="_blank"
+           rel="noopener noreferrer">
+          <span>🤖</span> Get it on Google Play
+        </a>
+        <span class="download-badge coming-soon">
+          <span>🍎</span> App Store – Coming Soon
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>CantiScout</h4>
+          <p>Free, open-source mobile songbook for Scout groups and anyone who sings together outdoors.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="chordpro.html">ChordPro Guide</a></li>
+            <li><a href="#download">Download</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="https://github.com/DangerBlack/CantiScout" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>About</h4>
+          <p>Created by Daniele Baschieri (DangerBlack). Privacy-focused and offline-first.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 CantiScout Contributors. MIT License.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Carousel ── */
+    (function () {
+      const track = document.querySelector('.carousel-track');
+      const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+      const dotsContainer = document.querySelector('.carousel-dots');
+      const prevBtn = document.querySelector('.carousel-prev');
+      const nextBtn = document.querySelector('.carousel-next');
+
+      // Build dots
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot';
+        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+      });
+
+      const dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
+
+      function getActiveIndex() {
+        const center = track.scrollLeft + track.clientWidth / 2;
+        let closest = 0, minDist = Infinity;
+        slides.forEach((s, i) => {
+          const dist = Math.abs((s.offsetLeft + s.offsetWidth / 2) - center);
+          if (dist < minDist) { minDist = dist; closest = i; }
+        });
+        return closest;
+      }
+
+      function update() {
+        const i = getActiveIndex();
+        slides.forEach((s, j) => s.classList.toggle('active', j === i));
+        dots.forEach((d, j) => d.classList.toggle('active', j === i));
+      }
+
+      function goTo(index) {
+        const target = slides[Math.max(0, Math.min(index, slides.length - 1))];
+        target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+
+      prevBtn.addEventListener('click', () => goTo(getActiveIndex() - 1));
+      nextBtn.addEventListener('click', () => goTo(getActiveIndex() + 1));
+      track.addEventListener('scroll', update, { passive: true });
+
+      // Wheel → horizontal scroll, pass through at boundaries
+      document.querySelector('#screenshots').addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+        const atStart = track.scrollLeft <= 0 && e.deltaY < 0;
+        const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1 && e.deltaY > 0;
+        if (atStart || atEnd) return;
+        e.preventDefault();
+        track.scrollBy({ left: e.deltaY * 1.5, behavior: 'smooth' });
+      }, { passive: false });
+
+      // Autoplay — pause on interaction
+      let timer = setInterval(() => goTo((getActiveIndex() + 1) % slides.length), 3200);
+      const pause = () => { clearInterval(timer); timer = null; };
+      track.addEventListener('pointerdown', pause, { once: true });
+      prevBtn.addEventListener('click', pause);
+      nextBtn.addEventListener('click', pause);
+
+      // Init
+      goTo(0);
+      setTimeout(update, 50);
+    })();
+
+    /* ── Mobile nav ── */
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      hamburger.classList.toggle('active', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen);
+    });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', false);
+      });
+    });
+  </script>
+
+</body>
+</html>
