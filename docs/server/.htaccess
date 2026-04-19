@@ -4,7 +4,6 @@
 RewriteEngine On
 
 # Specific page mappings (order matters — specific before catch-all)
-RewriteRule ^donate\.html$   https://ko-fi.com/dangerblack                        [R=301,L]
 RewriteRule ^guide\.html$    https://dangerblack.github.io/CantiScout/chordpro.html [R=301,L]
 RewriteRule ^tos\.html$      https://dangerblack.github.io/CantiScout/terms.html [R=301,L]
 RewriteRule ^chorpro\.html$  https://dangerblack.github.io/CantiScout/chordpro.html [R=301,L]

@@ -87,7 +87,6 @@ class MessageLookup extends MessageLookupByLibrary {
     'dialog_confirm': MessageLookupByLibrary.simpleMessage('Conferma'),
     'dismiss': MessageLookupByLibrary.simpleMessage('CHIUDI'),
     'do_you_want_to_remove': MessageLookupByLibrary.simpleMessage('Vuoi rimuovere \"###\" dalla playlist:'),
-    'donate': MessageLookupByLibrary.simpleMessage('Dona'),
     'done': MessageLookupByLibrary.simpleMessage('FATTO'),
     'edit': MessageLookupByLibrary.simpleMessage('Modifica'),
     'edit_song': MessageLookupByLibrary.simpleMessage('Modifica la canzone: '),

@@ -269,10 +269,6 @@ class AppLocalizations {
     return Intl.message('Guida', name: 'guide', desc: 'Homepage: Guida');
   }
 
-  String get donate {
-    return Intl.message('Dona', name: 'donate', desc: 'Homepage: Donate');
-  }
-
   String get songs_list {
     return Intl.message('Elenco Canzoni',
         name: 'songs_list', desc: 'Homepage: Settings');

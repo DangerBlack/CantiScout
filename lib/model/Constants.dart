@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class Constants {
   // External URLs
-  static const String urlDonation = "https://ko-fi.com/dangerblack";
   static const String urlGuide = "https://dangerblack.github.io/CantiScout/chordpro.html";
   static const String urlTos = "https://dangerblack.github.io/CantiScout/terms.html";
   static const String urlChordPro = "https://dangerblack.github.io/CantiScout/chordpro.html";
