@@ -315,8 +315,8 @@ con il tempo<span class="chord">[Fa]</span> aperto da<span class="chord">[Sol]</
       prevBtn.addEventListener('click', pause);
       nextBtn.addEventListener('click', pause);
 
-      // Init
-      goTo(0);
+      // Init — use scrollLeft directly to avoid scrollIntoView jumping the page
+      track.scrollLeft = 0;
       setTimeout(update, 50);
     })();
 
