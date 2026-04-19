@@ -290,8 +290,10 @@ con il tempo<span class="chord">[Fa]</span> aperto da<span class="chord">[Sol]</
       }
 
       function goTo(index) {
-        const target = slides[Math.max(0, Math.min(index, slides.length - 1))];
-        target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        const i = Math.max(0, Math.min(index, slides.length - 1));
+        const slide = slides[i];
+        const target = slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2;
+        track.scrollTo({ left: target, behavior: 'smooth' });
       }
 
       prevBtn.addEventListener('click', () => goTo(getActiveIndex() - 1));
@@ -308,14 +310,15 @@ con il tempo<span class="chord">[Fa]</span> aperto da<span class="chord">[Sol]</
         track.scrollBy({ left: e.deltaY * 1.5, behavior: 'smooth' });
       }, { passive: false });
 
-      // Autoplay — pause on interaction
-      let timer = setInterval(() => goTo((getActiveIndex() + 1) % slides.length), 3200);
+      // Autoplay — desktop only, pause on interaction
+      const isMobile = window.matchMedia('(hover: none)').matches;
+      let timer = isMobile ? null : setInterval(() => goTo((getActiveIndex() + 1) % slides.length), 3200);
       const pause = () => { clearInterval(timer); timer = null; };
       track.addEventListener('pointerdown', pause, { once: true });
       prevBtn.addEventListener('click', pause);
       nextBtn.addEventListener('click', pause);
 
-      // Init — use scrollLeft directly to avoid scrollIntoView jumping the page
+      // Init
       track.scrollLeft = 0;
       setTimeout(update, 50);
     })();
