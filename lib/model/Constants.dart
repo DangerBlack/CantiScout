@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class Constants {
   // External URLs
-  static const String urlDonation = "https://www.512b.it/cantiscout/donate.html";
-  static const String urlGuide = "https://www.512b.it/cantiscout/guide.html";
-  static const String urlTos = "https://www.512b.it/cantiscout/tos.html";
-  static const String urlChordPro = "https://www.512b.it/cantiscout/chordpro.html";
+  static const String urlDonation = "https://www.512b.it/cantiscout/donate.html"; // TODO: update when donation page is ready
+  static const String urlGuide = "https://dangerblack.github.io/CantiScout/chordpro.html";
+  static const String urlTos = "https://dangerblack.github.io/CantiScout/terms.html";
+  static const String urlChordPro = "https://dangerblack.github.io/CantiScout/chordpro.html";
 
   // Display settings keys
   static const String sharedDefaultFontSize = "defaultFontSize";

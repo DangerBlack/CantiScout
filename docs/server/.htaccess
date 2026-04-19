@@ -1,0 +1,14 @@
+# Place this file in the cantiscout/ directory on the 512b.it Apache server.
+# It redirects all old URLs to the new GitHub Pages site.
+
+RewriteEngine On
+
+# Specific page mappings (order matters — specific before catch-all)
+RewriteRule ^donate\.html$   https://dangerblack.github.io/CantiScout/           [R=301,L]
+RewriteRule ^guide\.html$    https://dangerblack.github.io/CantiScout/chordpro.html [R=301,L]
+RewriteRule ^tos\.html$      https://dangerblack.github.io/CantiScout/terms.html [R=301,L]
+RewriteRule ^chorpro\.html$  https://dangerblack.github.io/CantiScout/chordpro.html [R=301,L]
+RewriteRule ^chordpro\.html$ https://dangerblack.github.io/CantiScout/chordpro.html [R=301,L]
+
+# Catch-all: anything else goes to the new homepage
+RewriteRule ^(.*)$           https://dangerblack.github.io/CantiScout/           [R=301,L]

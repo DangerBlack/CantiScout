@@ -181,7 +181,7 @@ class EditSongTextState extends State<EditSongText> {
           IconButton(
             icon: const Icon(Icons.help_outline),
             tooltip: 'Guida ChordPro',
-            onPressed: () => Utils.launchURL('https://www.512b.it/cantiscout/chorpro.html'),
+            onPressed: () => Utils.launchURL(Constants.urlChordPro),
           ),
         ],
       ),
