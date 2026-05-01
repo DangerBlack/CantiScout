@@ -3,9 +3,17 @@ name: iOS Distribution
 on:
   workflow_dispatch:
 
+env:
+  FLUTTER_VERSION: '3.41.8'
+
 jobs:
   build-and-upload:
     runs-on: macos-latest
+
+    env:
+      BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+      BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+      APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
 
     steps:
       - name: Checkout
@@ -14,107 +22,139 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.8'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
 
       - name: Install Flutter dependencies
         run: flutter pub get
 
-      - name: Install CocoaPods dependencies
-        run: cd ios && pod install
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: ${{ runner.os }}-pods-
 
-      - name: Install distribution certificate
+      - name: Install CocoaPods dependencies
+        working-directory: ios
+        run: pod install
+
+      - name: Import distribution certificate
+        if: ${{ env.BUILD_CERTIFICATE_BASE64 != '' }}
         env:
-          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
-          CERTIFICATE_PATH=$RUNNER_TEMP/distribution.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          KEYCHAIN_PATH=$RUNNER_TEMP/build.keychain
+          CERT_PATH=$RUNNER_TEMP/certificate.p12
 
-          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          echo "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o "$CERT_PATH"
 
-          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-
-          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security list-keychain -d user -s $KEYCHAIN_PATH
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$P12_PASSWORD" \
+            -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list \
+            -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
 
       - name: Install provisioning profile
-        env:
-          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+        if: ${{ env.BUILD_PROVISION_PROFILE_BASE64 != '' }}
         run: |
-          PP_PATH=$RUNNER_TEMP/distribution.mobileprovision
-          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+          PP_PATH=$RUNNER_TEMP/profile.mobileprovision
+          echo "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o "$PP_PATH"
 
-          PP_UUID=$(security cms -D -i $PP_PATH | plutil -extract UUID raw -)
-
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$PP_UUID.mobileprovision
-
+          PP_UUID=$(security cms -D -i "$PP_PATH" | plutil -extract UUID raw -)
           echo "PP_UUID=$PP_UUID" >> $GITHUB_ENV
 
-      - name: Generate ExportOptions.plist
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/"$PP_UUID".mobileprovision
+
+      - name: Build IPA
+        if: ${{ env.BUILD_CERTIFICATE_BASE64 != '' && env.BUILD_PROVISION_PROFILE_BASE64 != '' }}
         run: |
-          cat > /tmp/ExportOptions.plist <<EOF
+          PP_UUID="${{ env.PP_UUID }}"
+
+          cat > /tmp/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+            "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
-              <key>method</key>
-              <string>app-store</string>
-              <key>teamID</key>
-              <string>${{ secrets.APPLE_TEAM_ID }}</string>
-              <key>signingStyle</key>
-              <string>manual</string>
-              <key>signingCertificate</key>
-              <string>Apple Distribution</string>
-              <key>provisioningProfiles</key>
-              <dict>
-                  <key>danielebaschieri.eu.cantiscout</key>
-                  <string>$PP_UUID</string>
-              </dict>
-              <key>uploadBitcode</key>
-              <false/>
-              <key>uploadSymbols</key>
-              <true/>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>signingCertificate</key>
+            <string>Apple Distribution</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>danielebaschieri.eu.cantiscout</key>
+              <string>$PP_UUID</string>
+            </dict>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>compileBitcode</key>
+            <false/>
           </dict>
           </plist>
           EOF
 
-      - name: Build IPA
-        run: |
-          flutter build ipa --release \
-            --build-number=${{ github.run_number }} \
-            --export-options-plist=/tmp/ExportOptions.plist \
-            -- \
+          # Generate Flutter build files (dart2js, generated_plugin_registrant, etc.)
+          flutter build ios --release --no-codesign \
+            --build-number=${{ github.run_number }}
+
+          # Archive with explicit manual signing — no Apple account needed
+          xcodebuild \
+            -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Runner.xcarchive" \
             CODE_SIGN_STYLE=Manual \
-            "CODE_SIGN_IDENTITY=Apple Distribution" \
-            PROVISIONING_PROFILE_SPECIFIER=$PP_UUID \
-            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }}
+            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            PROVISIONING_PROFILE="$PP_UUID" \
+            FLUTTER_BUILD_NUMBER=${{ github.run_number }} \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            archive
+
+          # Export IPA from archive
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Runner.xcarchive" \
+            -exportPath "build/ios/ipa" \
+            -exportOptionsPlist /tmp/ExportOptions.plist
 
       - name: Upload to App Store Connect
+        if: ${{ env.APP_STORE_CONNECT_API_KEY_ID != '' }}
         env:
-          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
         run: |
-          mkdir -p ~/.private_keys
-          echo "$APP_STORE_CONNECT_PRIVATE_KEY" > ~/.private_keys/AuthKey_$APP_STORE_CONNECT_API_KEY_ID.p8
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" \
+            > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8
 
+          IPA_PATH=$(find build/ios/ipa -name "*.ipa" | head -1)
+
+          set -o pipefail
           xcrun altool --upload-app \
-            --file build/ios/ipa/*.ipa \
             --type ios \
-            --apiKey "$APP_STORE_CONNECT_API_KEY_ID" \
+            --file "$IPA_PATH" \
+            --apiKey  "$APP_STORE_CONNECT_API_KEY_ID" \
             --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
-            --verbose
+            --verbose 2>&1 | tee /tmp/altool-output.txt
 
-      - name: Clean up keychain and profile
+          if grep -q "ERROR:" /tmp/altool-output.txt; then
+            echo "::error::App Store Connect upload failed — see ERROR lines above"
+            exit 1
+          fi
+
+      - name: Delete temp keychain
         if: always()
         run: |
-          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
-          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/$PP_UUID.mobileprovision || true
-          rm -f ~/.private_keys/AuthKey_$APP_STORE_CONNECT_API_KEY_ID.p8 || true
+          security delete-keychain "$RUNNER_TEMP/build.keychain" 2>/dev/null || true
