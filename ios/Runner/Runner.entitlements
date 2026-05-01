@@ -5,7 +5,7 @@
   <!-- ... other keys -->
   <key>com.apple.developer.associated-domains</key>
   <array>
-    <string>applinks:https://www.512b.it/cantiscout</string>
+    <string>applinks:www.512b.it</string>
   </array>
   <!-- ... other keys -->
 </dict>
