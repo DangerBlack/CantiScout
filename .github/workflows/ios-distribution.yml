@@ -1,9 +1,6 @@
 name: iOS Distribution
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 jobs:
