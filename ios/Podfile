@@ -46,6 +46,11 @@ post_install do |installer|
         '$(inherited)',
         'PERMISSION_CAMERA=1',
       ]
+
+      # Pod targets are static libraries; they don't need their own provisioning
+      # profile. Without this, passing PROVISIONING_PROFILE to xcodebuild globally
+      # (as required for the Runner target) causes archive to fail on pod targets.
+      config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
     end
   end
 end
