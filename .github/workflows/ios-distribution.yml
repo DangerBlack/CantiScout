@@ -89,7 +89,12 @@ jobs:
         run: |
           flutter build ipa --release \
             --build-number=${{ github.run_number }} \
-            --export-options-plist=/tmp/ExportOptions.plist
+            --export-options-plist=/tmp/ExportOptions.plist \
+            -- \
+            CODE_SIGN_STYLE=Manual \
+            "CODE_SIGN_IDENTITY=Apple Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER=$PP_UUID \
+            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }}
 
       - name: Upload to App Store Connect
         env:
