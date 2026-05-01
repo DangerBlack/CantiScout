@@ -35,5 +35,17 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      # ML Kit pods (mobile_scanner) don't ship arm64 simulator slices;
+      # exclude arm64 for simulator builds so the app runs via Rosetta on iOS <26 simulators.
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+
+      # permission_handler 10+ requires explicit opt-in flags per permission type;
+      # without PERMISSION_CAMERA=1 the camera request is silently dropped on iOS.
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        'PERMISSION_CAMERA=1',
+      ]
+    end
   end
 end
