@@ -51,13 +51,11 @@ jobs:
           echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
 
           PP_UUID=$(security cms -D -i $PP_PATH | plutil -extract UUID raw -)
-          PP_NAME=$(security cms -D -i $PP_PATH | plutil -extract Name raw -)
 
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/$PP_UUID.mobileprovision
 
           echo "PP_UUID=$PP_UUID" >> $GITHUB_ENV
-          echo "PP_NAME=$PP_NAME" >> $GITHUB_ENV
 
       - name: Generate ExportOptions.plist
         run: |
@@ -88,7 +86,10 @@ jobs:
           EOF
 
       - name: Build IPA
-        run: flutter build ipa --release --export-options-plist=/tmp/ExportOptions.plist
+        run: |
+          flutter build ipa --release \
+            --build-number=${{ github.run_number }} \
+            --export-options-plist=/tmp/ExportOptions.plist
 
       - name: Upload to App Store Connect
         env:
