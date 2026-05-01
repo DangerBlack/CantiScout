@@ -8,7 +8,7 @@ env:
 
 jobs:
   build-and-upload:
-    runs-on: macos-latest
+    runs-on: macos-15
 
     env:
       BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
@@ -18,6 +18,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          XCODE_PATH=$(find /Applications -maxdepth 1 -name 'Xcode_26*.app' | sort -V | tail -1)
+          if [ -z "$XCODE_PATH" ]; then
+            echo "Xcode 26 not found. Available versions:"
+            ls /Applications/Xcode*.app -d 2>/dev/null || true
+            exit 1
+          fi
+          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+          xcodebuild -version
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
