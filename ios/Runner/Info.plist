@@ -111,6 +111,8 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Utilizziamo la fotocamera per ricevere canzoni tramite QR code animato.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Utilizziamo la libreria foto per importare file di canzoni salvati sul dispositivo.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Utilizziamo il Bluetooth per trasferire canzoni con altri dispositivi.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
