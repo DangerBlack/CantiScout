@@ -1,4 +1,4 @@
-# Building CantScout
+# Building CantiScout
 
 ---
 
@@ -21,7 +21,7 @@ Install Flutter by following the
 
 ```bash
 git clone <repo-url>
-cd cantiscout
+cd CantiScout
 flutter pub get
 ```
 
@@ -137,7 +137,7 @@ Source assets are in `assets/images/`:
 
 ## Version numbering
 
-CantScout follows **semantic versioning** for the build name (`major.minor.patch`)
+CantiScout follows **semantic versioning** for the build name (`major.minor.patch`)
 and a monotonically increasing integer for the build number. Both are set at
 build time via `--build-name` and `--build-number`.
 

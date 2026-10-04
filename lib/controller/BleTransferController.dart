@@ -23,7 +23,7 @@ class BleTransferController {
 
   static const int kChunkPayloadSize = 480; // bytes per BLE notification
   static const String kCommandStart = 'START';
-  static const String kDeviceName = 'CantScout';
+  static const String kDeviceName = 'CantiScout';
 
   // Special header bytes for the DONE marker packet
   static const int _kDone = 0xFF;

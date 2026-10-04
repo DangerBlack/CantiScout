@@ -5,7 +5,7 @@ Static website for [CantiScout](https://512b.it/cantiscout) — a mobile songboo
 ## Structure
 
 ```
-website/
+docs/website/
 ├── index.html              # Landing page
 ├── chordpro.html           # ChordPro beginner's guide
 ├── terms.html              # Terms of Service & Privacy Policy
@@ -23,21 +23,25 @@ website/
 
 ```bash
 # Python 3
-cd website
+cd docs/website
 python -m http.server 8000
 # → http://localhost:8000
 ```
 
 ## Deployment (GitHub Pages)
 
-1. Go to **Settings → Pages** in the repository
-2. Set source to `Deploy from a branch`, branch `main`, folder `/website`
-3. Optionally set a custom domain and enable **Enforce HTTPS**
+The site is published automatically by the
+[`pages.yml`](../../.github/workflows/pages.yml) workflow, which uploads the
+`docs/website/` folder to GitHub Pages on every push to `main` that touches
+`docs/website/**`. You can also trigger it manually from **Actions → Deploy
+website to GitHub Pages → Run workflow**.
+
+Live URL: <https://dangerblack.github.io/CantiScout/>
 
 To deploy manually via rsync:
 
 ```bash
-rsync -av --delete website/ user@your-server:/var/www/cantiscout/
+rsync -av --delete docs/website/ user@your-server:/var/www/cantiscout/
 ```
 
 ## Adding screenshots

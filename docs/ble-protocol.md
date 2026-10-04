@@ -1,6 +1,6 @@
 # Bluetooth Low Energy Transfer Protocol
 
-CantScout uses Bluetooth Low Energy (BLE) to transfer songs directly between
+CantiScout uses Bluetooth Low Energy (BLE) to transfer songs directly between
 devices without any internet connection. The sending device acts as a **GATT
 peripheral**; the receiving device acts as a **GATT central**.
 
@@ -31,7 +31,7 @@ The data characteristic exposes a **CCCD descriptor**
 (`00002902-0000-1000-8000-00805F9B34FB`, readable + writable) required for the
 receiver to enable notifications via `setNotifyValue(true)`.
 
-Advertised local name: **`CantScout`**
+Advertised local name: **`CantiScout`**
 
 ---
 

@@ -1,6 +1,6 @@
 # Localization
 
-CantScout uses the Flutter `intl` package and ARB files for localization.
+CantiScout uses the Flutter `intl` package and ARB files for localization.
 Currently supported locales: **Italian (`it`)** and **English (`en`)**.
 
 ---

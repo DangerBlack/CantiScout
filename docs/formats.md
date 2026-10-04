@@ -1,13 +1,13 @@
-# CantScout File & Transfer Formats
+# CantiScout File & Transfer Formats
 
-This document describes the two file formats used by CantScout for storing and
+This document describes the two file formats used by CantiScout for storing and
 exchanging songs.
 
 ---
 
 ## 1. ChordPro (`.cho` / `.chopro`)
 
-CantScout stores every song body in a subset of the
+CantiScout stores every song body in a subset of the
 [ChordPro](https://www.chordpro.org/) open standard. Files use UTF-8 encoding.
 
 ### 1.1 Chords
@@ -98,7 +98,7 @@ Lines beginning with `#` are ignored by the parser and renderer.
 ### 1.4 Metadata extraction on import
 
 When importing a standalone `.chopro` file (without a containing `.chopack`),
-CantScout extracts metadata as follows:
+CantiScout extracts metadata as follows:
 
 1. `{title:}` or `{t:}` → song title
 2. `{author:}` or `{a:}` → author
@@ -132,7 +132,7 @@ Was [G]blind but [D]now I [G]see
 
 ---
 
-## 2. CantScout Pack (`.chopack`)
+## 2. CantiScout Pack (`.chopack`)
 
 A `.chopack` file is a standard **ZIP archive** that bundles one or more songs
 together with their metadata. It is the primary format for library and playlist
@@ -217,7 +217,7 @@ with `_`.
 
 ### 2.4 Fallback import (no `metadata.json`)
 
-If `metadata.json` is absent, CantScout scans the archive for any `.chopro`
+If `metadata.json` is absent, CantiScout scans the archive for any `.chopro`
 or `.cho` file and imports each one using the ChordPro metadata-extraction
 rules described in §1.4. Tags and playlists are not restored in this path.
 

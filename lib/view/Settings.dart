@@ -227,7 +227,7 @@ class Settings extends State<SettingsStateful> {
         );
         return;
       }
-      await ChopackController.exportPack(songs, 'CantScout - Libreria');
+      await ChopackController.exportPack(songs, 'CantiScout - Libreria');
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

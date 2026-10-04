@@ -1,8 +1,8 @@
-# CantScout
+# CantiScout
 
 > A mobile songbook built for places where the internet doesn't reach.
 
-CantScout is a free, open-source Flutter application for Scout groups and anyone
+CantiScout is a free, open-source Flutter application for Scout groups and anyone
 who sings together outdoors. It is designed from the ground up for **offline
 use**: no server, no account, no connectivity required. Songs live entirely on
 the device and travel between devices over Bluetooth.
@@ -18,7 +18,7 @@ Scout outings take groups to mountain tops, cliff campsites, and forest clearing
 songbook takes days to prepare, costs money to print, and is out of date the
 moment a new song is added to the repertoire.
 
-CantScout turns every member's phone into an up-to-date songbook:
+CantiScout turns every member's phone into an up-to-date songbook:
 
 - The entire library fits on the device and works with **no internet connection**.
 - Songs travel between devices over **Bluetooth Low Energy** — no Wi-Fi,
@@ -33,7 +33,7 @@ CantScout turns every member's phone into an up-to-date songbook:
 
 ## Copyright and content policy
 
-**CantScout ships with zero songs.**
+**CantiScout ships with zero songs.**
 
 The app is a blank canvas. You type your group's repertoire directly into the
 editor, or import a `.chopack` file prepared by your group leader. The
@@ -42,7 +42,7 @@ There is no central server and no shared song database.
 
 Song packs exchanged between users are entirely the responsibility of those
 users — the same way a text editor bears no liability for what you write in it.
-This design makes CantScout structurally resilient to copyright takedown
+This design makes CantiScout structurally resilient to copyright takedown
 requests.
 
 ---
@@ -84,7 +84,7 @@ requests.
 | iOS      | Released |
 
 Download links are available on the
-[CantScout website](https://512b.it/cantiscout).
+[CantiScout website](https://512b.it/cantiscout).
 
 ---
 
@@ -116,4 +116,4 @@ Full prerequisites and release build instructions are in
 
 ## License
 
-[MIT](LICENSE) © CantScout Contributors
+[MIT](LICENSE) © CantiScout Contributors

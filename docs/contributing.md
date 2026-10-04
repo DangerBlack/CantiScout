@@ -1,4 +1,4 @@
-# Contributing to CantScout
+# Contributing to CantiScout
 
 Thank you for your interest in contributing. All kinds of contributions are
 welcome: bug reports, feature suggestions, translations, documentation
@@ -29,7 +29,7 @@ fork → feature branch → commit → pull request
 ```
 
 1. Fork the repository and clone your fork.
-2. Create a branch from `master` with a short descriptive name:
+2. Create a branch from `main` with a short descriptive name:
    ```bash
    git checkout -b fix/chord-alignment
    git checkout -b feat/dark-mode
@@ -40,7 +40,7 @@ fork → feature branch → commit → pull request
    flutter analyze
    flutter test
    ```
-5. Open a pull request against `master`. Describe **what** you changed and
+5. Open a pull request against `main`. Describe **what** you changed and
    **why**. Link the related issue if one exists.
 
 ---
@@ -77,7 +77,7 @@ Open a GitHub issue and include:
 
 ## Song data and copyright
 
-CantScout does not accept contributions of song lyrics or chord sheets.
+CantiScout does not accept contributions of song lyrics or chord sheets.
 The app ships with no content; see the [copyright policy](../README.md#copyright-and-content-policy)
 in the README for the reasoning.
 

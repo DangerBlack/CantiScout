@@ -426,7 +426,7 @@ class _BleReceiveViewState extends State<BleReceiveView> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Nessun dispositivo CantScout trovato.\nAssicurati che l\'altro dispositivo stia inviando.',
+                  'Nessun dispositivo CantiScout trovato.\nAssicurati che l\'altro dispositivo stia inviando.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey[600]),
                 ),
